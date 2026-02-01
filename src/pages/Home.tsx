@@ -441,7 +441,7 @@ export default function Home() {
 
       {/* TABLET 3D SHOWCASE - Between hero and problems */}
       <TabletShowcase 
-        screenImagePath="/models/images/screen-modern.png"
+        screenImagePath="./models/images/screen-modern.png"
       />
 
       {/* PROBLEMS SECTION - BRUTALIST CARDS */}

@@ -127,11 +127,11 @@ export default function BookCall() {
       `}</style>
 
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-32 pb-20 px-4 sm:px-6">
+      <section className="relative min-h-[50vh] sm:min-h-[60vh] flex items-center justify-center overflow-hidden pt-24 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6">
         {/* Animated background */}
         <div className="absolute inset-0 opacity-40">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cyan-500/20 rounded-full blur-[150px] floating" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-violet-500/20 rounded-full blur-[120px] floating" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-0 right-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-cyan-500/20 rounded-full blur-[150px] floating" />
+          <div className="absolute bottom-0 left-0 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-violet-500/20 rounded-full blur-[120px] floating" style={{ animationDelay: '2s' }} />
         </div>
 
         {/* Grain texture */}
@@ -146,14 +146,14 @@ export default function BookCall() {
 
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-block mb-6 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm opacity-0 animate-fadeInUp">
-            <span className="font-body text-sm tracking-[0.3em] text-cyan-400 uppercase font-light">
+          <div className="inline-block mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm opacity-0 animate-fadeInUp">
+            <span className="font-body text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] text-cyan-400 uppercase font-light">
               Let's Get Started
             </span>
           </div>
 
           {/* Main headline */}
-          <h1 className="font-display text-5xl sm:text-6xl md:text-8xl font-black mb-6 leading-[0.9] opacity-0 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black mb-4 sm:mb-6 leading-[0.95] sm:leading-[0.9] opacity-0 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
             <span className="text-white">Ready to</span>
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
@@ -161,18 +161,18 @@ export default function BookCall() {
             </span>
           </h1>
 
-          <p className="font-body text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-8 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
+          <p className="font-body text-base sm:text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-6 sm:mb-8 px-2 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.4s' }}>
             Fill out the form below or book a call directly. No pitch, no pressure—just real talk about growing your business.
           </p>
 
           {/* Quick CTA */}
           <a
             href="tel:2145060806"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-lg rounded-full hover:scale-105 transition-all duration-300 shadow-[0_10px_40px_rgba(0,240,255,0.3)] opacity-0 animate-fadeInUp"
+            className="inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-base sm:text-lg rounded-full hover:scale-105 transition-all duration-300 shadow-[0_10px_40px_rgba(0,240,255,0.3)] opacity-0 animate-fadeInUp"
             style={{ animationDelay: '0.6s' }}
           >
-            <Phone className="w-5 h-5" />
-            Call Now: (214) 506-0806
+            <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="whitespace-nowrap">Call Now: (214) 506-0806</span>
           </a>
         </div>
       </section>

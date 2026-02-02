@@ -166,7 +166,7 @@ export default function BookCall() {
           </p>
 
           {/* Quick CTA */}
-          
+          <a
             href="tel:2145060806"
             className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-lg rounded-full hover:scale-105 transition-all duration-300 shadow-[0_10px_40px_rgba(0,240,255,0.3)] opacity-0 animate-fadeInUp"
             style={{ animationDelay: '0.6s' }}
@@ -336,13 +336,13 @@ export default function BookCall() {
                 <p className="font-body text-sm text-gray-400 mb-4 uppercase tracking-wider">
                   Prefer Direct Contact?
                 </p>
-                
+                <a
                   href="tel:2145060806"
                   className="block font-display text-2xl font-bold text-cyan-400 hover:text-violet-400 transition-colors mb-3"
                 >
                   (214) 506-0806
                 </a>
-                
+                <a
                   href="https://www.instagram.com/primevisibilitymedia/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -396,7 +396,7 @@ export default function BookCall() {
           {/* Call Option Below Calendly */}
           <div className="mt-8 text-center">
             <p className="font-body text-gray-400 mb-4">Can't find a good time?</p>
-            
+            <a
               href="tel:2145060806"
               className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-body font-bold text-lg rounded-full hover:scale-105 transition-all duration-300 shadow-[0_10px_40px_rgba(176,38,255,0.3)]"
             >
@@ -436,13 +436,13 @@ export default function BookCall() {
             </div>
 
             <div className="sm:text-left lg:text-right">
-              
+              <a
                 href="tel:2145060806"
                 className="block font-display text-xl sm:text-2xl font-bold text-cyan-400 mb-3 sm:mb-4 hover:text-violet-400 transition-colors"
               >
                 (214) 506-0806
               </a>
-              
+              <a
                 href="https://www.instagram.com/primevisibilitymedia/"
                 target="_blank"
                 rel="noopener noreferrer"

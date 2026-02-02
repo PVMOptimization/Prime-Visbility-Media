@@ -34,7 +34,7 @@ export default function BookCall() {
           <div className="bg-[#1A1A1A] rounded-xl p-8 md:p-12 border border-gray-800 mb-16">
             <div 
               className="calendly-inline-widget" 
-              data-url="https://calendly.com/optimization-primivisibilitymedia/30min"
+              data-url="https://calendly.com/optimization-primivisibilitymedia/10min"
               style={{ minWidth: '320px', height: '700px' }}
             ></div>
             <div className="mt-8 text-center">

@@ -7,10 +7,7 @@ export default function BookCall() {
     name: '',
     phone: '',
     email: '',
-    needs: {
-      leads: false,
-      website: false
-    }
+    message: ''
   });
 
   const [submitted, setSubmitted] = useState(false);
@@ -43,10 +40,7 @@ export default function BookCall() {
           name: formData.name,
           phone: formData.phone,
           email: formData.email,
-          needs: {
-            leads: formData.needs.leads ? 'Yes' : 'No',
-            website: formData.needs.website ? 'Yes' : 'No'
-          },
+          message: formData.message,
           source: 'PrimeVisibilityMedia.com',
           submittedAt: new Date().toISOString()
         })
@@ -64,7 +58,7 @@ export default function BookCall() {
           name: '',
           phone: '',
           email: '',
-          needs: { leads: false, website: false }
+          message: ''
         });
       }, 3000);
 
@@ -72,16 +66,6 @@ export default function BookCall() {
       console.error('Formspree error:', error);
       alert('Something went wrong. Please try again.');
     }
-  };
-
-  const handleCheckbox = (field: 'leads' | 'website') => {
-    setFormData(prev => ({
-      ...prev,
-      needs: {
-        ...prev.needs,
-        [field]: !prev.needs[field]
-      }
-    }));
   };
 
   return (
@@ -274,60 +258,19 @@ export default function BookCall() {
                       </div>
                     </div>
 
-                    {/* Checkboxes */}
+                    {/* Message Text Area */}
                     <div>
-                      <label className="font-body text-sm text-gray-400 uppercase tracking-wider block mb-4">
-                        What Do You Need?
+                      <label className="font-body text-sm text-gray-400 uppercase tracking-wider block mb-2">
+                        Are you looking for more leads or just a beautiful website?
                       </label>
-                      <div className="space-y-4">
-                        {/* LEADS CHECKBOX */}
-                        <label className="flex items-center gap-4 cursor-pointer group">
-                          <div className="relative">
-                            <input
-                              type="checkbox"
-                              checked={formData.needs.leads}
-                              onChange={() => handleCheckbox('leads')}
-                              className="peer sr-only"
-                            />
-                            <div 
-                              onClick={() => handleCheckbox('leads')} 
-                              className="w-6 h-6 border-2 border-white/20 bg-black peer-checked:bg-gradient-to-br peer-checked:from-cyan-500 peer-checked:to-violet-500 peer-checked:border-transparent transition-all duration-300 flex items-center justify-center cursor-pointer"
-                            >
-                              {formData.needs.leads && <Check className="w-4 h-4 text-black" />}
-                            </div>
-                          </div>
-                          <span 
-                            onClick={() => handleCheckbox('leads')}
-                            className="font-body text-white text-lg group-hover:text-cyan-400 transition-colors cursor-pointer select-none"
-                          >
-                            More Leads & Customers
-                          </span>
-                        </label>
-
-                        {/* WEBSITE CHECKBOX - FIXED */}
-                        <label className="flex items-center gap-4 cursor-pointer group">
-                          <div className="relative">
-                            <input
-                              type="checkbox"
-                              checked={formData.needs.website}
-                              onChange={() => handleCheckbox('website')}
-                              className="peer sr-only"
-                            />
-                            <div 
-                              onClick={() => handleCheckbox('website')} 
-                              className="w-6 h-6 border-2 border-white/20 bg-black peer-checked:bg-gradient-to-br peer-checked:from-cyan-500 peer-checked:to-violet-500 peer-checked:border-transparent transition-all duration-300 flex items-center justify-center cursor-pointer"
-                            >
-                              {formData.needs.website && <Check className="w-4 h-4 text-black" />}
-                            </div>
-                          </div>
-                          <span
-                            onClick={() => handleCheckbox('website')}
-                            className="font-body text-white text-lg group-hover:text-cyan-400 transition-colors cursor-pointer select-none"
-                          >
-                            Beautiful Professional Website
-                          </span>
-                        </label>
-                      </div>
+                      <textarea
+                        required
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                        rows={5}
+                        className="w-full bg-black border border-white/10 rounded-none px-4 py-4 text-white font-body focus:outline-none input-glow transition-all duration-300 resize-none"
+                        placeholder="Tell us what you're looking for..."
+                      />
                     </div>
 
                     {/* Submit Button */}

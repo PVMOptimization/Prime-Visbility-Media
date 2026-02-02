@@ -29,13 +29,35 @@ export default function BookCall() {
     };
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Add your form submission logic here (e.g., API call, email service)
-    console.log('Form submitted:', formData);
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch('https://formspree.io/f/xbdkkrzz', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email,
+        needs: {
+          leads: formData.needs.leads ? 'Yes' : 'No',
+          website: formData.needs.website ? 'Yes' : 'No'
+        },
+        source: 'PrimeVisibilityMedia.com',
+        submittedAt: new Date().toISOString()
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Form submission failed');
+    }
+
     setSubmitted(true);
-    
-    // Reset form after 3 seconds
+
     setTimeout(() => {
       setSubmitted(false);
       setFormData({
@@ -45,17 +67,13 @@ export default function BookCall() {
         needs: { leads: false, website: false }
       });
     }, 3000);
-  };
 
-  const handleCheckbox = (field: 'leads' | 'website') => {
-    setFormData(prev => ({
-      ...prev,
-      needs: {
-        ...prev.needs,
-        [field]: !prev.needs[field]
-      }
-    }));
-  };
+  } catch (error) {
+    console.error('Formspree error:', error);
+    alert('Something went wrong. Please try again.');
+  }
+};
+
 
   return (
     <div className="bg-black text-white min-h-screen overflow-hidden">

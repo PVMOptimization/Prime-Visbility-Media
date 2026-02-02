@@ -279,7 +279,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                               onChange={() => handleCheckbox('leads')}
                               className="peer sr-only"
                             />
-                            <div className="w-6 h-6 border-2 border-white/20 bg-black peer-checked:bg-gradient-to-br peer-checked:from-cyan-500 peer-checked:to-violet-500 peer-checked:border-transparent transition-all duration-300 flex items-center justify-center">
+                            <div   onClick={() => handleCheckbox('leads')}   className="w-6 h-6 border-2 border-white/20 bg-black peer-checked:bg-gradient-to-br peer-checked:from-cyan-500 peer-checked:to-violet-500 peer-checked:border-transparent transition-all duration-300 flex items-center justify-center cursor-pointer" >
                               {formData.needs.leads && <Check className="w-4 h-4 text-black" />}
                             </div>
                           </div>
@@ -296,13 +296,16 @@ const handleSubmit = async (e: React.FormEvent) => {
                               onChange={() => handleCheckbox('website')}
                               className="peer sr-only"
                             />
-                            <div className="w-6 h-6 border-2 border-white/20 bg-black peer-checked:bg-gradient-to-br peer-checked:from-cyan-500 peer-checked:to-violet-500 peer-checked:border-transparent transition-all duration-300 flex items-center justify-center">
+                            <div   onClick={() => handleCheckbox('leads')}   className="w-6 h-6 border-2 border-white/20 bg-black peer-checked:bg-gradient-to-br peer-checked:from-cyan-500 peer-checked:to-violet-500 peer-checked:border-transparent transition-all duration-300 flex items-center justify-center cursor-pointer" >
                               {formData.needs.website && <Check className="w-4 h-4 text-black" />}
                             </div>
                           </div>
-                          <span className="font-body text-white text-lg group-hover:text-cyan-400 transition-colors">
-                            Beautiful Professional Website
-                          </span>
+                          <span
+  onClick={() => handleCheckbox('website')}
+  className="font-body text-white text-lg group-hover:text-cyan-400 transition-colors cursor-pointer select-none"
+>
+  Beautiful Professional Website
+</span>
                         </label>
                       </div>
                     </div>

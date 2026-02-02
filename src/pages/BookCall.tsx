@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { Check, Phone, Mail, User, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Check, Phone, Mail, User, Sparkles, Calendar } from 'lucide-react';
 
 export default function BookCall() {
   const [formData, setFormData] = useState({
@@ -14,6 +14,20 @@ export default function BookCall() {
   });
 
   const [submitted, setSubmitted] = useState(false);
+
+  // Load Calendly script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -354,6 +368,57 @@ export default function BookCall() {
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Calendly Section */}
+      <section className="relative py-16 sm:py-24 px-4 sm:px-6 bg-zinc-950">
+        <div className="max-w-5xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <div className="inline-block mb-6 px-4 py-2 rounded-full border border-violet-500/30 bg-violet-500/5 backdrop-blur-sm">
+              <span className="font-body text-sm tracking-[0.3em] text-violet-400 uppercase font-light">
+                Book Directly
+              </span>
+            </div>
+            
+            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-black mb-4">
+              <span className="text-white">Schedule Your</span>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
+                Free Strategy Call
+              </span>
+            </h2>
+            
+            <p className="font-body text-lg text-gray-400 max-w-2xl mx-auto">
+              Pick a time that works for you. We'll audit your current setup and show you exactly what's missing.
+            </p>
+          </div>
+
+          {/* Calendly Widget Container */}
+          <div className="bg-black border border-white/10 p-6 sm:p-8 lg:p-12 relative">
+            {/* Corner accents */}
+            <div className="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-violet-500/30" />
+            <div className="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-cyan-500/30" />
+            
+            <div 
+              className="calendly-inline-widget relative z-10" 
+              data-url="https://calendly.com/optimization-primivisibilitymedia/10min"
+              style={{ minWidth: '320px', height: '700px' }}
+            />
+          </div>
+
+          {/* Call Option Below Calendly */}
+          <div className="mt-8 text-center">
+            <p className="font-body text-gray-400 mb-4">Can't find a good time?</p>
+            <a
+              href="tel:2145060806"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white font-body font-bold text-lg rounded-full hover:scale-105 transition-all duration-300 shadow-[0_10px_40px_rgba(176,38,255,0.3)]"
+            >
+              <Phone className="w-5 h-5" />
+              Call Us Directly: (214) 506-0806
+            </a>
           </div>
         </div>
       </section>

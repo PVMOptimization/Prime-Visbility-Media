@@ -8,19 +8,24 @@ interface TabletShowcaseProps {
 
 export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const tabletRef = useRef<THREE.Group | null>(null);
   const [progress, setProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Store scene data with smooth rotation tracking
+  const sceneRef = useRef<{
+    scene: THREE.Scene;
+    camera: THREE.PerspectiveCamera;
+    renderer: THREE.WebGLRenderer;
+    tablet: THREE.Group | null;
+    targetRotation: number;
+    currentRotation: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     // Scene setup
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
 
     // Camera - positioned for better mobile view
     const camera = new THREE.PerspectiveCamera(
@@ -31,19 +36,18 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
     );
     camera.position.set(0, 0, 3); // Closer camera
     camera.lookAt(0, 0, 0);
-    cameraRef.current = camera;
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true, 
-      alpha: true 
+      alpha: true,
+      powerPreference: 'high-performance'
     });
     renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
     containerRef.current.appendChild(renderer.domElement);
-    rendererRef.current = renderer;
 
     // Lighting - Cyber luxe aesthetic
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
@@ -64,13 +68,22 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
     rimLight.position.set(0, -3, -5);
     scene.add(rimLight);
 
+    // Store scene data with smooth rotation system
+    sceneRef.current = {
+      scene,
+      camera,
+      renderer,
+      tablet: null,
+      targetRotation: 0,
+      currentRotation: 0
+    };
+
     // Load GLTF model
     const loader = new GLTFLoader();
     loader.load(
       '/models/tablet.gltf',
       (gltf: any) => {
         const tablet = gltf.scene;
-        tabletRef.current = tablet;
 
         // Scale and position - LARGER for better visibility
         const box = new THREE.Box3().setFromObject(tablet);
@@ -88,7 +101,7 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
           -center.z * scale
         );
         
-        // REVERSED: Start facing the user (0 degrees), will rotate away
+        // Start facing the user (0 degrees)
         tablet.rotation.y = 0;
 
         // Debug: List all meshes
@@ -109,10 +122,10 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
             (texture) => {
               console.log('✅ Screen texture loaded successfully!');
               texture.colorSpace = THREE.SRGBColorSpace;
-              texture.flipY = true; // Changed from false to true
+              texture.flipY = true;
               texture.wrapS = THREE.RepeatWrapping;
               texture.wrapT = THREE.RepeatWrapping;
-              texture.repeat.set(1, 1); // Flip horizontally (mirror image)
+              texture.repeat.set(1, 1);
 
               let screenFound = false;
               
@@ -134,7 +147,7 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
                       map: texture,
                       emissive: new THREE.Color(0xffffff),
                       emissiveMap: texture,
-                      emissiveIntensity: 0.8, // Very bright
+                      emissiveIntensity: 0.8,
                       roughness: 0.05,
                       metalness: 0.0,
                       toneMapped: false
@@ -181,7 +194,7 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
                         map: texture,
                         emissive: new THREE.Color(0xffffff),
                         emissiveMap: texture,
-                        emissiveIntensity: 1.0, // Maximum brightness
+                        emissiveIntensity: 1.0,
                         roughness: 0.0,
                         metalness: 0.0,
                         toneMapped: false
@@ -192,8 +205,8 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
                 }
               }
             },
-            (progress: any) => {
-              console.log('Loading texture:', Math.round((progress.loaded / progress.total) * 100) + '%');
+            (xhr: any) => {
+              console.log('Loading texture:', Math.round((xhr.loaded / xhr.total) * 100) + '%');
             },
             (error: any) => {
               console.error('❌ Error loading screen texture:', error);
@@ -205,6 +218,9 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
         }
 
         scene.add(tablet);
+        if (sceneRef.current) {
+          sceneRef.current.tablet = tablet;
+        }
         setIsLoaded(true);
       },
       (xhr: any) => {
@@ -216,26 +232,42 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
       }
     );
 
-    // Animation loop
+    // ULTRA-SMOOTH animation loop with lerp
     const animate = () => {
+      if (!sceneRef.current) return;
+
+      // Lerp for buttery smooth rotation (lower = smoother)
+      const lerpFactor = 0.08;
+      sceneRef.current.currentRotation += 
+        (sceneRef.current.targetRotation - sceneRef.current.currentRotation) * lerpFactor;
+
+      // Apply rotation to tablet
+      if (sceneRef.current.tablet) {
+        sceneRef.current.tablet.rotation.y = sceneRef.current.currentRotation;
+      }
+
+      sceneRef.current.renderer.render(sceneRef.current.scene, sceneRef.current.camera);
       requestAnimationFrame(animate);
-      renderer.render(scene, camera);
     };
     animate();
 
     // Handle resize
     const handleResize = () => {
-      if (!containerRef.current || !camera || !renderer) return;
+      if (!containerRef.current || !sceneRef.current) return;
       
-      camera.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+      const width = containerRef.current.clientWidth;
+      const height = containerRef.current.clientHeight;
+      
+      sceneRef.current.camera.aspect = width / height;
+      sceneRef.current.camera.updateProjectionMatrix();
+      sceneRef.current.renderer.setSize(width, height);
+      sceneRef.current.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     };
     window.addEventListener('resize', handleResize);
 
-    // REVERSED Scroll handler - rotate tablet AWAY from camera
+    // ULTRA-SMOOTH scroll handler with easing
     const handleScroll = () => {
-      if (!containerRef.current || !tabletRef.current) return;
+      if (!containerRef.current || !sceneRef.current) return;
 
       const rect = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
@@ -256,26 +288,38 @@ export default function TabletShowcase({ screenImagePath }: TabletShowcaseProps)
       
       setProgress(scrollProgress);
 
-      // REVERSED: Rotate from 0° (facing camera) to 90° (side view)
-      const targetRotation = scrollProgress * (Math.PI / 2);
-      
-      // Smooth interpolation
-      if (tabletRef.current.rotation.y !== targetRotation) {
-        tabletRef.current.rotation.y += (targetRotation - tabletRef.current.rotation.y) * 0.1;
-      }
+      // Smooth easing function (ease-out cubic)
+      const easeOutCubic = (t: number): number => 1 - Math.pow(1 - t, 3);
+      const easedProgress = easeOutCubic(scrollProgress);
+
+      // Rotate from 0° (facing camera) to 90° (side view)
+      sceneRef.current.targetRotation = easedProgress * (Math.PI / 2);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Initial check
 
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
-      if (containerRef.current && renderer.domElement && containerRef.current.contains(renderer.domElement)) {
-        containerRef.current.removeChild(renderer.domElement);
+      
+      if (containerRef.current && sceneRef.current) {
+        if (containerRef.current.contains(sceneRef.current.renderer.domElement)) {
+          containerRef.current.removeChild(sceneRef.current.renderer.domElement);
+        }
+        sceneRef.current.renderer.dispose();
+        sceneRef.current.scene.traverse((object: any) => {
+          if (object.geometry) object.geometry.dispose();
+          if (object.material) {
+            if (Array.isArray(object.material)) {
+              object.material.forEach((material: any) => material.dispose());
+            } else {
+              object.material.dispose();
+            }
+          }
+        });
       }
-      renderer.dispose();
     };
   }, [screenImagePath]);
 

@@ -12,44 +12,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import TabletShowcase from './TabletShowcase';
-
-// Simple motion div component
-const motion = {
-  a: ({ initial, animate, transition, className, href, children }: any) => {
-    const ref = useRef<HTMLAnchorElement>(null);
-    useEffect(() => {
-      if (ref.current) {
-        ref.current.style.opacity = '0';
-        ref.current.style.transform = `translateX(${initial.x}px)`;
-        setTimeout(() => {
-          if (ref.current) {
-            ref.current.style.transition = `all ${transition.duration}s ease-out`;
-            ref.current.style.opacity = String(animate.opacity);
-            ref.current.style.transform = `translateX(${animate.x}px)`;
-          }
-        }, transition.delay * 1000);
-      }
-    }, []);
-    return <a ref={ref} href={href} className={className}>{children}</a>;
-  },
-  div: ({ initial, animate, transition, className, children }: any) => {
-    const ref = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-      if (ref.current) {
-        ref.current.style.opacity = '0';
-        ref.current.style.transform = `translateX(${initial.x}px)`;
-        setTimeout(() => {
-          if (ref.current) {
-            ref.current.style.transition = `all ${transition.duration}s ease-out`;
-            ref.current.style.opacity = String(animate.opacity);
-            ref.current.style.transform = `translateX(${animate.x}px)`;
-          }
-        }, transition.delay * 1000);
-      }
-    }, []);
-    return <div ref={ref} className={className}>{children}</div>;
-  }
-};
+import Navigation from '../components/Navigation';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -77,6 +40,25 @@ export default function Home() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Intersection Observer for section transitions
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('section-visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const sections = document.querySelectorAll('[data-section-transition]');
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
   }, []);
 
   const problems = [
@@ -120,24 +102,40 @@ export default function Home() {
 
   const testimonials = [
     {
-      text: "Within 2 weeks of launching our new site, we got 5 new customer calls. Prime Visibility delivered exactly what they promised.",
-      author: "Mike R.",
-      business: "Elite Roofing DFW"
+      text: "Started getting 3-4 qualified leads per day within the first week. Already closed two $8K jobs from Google searches alone. This actually works.",
+      author: "Marcus J.",
+      business: "Precision Roofing DFW",
+      result: "+$16K in 2 weeks"
     },
     {
-      text: "Our Google Business Profile went from invisible to #1 in local search. The phone hasn't stopped ringing.",
-      author: "Sarah M.",
-      business: "Luxe Beauty Studio"
+      text: "My phone literally wouldn't stop ringing after they optimized my Google Business. Went from maybe 1-2 calls a week to 15+ quality leads. Had to hire help.",
+      author: "Jessica T.",
+      business: "Luxe Lash & Brow Studio",
+      result: "15x more calls"
     },
     {
-      text: "Finally, a web company that actually answers the phone and gets things done fast. Worth every penny.",
-      author: "David T.",
-      business: "Apex HVAC Services"
+      text: "Booked solid for the next 6 weeks. Their lead gen system is no joke. Every morning I wake up to new estimate requests. Best investment I've made.",
+      author: "David R.",
+      business: "Texas Premier HVAC",
+      result: "6 weeks booked"
     },
     {
-      text: "Went from losing customers to Google to dominating my local area. Best investment I've made in my business.",
-      author: "Jennifer L.",
-      business: "Premier Plumbing Co."
+      text: "Finally found someone who actually delivers. Not just a pretty website—real customers calling, real jobs closing. Up 40% in revenue since we launched.",
+      author: "Amanda K.",
+      business: "Elite Plumbing Solutions",
+      result: "+40% revenue"
+    },
+    {
+      text: "Used to rely on word-of-mouth and Angie's List. Now my Google profile is blowing up. Closed $23K in jobs just last month from their lead system.",
+      author: "Robert M.",
+      business: "DFW Landscape Pros",
+      result: "$23K in one month"
+    },
+    {
+      text: "They turned my Instagram into a client machine. Getting DMs daily asking for quotes. Closed 8 new contracts in 3 weeks. This is the real deal.",
+      author: "Sophia L.",
+      business: "Modern Med Spa Dallas",
+      result: "8 contracts in 3 weeks"
     }
   ];
 
@@ -160,36 +158,6 @@ export default function Home() {
         
         .font-display { font-family: 'Syne', sans-serif; }
         .font-body { font-family: 'Outfit', sans-serif; }
-        
-        @keyframes slideUp {
-          from {
-            transform: translateY(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-
-        @keyframes slideDown {
-          from {
-            transform: translateY(0);
-            opacity: 1;
-          }
-          to {
-            transform: translateY(100%);
-            opacity: 0;
-          }
-        }
-
-        .animate-slideUp {
-          animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        .animate-slideDown {
-          animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
 
         @keyframes grain {
           0%, 100% { transform: translate(0, 0); }
@@ -275,10 +243,121 @@ export default function Home() {
         .animate-scaleIn {
           animation: scaleIn 0.6s ease-out forwards;
         }
+
+        /* Kinetic Typography */
+        @keyframes float-kinetic {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          25% { transform: translateY(-10px) rotate(1deg); }
+          50% { transform: translateY(-5px) rotate(-1deg); }
+          75% { transform: translateY(-15px) rotate(0.5deg); }
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% { text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); }
+          50% { text-shadow: 0 0 40px rgba(0, 240, 255, 0.8), 0 0 60px rgba(176, 38, 255, 0.6); }
+        }
+
+        @keyframes letter-wave {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+
+        .kinetic-text {
+          animation: float-kinetic 8s ease-in-out infinite;
+        }
+
+        .glow-pulse {
+          animation: pulse-glow 3s ease-in-out infinite;
+        }
+
+        .letter-animate {
+          display: inline-block;
+          animation: letter-wave 2s ease-in-out infinite;
+        }
+
+        .letter-animate:nth-child(1) { animation-delay: 0s; }
+        .letter-animate:nth-child(2) { animation-delay: 0.1s; }
+        .letter-animate:nth-child(3) { animation-delay: 0.2s; }
+        .letter-animate:nth-child(4) { animation-delay: 0.3s; }
+        .letter-animate:nth-child(5) { animation-delay: 0.4s; }
+        .letter-animate:nth-child(6) { animation-delay: 0.5s; }
+        .letter-animate:nth-child(7) { animation-delay: 0.6s; }
+        .letter-animate:nth-child(8) { animation-delay: 0.7s; }
+        .letter-animate:nth-child(9) { animation-delay: 0.8s; }
+        .letter-animate:nth-child(10) { animation-delay: 0.9s; }
+
+        /* Cinematic Section Transitions */
+        [data-section-transition] {
+          opacity: 0;
+        }
+
+        [data-section-transition].section-visible.section-transition-morph {
+          animation: morphReveal 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        [data-section-transition].section-visible.section-transition-slide {
+          animation: slideReveal 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        [data-section-transition].section-visible.section-transition-diagonal {
+          animation: diagonalWipe 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+
+        @keyframes morphReveal {
+          0% {
+            clip-path: circle(0% at 50% 50%);
+            opacity: 0;
+          }
+          100% {
+            clip-path: circle(150% at 50% 50%);
+            opacity: 1;
+          }
+        }
+
+        @keyframes slideReveal {
+          0% {
+            clip-path: inset(0 100% 0 0);
+            opacity: 0;
+          }
+          100% {
+            clip-path: inset(0 0 0 0);
+            opacity: 1;
+          }
+        }
+
+        @keyframes diagonalWipe {
+          0% {
+            clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+            opacity: 0;
+          }
+          100% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            opacity: 1;
+          }
+        }
+
+        /* Illuminated text effect */
+        .text-illuminate {
+          position: relative;
+          background: linear-gradient(45deg, #00F0FF, #B026FF, #00F0FF);
+          background-size: 200% 200%;
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+          animation: illuminate 3s ease-in-out infinite;
+        }
+
+        @keyframes illuminate {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
       `}</style>
 
+      {/* Unified Navigation with all CTAs */}
+      <Navigation showStickyCTA={showStickyCTA} />
+
       {/* HERO SECTION */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 sm:pt-24">
         {/* Animated gradient background */}
         <div 
           className="absolute inset-0 opacity-40 transition-all duration-1000"
@@ -307,9 +386,9 @@ export default function Home() {
           }}
         />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-20 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-24 text-center">
           {/* Eyebrow */}
-          <div className="inline-block mb-6 sm:mb-8 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
+          <div className="inline-block mb-6 sm:mb-8">
             <div className="px-4 sm:px-6 py-1.5 sm:py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm">
               <span className="font-body text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] text-cyan-400 uppercase font-light">
                 Digital Dominance Starts Here
@@ -317,28 +396,32 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Main headline - ULTRA BOLD */}
+          {/* Main headline with Kinetic Typography */}
           <h1 className="font-display font-black text-[2.75rem] xs:text-[3.5rem] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl leading-[0.85] mb-6 sm:mb-8 px-2">
             <div className="overflow-visible">
-              <span className="block text-white opacity-0 animate-fadeInLeft" style={{ animationDelay: '0.4s' }}>PRIME</span>
+              <span className="block text-white kinetic-text">
+                {'PRIME'.split('').map((letter, i) => (
+                  <span key={i} className="letter-animate">{letter}</span>
+                ))}
+              </span>
             </div>
             <div className="relative overflow-visible">
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 opacity-0 animate-fadeInRight whitespace-nowrap" style={{ animationDelay: '0.6s' }}>
+              <span className="block text-illuminate whitespace-nowrap glow-pulse">
                 VISIBILITY
               </span>
               {/* Decorative line */}
-              <div className="absolute -bottom-2 sm:-bottom-4 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 opacity-0 animate-fadeInUp" style={{ animationDelay: '1s' }} />
+              <div className="absolute -bottom-2 sm:-bottom-4 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500" />
             </div>
           </h1>
 
           {/* Subheadline */}
-          <p className="font-body text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-400 mb-12 sm:mb-16 max-w-4xl mx-auto font-light leading-relaxed opacity-0 animate-fadeInUp px-4" style={{ animationDelay: '1.2s' }}>
+          <p className="font-body text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-400 mb-12 sm:mb-16 max-w-4xl mx-auto font-light leading-relaxed px-4">
             We don't just build websites. We architect digital experiences that turn invisible businesses into 
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 font-semibold"> local powerhouses</span>.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center opacity-0 animate-fadeInUp px-4" style={{ animationDelay: '1.4s' }}>
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4">
             <Link to="/book-call">
               <button className="group relative px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-base sm:text-lg rounded-none overflow-hidden hover-lift w-full sm:w-auto">
                 <span className="relative z-10 flex items-center justify-center gap-3">
@@ -356,7 +439,7 @@ export default function Home() {
           </div>
 
           {/* Floating stats */}
-          <div className="mt-16 sm:mt-24 grid grid-cols-3 gap-4 sm:gap-8 lg:gap-12 max-w-3xl mx-auto opacity-0 animate-fadeInUp px-4" style={{ animationDelay: '1.6s' }}>
+          <div className="mt-16 sm:mt-20 grid grid-cols-3 gap-4 sm:gap-8 lg:gap-12 max-w-3xl mx-auto px-4">
             {[
               { value: '350%', label: 'Avg Growth' },
               { value: '24/7', label: 'Support' },
@@ -372,80 +455,26 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 sm:bottom-12 left-1/2 transform -translate-x-1/2 opacity-0 animate-fadeInUp hidden sm:flex" style={{ animationDelay: '1.8s' }}>
-          <div className="flex flex-col items-center gap-2">
-            <span className="font-body text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
-            <div className="w-[2px] h-12 bg-gradient-to-b from-cyan-500 to-transparent" />
+          {/* Scroll indicator - FIXED POSITION BELOW STATS */}
+          <div className="mt-20 sm:mt-28 hidden sm:flex justify-center">
+            <div className="flex flex-col items-center gap-2">
+              <span className="font-body text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
+              <div className="w-[2px] h-12 bg-gradient-to-b from-cyan-500 to-transparent" />
+            </div>
           </div>
-        </div>
-
-        {/* Floating Phone CTA - Top Right */}
-        <motion.a
-          href="tel:2145060806"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 2 }}
-          className="hidden lg:flex fixed top-24 right-6 xl:right-12 z-40 items-center gap-3 px-6 py-3 bg-black/40 backdrop-blur-md border border-cyan-500/30 rounded-full hover:border-cyan-400 hover:bg-cyan-500/10 transition-all duration-300 group"
-        >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-            <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-body text-xs text-gray-400 uppercase tracking-wider">Call Now</span>
-            <span className="font-display text-lg font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">
-              (214) 506-0806
-            </span>
-          </div>
-        </motion.a>
-
-        {/* Floating Audit CTA - Top Left */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 2.2 }}
-          className="hidden lg:block fixed top-24 left-6 xl:left-12 z-40"
-        >
-          <Link to="/book-call">
-            <button className="group flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-violet-600/80 to-blue-600/80 backdrop-blur-md rounded-full hover:from-violet-500 hover:to-blue-500 transition-all duration-300 shadow-[0_4px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_30px_rgba(139,92,246,0.5)] hover:scale-105">
-              <Sparkles className="w-5 h-5 text-white group-hover:rotate-180 transition-transform duration-500" />
-              <span className="font-body font-semibold text-white text-sm">Free Audit Call</span>
-              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
-            </button>
-          </Link>
-        </motion.div>
-
-        {/* Mobile Quick Actions - Fixed at bottom of screen on mobile only */}
-        <div className="lg:hidden fixed bottom-4 left-4 right-4 z-40 flex gap-3 opacity-0 animate-fadeInUp" style={{ animationDelay: '2s' }}>
-          <a
-            href="tel:2145060806"
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full shadow-lg active:scale-95 transition-transform"
-          >
-            <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-            <span className="font-body font-bold text-black text-sm">Call</span>
-          </a>
-          <Link to="/book-call" className="flex-1">
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full shadow-lg active:scale-95 transition-transform">
-              <Sparkles className="w-5 h-5 text-white" />
-              <span className="font-body font-bold text-white text-sm">Free Audit</span>
-            </button>
-          </Link>
         </div>
       </section>
 
-      {/* TABLET 3D SHOWCASE - Between hero and problems */}
-      <TabletShowcase 
-        screenImagePath="./models/images/screen-modern.png"
-      />
+      {/* CINEMATIC TRANSITION - MORPHING REVEAL */}
+      <div data-section-transition className="section-transition-morph">
+        <TabletShowcase 
+          screenImagePath="/models/images/screen-modern.png"
+        />
+      </div>
 
-      {/* PROBLEMS SECTION - BRUTALIST CARDS */}
-      <section className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950">
+      {/* PROBLEMS SECTION - DIAGONAL WIPE TRANSITION */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-diagonal">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12 sm:mb-16 lg:mb-20">
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 sm:mb-6">
@@ -477,15 +506,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SERVICES SECTION - BENTO GRID */}
-      <section className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6">
+      {/* SERVICES SECTION - SLIDE REVEAL TRANSITION WITH ILLUMINATED TEXT */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 section-transition-slide">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8">
-              <span className="text-white">Your Digital</span>
+              <span className="text-white">Our Arsenal of</span>
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
-                Arsenal
+              <span className="text-illuminate glow-pulse">
+                Digital Dominance
               </span>
             </h2>
             <p className="font-body text-base sm:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto px-4">
@@ -522,15 +551,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS - STAGGERED LAYOUT */}
-      <section className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950">
+      {/* TESTIMONIALS - MORPH REVEAL TRANSITION WITH REALISTIC REVIEWS */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-morph">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12 sm:mb-16 lg:mb-20">
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black">
               <span className="text-white">Real Results.</span>
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
-                Real Businesses.
+                Real Money.
               </span>
             </h2>
           </div>
@@ -540,7 +569,6 @@ export default function Home() {
               <div
                 key={index}
                 className="group hover-lift"
-                style={{ marginTop: index % 2 === 0 ? '0' : '0' }}
               >
                 <div className="relative bg-zinc-900 p-6 sm:p-8 lg:p-10 border-l-4 border-cyan-500 group-hover:border-violet-500 transition-all duration-300">
                   <div className="flex gap-1 mb-4 sm:mb-6">
@@ -548,12 +576,17 @@ export default function Home() {
                       <span key={i} className="text-cyan-400 text-xl sm:text-2xl">★</span>
                     ))}
                   </div>
-                  <p className="font-body text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8 leading-relaxed italic">
+                  <p className="font-body text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8 leading-relaxed">
                     "{testimonial.text}"
                   </p>
-                  <div>
-                    <p className="font-display font-bold text-white text-base sm:text-lg">{testimonial.author}</p>
-                    <p className="font-body text-gray-500 text-sm sm:text-base">{testimonial.business}</p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-display font-bold text-white text-base sm:text-lg">{testimonial.author}</p>
+                      <p className="font-body text-gray-500 text-sm sm:text-base">{testimonial.business}</p>
+                    </div>
+                    <div className="px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-violet-500/20 border border-cyan-500/30 rounded">
+                      <p className="font-display text-cyan-400 font-bold text-sm whitespace-nowrap">{testimonial.result}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -562,8 +595,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PROCESS - DIAGONAL TIMELINE */}
-      <section className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 overflow-hidden">
+      {/* PROCESS - DIAGONAL WIPE TRANSITION */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 overflow-hidden section-transition-diagonal">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8">
@@ -602,8 +635,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* INDUSTRIES - GRID */}
-      <section className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950">
+      {/* INDUSTRIES - SLIDE REVEAL TRANSITION */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-slide">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 sm:mb-12">
             <span className="text-white">Built For</span>
@@ -626,8 +659,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FINAL CTA */}
-      <section className="relative py-20 sm:py-32 lg:py-40 px-4 sm:px-6 overflow-hidden">
+      {/* FINAL CTA - MORPH REVEAL TRANSITION */}
+      <section data-section-transition className="relative py-20 sm:py-32 lg:py-40 px-4 sm:px-6 overflow-hidden section-transition-morph">
         {/* Animated background */}
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-blue-500/20 to-violet-500/20" />
         <div className="absolute inset-0 opacity-30">
@@ -648,7 +681,7 @@ export default function Home() {
           <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-black mb-6 sm:mb-8 leading-none">
             <span className="text-white">READY TO</span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
+            <span className="text-illuminate glow-pulse">
               DOMINATE?
             </span>
           </h2>
@@ -679,29 +712,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* STICKY CTA - Appears after hero (Desktop only) */}
-      <div
-        className={`hidden lg:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ${
-          showStickyCTA ? 'animate-slideUp' : 'pointer-events-none opacity-0'
-        }`}
-      >
-        <Link to="/book-call">
-          <button className="group relative px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white font-body font-bold text-base sm:text-lg rounded-full overflow-hidden shadow-[0_10px_40px_rgba(0,240,255,0.3)] hover:shadow-[0_15px_60px_rgba(0,240,255,0.5)] transition-all duration-300 hover:scale-105">
-            {/* Animated gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
-            {/* Glowing border effect */}
-            <div className="absolute -inset-[2px] bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 rounded-full opacity-0 group-hover:opacity-100 blur-md transition-all duration-300 -z-10" />
-            
-            <span className="relative z-10 flex items-center gap-3 whitespace-nowrap">
-              <Sparkles className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-              Book a Free Audit Call
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </button>
-        </Link>
-      </div>
 
       {/* FOOTER - MINIMAL */}
       <footer className="bg-black border-t border-white/10 py-12 sm:py-16 px-4 sm:px-6">

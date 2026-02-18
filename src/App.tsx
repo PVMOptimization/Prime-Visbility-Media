@@ -6,8 +6,6 @@ import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import TieredGrowth from "./TieredGrowth";
 
-// If using React Router:
-<Route path="/pricing" element={<TieredGrowth />} />
 
 function App() {
   return (
@@ -18,6 +16,7 @@ function App() {
         <Route path="/book-call" element={<BookCall />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/pricing" element={<TieredGrowth />} />
       </Routes>
     </Router>
   );

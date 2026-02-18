@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 const tiers = [
   {
     label: "Tier 1",
@@ -8,7 +6,6 @@ const tiers = [
     sub: "One-Time",
     color: "#c97d2e",
     bg: "linear-gradient(145deg, #0d1a2a, #0a1520)",
-    border: "linear-gradient(135deg, #c97d2e, #7a4d1a)",
     features: [
       "Google Business profile optimization",
       "Map pack authority (Top 5)",
@@ -25,7 +22,6 @@ const tiers = [
     sub: "One-time + $599/month",
     color: "#2ea8c9",
     bg: "linear-gradient(145deg, #0d1f2e, #091828)",
-    border: "linear-gradient(135deg, #2ea8c9, #1a6a7a)",
     features: [
       "Google Business profile optimization",
       "Map pack authority (Top 3)",
@@ -45,7 +41,6 @@ const tiers = [
     sub: "Installation + $1,000/month",
     color: "#a87fff",
     bg: "linear-gradient(145deg, #0d1a30, #070f24)",
-    border: "linear-gradient(135deg, #8250ff, #4a1fa8, #00d4ff)",
     badge: "★ Done For You",
     features: [
       "Full automation eco system",
@@ -54,7 +49,8 @@ const tiers = [
       "24/7 Lead follow up",
       "24/7 Quoting system",
       "24/7 FAQ's bot",
-      "Google + Meta ads infrastructure",
+      "Google + Meta Ads (optional)",
+      "Ad spend billed separately",
       "Ongoing optimization & monitoring",
     ],
     purpose: "Done-For-You Growth Infrastructure",
@@ -80,7 +76,9 @@ export default function TieredGrowth() {
           color: "#fff",
           letterSpacing: 2,
           textTransform: "uppercase",
-        }}>Tiered Growth Systems</h1>
+        }}>
+          Tiered Growth Systems
+        </h1>
         <p style={{ marginTop: 12, color: "#6b8aaa", fontSize: 15, letterSpacing: 1 }}>
           Your complete path to scalable growth and automation
         </p>
@@ -110,7 +108,9 @@ export default function TieredGrowth() {
                 color: "#fff", fontSize: 9, fontWeight: 700,
                 letterSpacing: 1, padding: "4px 8px", borderRadius: 4,
                 fontFamily: "'Orbitron', monospace",
-              }}>{tier.badge}</div>
+              }}>
+                {tier.badge}
+              </div>
             )}
 
             <div style={{
@@ -120,12 +120,16 @@ export default function TieredGrowth() {
               background: `${tier.color}22`, color: tier.color,
               border: `1px solid ${tier.color}44`, width: "fit-content",
               fontFamily: "'Orbitron', monospace",
-            }}>{tier.label}</div>
+            }}>
+              {tier.label}
+            </div>
 
             <div style={{
               fontFamily: "'Orbitron', monospace", fontSize: 18,
               fontWeight: 900, color: tier.color, marginBottom: 4,
-            }}>{tier.name}</div>
+            }}>
+              {tier.name}
+            </div>
 
             <div style={{ fontSize: 24, fontWeight: 700, color: tier.color, marginBottom: 20 }}>
               {tier.price}
@@ -136,7 +140,7 @@ export default function TieredGrowth() {
 
             <hr style={{ border: "none", height: 1, background: `${tier.color}33`, marginBottom: 18 }} />
 
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10, marginBottom: 24, flexGrow: 1 }}>
+            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 10, marginBottom: 24, flexGrow: 1, padding: 0 }}>
               {tier.features.map((f) => (
                 <li key={f} style={{ display: "flex", gap: 10, fontSize: 14, fontWeight: 500, color: "#8aa8c8", alignItems: "flex-start" }}>
                   <span style={{
@@ -154,7 +158,7 @@ export default function TieredGrowth() {
               {tier.purpose}
             </div>
 
-            
+            <a
               href={tier.stripeLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -167,13 +171,17 @@ export default function TieredGrowth() {
                 color: tier.color, border: `1px solid ${tier.color}66`,
                 cursor: "pointer", transition: "all 0.2s",
               }}
-              onMouseEnter={e => e.target.style.background = `${tier.color}44`}
-              onMouseLeave={e => e.target.style.background = `linear-gradient(135deg, ${tier.color}33, ${tier.color}11)`}
+              onMouseEnter={(e) => (e.currentTarget.style.background = `${tier.color}44`)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = `linear-gradient(135deg, ${tier.color}33, ${tier.color}11)`)}
             >
               Get Started →
             </a>
           </div>
         ))}
+      </div>
+
+      <div style={{ textAlign: "center", marginTop: 36, fontSize: 13, color: "#3a5570", letterSpacing: 1, fontWeight: 600 }}>
+        Ad spend billed separately on Tier 3 · All tiers include onboarding support
       </div>
     </div>
   );

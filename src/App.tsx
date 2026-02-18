@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import BookCall from './pages/BookCall';
 import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
-import TieredGrowth from "./TieredGrowth";
+import TieredGrowth from "./pages/TieredGrowth";
 
 
 function App() {

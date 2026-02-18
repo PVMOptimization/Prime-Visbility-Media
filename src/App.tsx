@@ -4,6 +4,10 @@ import Home from './pages/Home';
 import BookCall from './pages/BookCall';
 import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
+import TieredGrowth from "./TieredGrowth";
+
+// If using React Router:
+<Route path="/pricing" element={<TieredGrowth />} />
 
 function App() {
   return (

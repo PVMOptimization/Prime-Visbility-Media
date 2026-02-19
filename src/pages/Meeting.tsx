@@ -285,7 +285,7 @@ export default function Meeting() {
               <span className="font-body text-[10px] text-gray-500 tracking-widest uppercase">2 min overview</span>
             </div>
             <div className="video-frame w-full aspect-video bg-zinc-950 relative group cursor-pointer">
-              <video className="w-full h-full object-cover" controls preload="none" poster="">
+              <video controls preload="none" poster="/images/hero-video-thumb.jpg">
                 <source src="/videos/hero-overview.mp4" type="video/mp4" />
               </video>
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:opacity-0 transition-opacity">

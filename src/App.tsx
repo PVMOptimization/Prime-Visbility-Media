@@ -5,6 +5,7 @@ import BookCall from './pages/BookCall';
 import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import TieredGrowth from "./pages/TieredGrowth";
+import Meeting from "./pages/Meeting";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/pricing" element={<TieredGrowth />} />
+        <Route path="/meeting" element={<Meeting />} />
       </Routes>
     </Router>
   );

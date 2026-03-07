@@ -12,7 +12,7 @@ const cues = [
   { t: 14.8, slide: "step2"  },
   { t: 21.0, slide: "step3"  },
   { t: 27.7, slide: "step4"  },
-  { t: 33.6, slide: "step5"  },
+  { t: 34.6, slide: "step5"  },
   { t: 36.7, slide: "step6"  },
   { t: 40.6, slide: "step7"  },
   { t: 42.1, slide: "result1"},

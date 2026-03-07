@@ -6,6 +6,7 @@ import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import TieredGrowth from "./pages/TieredGrowth";
 import Meeting from "./pages/Meeting";
+import VSL from "./pages/VSL";
 
 
 function App() {

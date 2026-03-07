@@ -155,7 +155,7 @@ function SlideContent({ id, visible }) {
     final: (
       <div className="slide-text">
         <div className="brand-name">PRIME VISIBILITY MEDIA</div>
-        <div className="cta-phone">(214) 506-0806</div>
+        <div className="cta-phone">(469) 286-2839</div>
         <div className="cta-url">primevisibilitymedia.com</div>
         <div className="cta-audit">Book Your Free Audit Today</div>
       </div>

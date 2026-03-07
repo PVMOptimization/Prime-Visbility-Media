@@ -15,7 +15,7 @@ const cues = [
   { t: 36.6, slide: "step5"  },
   { t: 42.5, slide: "step6"  },
   { t: 44.0, slide: "step7"  },
-  { t: 45.5, slide: "result1"},
+  { t: 45.0, slide: "result1"},
   { t: 49.2, slide: "result2"},
   { t: 47.5, slide: "result3"},
   { t: 50.1, slide: "objection"},

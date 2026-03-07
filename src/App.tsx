@@ -1,18 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navigation from './components/Navigation';
-import Home from './pages/Home';
-import BookCall from './pages/BookCall';
-import Portfolio from './pages/Portfolio';
-import Contact from './pages/Contact';
-import TieredGrowth from "./pages/TieredGrowth";
-import Meeting from "./pages/Meeting";
-import VSL from "./pages/VSL";
+function AppContent() {
+  const location = useLocation();
+  const hideNav = location.pathname === '/vsl';
 
-
-function App() {
   return (
-    <Router>
-      <Navigation />
+    <>
+      {!hideNav && <Navigation />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/book-call" element={<BookCall />} />
@@ -22,6 +14,14 @@ function App() {
         <Route path="/meeting" element={<Meeting />} />
         <Route path="/vsl" element={<VSL />} />
       </Routes>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

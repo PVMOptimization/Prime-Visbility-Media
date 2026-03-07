@@ -1,6 +1,16 @@
-function AppContent() {
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Navigation from './components/Navigation';
+import Home from './pages/Home';
+import BookCall from './pages/BookCall';
+import Portfolio from './pages/Portfolio';
+import Contact from './pages/Contact';
+import TieredGrowth from "./pages/TieredGrowth";
+import Meeting from "./pages/Meeting";
+import VSL from "./pages/VSL";
+
+function AppContent(): JSX.Element {
   const location = useLocation();
-  const hideNav = location.pathname === '/vsl';
+  const hideNav: boolean = location.pathname === '/vsl';
 
   return (
     <>
@@ -18,7 +28,7 @@ function AppContent() {
   );
 }
 
-function App() {
+function App(): JSX.Element {
   return (
     <Router>
       <AppContent />

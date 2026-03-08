@@ -18,7 +18,7 @@ export default function Portfolio() {
       icon: TrendingUp,
       img: dashboardImg,
       description:
-        'Real GoHighLevel dashboard showing a service business scale from $4,539 to $24,171 in conversions and 4 opportunities to 50 appointments.'
+        'Client dashboard showing a service business scale from $4,539 to $24,171 in conversions and 4 opportunities to 50 appointments.'
     },
     {
       label: 'Google Reviews Strategy',

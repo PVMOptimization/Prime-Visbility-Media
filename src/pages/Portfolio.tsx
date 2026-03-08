@@ -72,7 +72,7 @@ export default function Portfolio() {
               </span>
             </h1>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              These aren't mock-ups. These are actual dashboards and results from businesses we've helped scale in DFW.
+              These are the great results from businesses we've helped scale in DFW.
             </p>
           </div>
 

@@ -202,17 +202,18 @@ const tiers = [
   },
   {
     label: "4Nexus™",
-    name: "Revenue Automation System",
-    price: "$4,499",
+    name: "Full Domination Ecosystem",
+    price: "$6,499",
     sub: "Infrastructure Build + $1,000/month growth management",
     color: "#a87fff",
     bg: "",
-    badge: "★ Built for Businesses Ready to Scale",
+    badge: "★ For Businesses Ready to Scale",
     features: [
       "Complete Lead Capture & Revenue Automation Ecosystem",
       "Fully Optimized Google Presence + Review Automation Engine",
       "Conversion-Driven 24/7 AI Talking Website + Smart FAQ Bot",
       "Automated Appointment Setting + Lead Nurture + Instant Follow-Up",
+      "Automated Invoice Collection System",
       "Integrated Quoting & Job Pipeline System",
       "Google & Meta Paid Traffic Infrastructure (optional)",
       "Ongoing Optimization, Monitoring & Performance Scaling"

@@ -219,7 +219,7 @@ const tiers = [
       "Ongoing Optimization, Monitoring & Performance Scaling"
     ],
     purpose: "Turn your website & Google presence into a 24/7 revenue-producing asset",
-    stripeLink: "https://buy.stripe.com/3cI5kD8E9f4244obSU4ko0a",
+    stripeLink: "https://buy.stripe.com/3cI4gzaMhaNMfN6aOQ4ko0d",
     premium: true,
   },
 ];

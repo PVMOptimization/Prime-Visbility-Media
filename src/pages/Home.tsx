@@ -545,7 +545,7 @@ export default function Home() {
                 <p className="font-display text-2xl sm:text-3xl font-bold text-white mb-2">Starts at <span className="text-cyan-400">$997</span> one-time.</p>
                 <p className="font-body text-gray-400 text-base">One missed job covers the cost. Most clients see ROI in the first week.</p>
               </div>
-              <Link to="/book-call" className="flex-shrink-0">
+              <Link to="/pricing" className="flex-shrink-0">
                 <button className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-lg rounded-none hover-lift">
                   See Pricing & Tiers
                   <ArrowRight className="inline ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />

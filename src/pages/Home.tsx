@@ -9,7 +9,13 @@ import {
   Shield,
   ArrowRight,
   Zap,
-  Sparkles
+  Sparkles,
+  Star,
+  Users,
+  Bot,
+  BarChart3,
+  MessageSquare,
+  Repeat2
 } from 'lucide-react';
 import TabletShowcase from './TabletShowcase';
 import Navigation from '../components/Navigation';
@@ -17,10 +23,10 @@ import Navigation from '../components/Navigation';
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showStickyCTA, setShowStickyCTA] = useState(false);
-  const heroRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef(null);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100
@@ -37,12 +43,10 @@ export default function Home() {
         setShowStickyCTA(heroBottom < 0);
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Intersection Observer for section transitions
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -54,49 +58,77 @@ export default function Home() {
       },
       { threshold: 0.1 }
     );
-
     const sections = document.querySelectorAll('[data-section-transition]');
     sections.forEach((section) => observer.observe(section));
-
     return () => observer.disconnect();
   }, []);
 
   const problems = [
     {
       icon: Search,
-      title: 'Invisible Online',
-      description: "Customers Google you and find nothing—or worse, an outdated site that screams 'unprofessional.'"
+      title: 'Your Competitors Are Stealing Your Calls',
+      description: "Right now, someone in your city is searching for exactly what you offer. They're calling your competitor — not you. Not because they're better. Because they show up and you don't.",
+      stat: '97%',
+      statLabel: 'of clicks go to top 3 results'
+    },
+    {
+      icon: Repeat2,
+      title: 'You\'re One Referral Away From a Slow Month',
+      description: "Word of mouth is unpredictable. When referrals dry up, so does your pipeline. A business that only grows by referral is a business one bad month away from panic.",
+      stat: '$0',
+      statLabel: 'cost per organic Google lead'
     },
     {
       icon: PhoneOff,
-      title: 'No Trust = No Calls',
-      description: "Without a credible online presence, potential customers choose your competitors who look more legitimate."
-    },
-    {
-      icon: TrendingDown,
-      title: 'Wasted Marketing Budget',
-      description: "Every dollar spent on ads or referrals is wasted if your online presence doesn't convert visitors into customers."
+      title: 'Leads Are Calling — Nobody\'s Following Up',
+      description: "Studies show 78% of customers go with the first business that responds. If you're not following up within 5 minutes automatically, you're handing jobs to whoever is.",
+      stat: '78%',
+      statLabel: 'of jobs go to the first responder'
     }
   ];
 
   const services = [
     {
-      icon: Monitor,
-      title: 'Premium Websites',
-      description: 'Custom-coded, mobile-responsive websites built to convert visitors into paying customers. No templates. Pure conversion',
-      gradient: 'from-cyan-500 to-blue-500'
-    },
-    {
       icon: MapPin,
-      title: 'Google Business Optimization',
-      description: 'Optimized Google Business Profiles that dominate local search and drive 3x more calls and directions.',
-      gradient: 'from-violet-500 to-purple-500'
+      title: 'Google Maps Domination',
+      description: 'We put you in the top 3 on Google Maps for every high-intent search in your area. Reviews, ranking signals, proximity strategy — fully handled.',
+      gradient: 'from-cyan-500 to-blue-500',
+      tag: 'Most Popular'
     },
     {
-      icon: Shield,
-      title: 'Done-For-You Management',
-      description: 'Full hosting, maintenance, and updates so you never think about your website again. We handle everything.',
-      gradient: 'from-blue-500 to-cyan-500'
+      icon: Bot,
+      title: 'AI Lead Capture & Follow-Up',
+      description: '24/7 AI that responds to every lead instantly, books appointments automatically, and follows up until they convert. Never lose a job to slow response again.',
+      gradient: 'from-violet-500 to-purple-500',
+      tag: 'Highest ROI'
+    },
+    {
+      icon: Monitor,
+      title: 'Conversion-Focused Websites',
+      description: 'Custom-built, mobile-first websites engineered to turn visitors into booked jobs. Not pretty brochures — actual revenue machines.',
+      gradient: 'from-blue-500 to-cyan-500',
+      tag: null
+    },
+    {
+      icon: Star,
+      title: 'Review & Reputation Flywheel',
+      description: 'Automated review generation that keeps fresh 5-star reviews flowing weekly. Google rewards recency — we keep your listing looking alive and dominant.',
+      gradient: 'from-amber-500 to-orange-500',
+      tag: null
+    },
+    {
+      icon: BarChart3,
+      title: 'Local SEO & Content Authority',
+      description: 'Service area pages, schema markup, Google Posts, Q&A population — every signal Google uses to rank you, fully optimized and maintained monthly.',
+      gradient: 'from-emerald-500 to-teal-500',
+      tag: null
+    },
+    {
+      icon: MessageSquare,
+      title: 'Done-For-You Growth Management',
+      description: 'Full pipeline management. Lead tracking, quote follow-up, invoice automation, and monthly reporting. You run the jobs — we run the growth engine.',
+      gradient: 'from-rose-500 to-pink-500',
+      tag: 'Full Domination'
     }
   ];
 
@@ -140,15 +172,23 @@ export default function Home() {
   ];
 
   const steps = [
-    { number: "01", title: "Free Demo", description: "We build a free demo site with your business info. No cost, no commitment." },
-    { number: "02", title: "You Review", description: "Check it out on your phone. If you love it, we move forward. If not, no hard feelings." },
-    { number: "03", title: "We Launch", description: "We finalize, launch, and optimize. You start getting more calls within days." },
-    { number: "04", title: "We Maintain", description: "Ongoing hosting, updates, and support. You run your business. We handle the tech." }
+    { number: "01", title: "Free Audit", description: "We pull your Google listing, check your rankings, and show you exactly what's costing you jobs right now. No fluff. Real numbers." },
+    { number: "02", title: "You See The Gap", description: "We show you how many calls your competitors are getting that should be yours. Most business owners are shocked at what they've been leaving on the table." },
+    { number: "03", title: "We Build The System", description: "Maps ranking, website, AI follow-up, review automation — everything goes live. You start getting calls within days, not months." },
+    { number: "04", title: "We Scale It", description: "Monthly optimization, reporting, and growth management. Your pipeline grows every month while you focus on doing the work." }
   ];
 
   const industries = [
-    'Roofing Contractors', 'HVAC Companies', 'Plumbers', 'Electricians',
-    'Landscapers', 'Salons & Med Spas', 'Real Estate Agents', 'And more...'
+    'Plumbers', 'Roofers', 'HVAC Companies', 'Electricians',
+    'Mold Remediation', 'Water Damage Restoration', 'General Contractors', 'Landscapers',
+    'Salons & Med Spas', 'Auto Detailers', 'Pressure Washing', 'And more...'
+  ];
+
+  // Ticker items for the scrolling bar
+  const tickerItems = [
+    '🔥 $23K closed in one month', '⚡ 15x more inbound calls', '📍 Top 3 Google Maps ranking', 
+    '🤖 24/7 AI follow-up', '⭐ Automated 5-star reviews', '📈 40% revenue increase',
+    '🔥 6 weeks booked out', '⚡ First lead within 48hrs'
   ];
 
   return (
@@ -172,109 +212,56 @@ export default function Home() {
           90% { transform: translate(-10%, 10%); }
         }
         
-        .grain {
-          animation: grain 8s steps(10) infinite;
-        }
+        .grain { animation: grain 8s steps(10) infinite; }
 
         .hover-lift {
           transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        
-        .hover-lift:hover {
-          transform: translateY(-8px);
-        }
+        .hover-lift:hover { transform: translateY(-8px); }
 
         @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
         @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
+          from { opacity: 0; transform: translateX(-50px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes fadeInRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
+          from { opacity: 0; transform: translateX(50px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
+          from { opacity: 0; transform: scale(0.8); }
+          to { opacity: 1; transform: scale(1); }
         }
 
-        .animate-fadeInUp {
-          animation: fadeInUp 0.8s ease-out forwards;
-        }
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-fadeInLeft { animation: fadeInLeft 0.8s ease-out forwards; }
+        .animate-fadeInRight { animation: fadeInRight 0.8s ease-out forwards; }
+        .animate-scaleIn { animation: scaleIn 0.6s ease-out forwards; }
 
-        .animate-fadeInLeft {
-          animation: fadeInLeft 0.8s ease-out forwards;
-        }
-
-        .animate-fadeInRight {
-          animation: fadeInRight 0.8s ease-out forwards;
-        }
-
-        .animate-scaleIn {
-          animation: scaleIn 0.6s ease-out forwards;
-        }
-
-        /* Kinetic Typography */
         @keyframes float-kinetic {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           25% { transform: translateY(-10px) rotate(1deg); }
           50% { transform: translateY(-5px) rotate(-1deg); }
           75% { transform: translateY(-15px) rotate(0.5deg); }
         }
-
         @keyframes pulse-glow {
           0%, 100% { text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); }
           50% { text-shadow: 0 0 40px rgba(0, 240, 255, 0.8), 0 0 60px rgba(176, 38, 255, 0.6); }
         }
-
         @keyframes letter-wave {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-10px); }
         }
 
-        .kinetic-text {
-          animation: float-kinetic 8s ease-in-out infinite;
-        }
-
-        .glow-pulse {
-          animation: pulse-glow 3s ease-in-out infinite;
-        }
-
+        .kinetic-text { animation: float-kinetic 8s ease-in-out infinite; }
+        .glow-pulse { animation: pulse-glow 3s ease-in-out infinite; }
         .letter-animate {
           display: inline-block;
           animation: letter-wave 2s ease-in-out infinite;
         }
-
         .letter-animate:nth-child(1) { animation-delay: 0s; }
         .letter-animate:nth-child(2) { animation-delay: 0.1s; }
         .letter-animate:nth-child(3) { animation-delay: 0.2s; }
@@ -286,57 +273,30 @@ export default function Home() {
         .letter-animate:nth-child(9) { animation-delay: 0.8s; }
         .letter-animate:nth-child(10) { animation-delay: 0.9s; }
 
-        /* Cinematic Section Transitions */
-        [data-section-transition] {
-          opacity: 0;
-        }
-
+        [data-section-transition] { opacity: 0; }
         [data-section-transition].section-visible.section-transition-morph {
           animation: morphReveal 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
         }
-
         [data-section-transition].section-visible.section-transition-slide {
           animation: slideReveal 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
         }
-
         [data-section-transition].section-visible.section-transition-diagonal {
           animation: diagonalWipe 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
         }
 
         @keyframes morphReveal {
-          0% {
-            clip-path: circle(0% at 50% 50%);
-            opacity: 0;
-          }
-          100% {
-            clip-path: circle(150% at 50% 50%);
-            opacity: 1;
-          }
+          0% { clip-path: circle(0% at 50% 50%); opacity: 0; }
+          100% { clip-path: circle(150% at 50% 50%); opacity: 1; }
         }
-
         @keyframes slideReveal {
-          0% {
-            clip-path: inset(0 100% 0 0);
-            opacity: 0;
-          }
-          100% {
-            clip-path: inset(0 0 0 0);
-            opacity: 1;
-          }
+          0% { clip-path: inset(0 100% 0 0); opacity: 0; }
+          100% { clip-path: inset(0 0 0 0); opacity: 1; }
         }
-
         @keyframes diagonalWipe {
-          0% {
-            clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-            opacity: 0;
-          }
-          100% {
-            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-            opacity: 1;
-          }
+          0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); opacity: 0; }
+          100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; }
         }
 
-        /* Illuminated text effect */
         .text-illuminate {
           position: relative;
           background: linear-gradient(45deg, #00F0FF, #B026FF, #00F0FF);
@@ -346,19 +306,46 @@ export default function Home() {
           -webkit-text-fill-color: transparent;
           animation: illuminate 3s ease-in-out infinite;
         }
-
         @keyframes illuminate {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
         }
+
+        /* Ticker tape */
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .ticker-track { animation: ticker 20s linear infinite; }
+        .ticker-track:hover { animation-play-state: paused; }
+
+        /* Service card tag pulse */
+        @keyframes tagPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); }
+          50% { box-shadow: 0 0 0 6px rgba(0, 240, 255, 0); }
+        }
+        .tag-pulse { animation: tagPulse 2s ease-in-out infinite; }
+
+        /* Stat counter glow */
+        .stat-glow {
+          text-shadow: 0 0 30px rgba(0, 240, 255, 0.6);
+        }
+
+        /* Problem card number */
+        .problem-stat {
+          font-family: 'Syne', sans-serif;
+          font-weight: 800;
+          background: linear-gradient(135deg, #00F0FF, #B026FF);
+          -webkit-background-clip: text;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
       `}</style>
 
-      {/* Unified Navigation with all CTAs */}
       <Navigation showStickyCTA={showStickyCTA} />
 
-      {/* HERO SECTION */}
+      {/* HERO SECTION — unchanged */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 sm:pt-24">
-        {/* Animated gradient background */}
         <div 
           className="absolute inset-0 opacity-40 transition-all duration-1000"
           style={{
@@ -366,28 +353,21 @@ export default function Home() {
                          radial-gradient(circle at ${100-mousePosition.x}% ${100-mousePosition.y}%, rgba(176,38,255,0.15) 0%, transparent 50%)`
           }}
         />
-        
-        {/* Grain texture */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-          <div 
-            className="grain w-[200%] h-[200%]"
+          <div className="grain w-[200%] h-[200%]"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`
             }}
           />
         </div>
-
-        {/* Grid overlay */}
-        <div className="absolute inset-0 opacity-[0.02]" 
+        <div className="absolute inset-0 opacity-[0.02]"
           style={{
             backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
             backgroundSize: '100px 100px'
           }}
         />
-
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-24 text-center">
-          {/* Eyebrow */}
           <div className="inline-block mb-6 sm:mb-8">
             <div className="px-4 sm:px-6 py-1.5 sm:py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm">
               <span className="font-body text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] text-cyan-400 uppercase font-light">
@@ -395,8 +375,6 @@ export default function Home() {
               </span>
             </div>
           </div>
-
-          {/* Main headline with Kinetic Typography */}
           <h1 className="font-display font-black text-[2.75rem] xs:text-[3.5rem] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl leading-[0.85] mb-6 sm:mb-8 px-2">
             <div className="overflow-visible">
               <span className="block text-white kinetic-text">
@@ -406,26 +384,19 @@ export default function Home() {
               </span>
             </div>
             <div className="relative overflow-visible">
-              <span className="block text-illuminate whitespace-nowrap glow-pulse">
-                VISIBILITY
-              </span>
-              {/* Decorative line */}
+              <span className="block text-illuminate whitespace-nowrap glow-pulse">VISIBILITY</span>
               <div className="absolute -bottom-2 sm:-bottom-4 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500" />
             </div>
           </h1>
-
-          {/* Subheadline */}
           <p className="font-body text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-400 mb-12 sm:mb-16 max-w-4xl mx-auto font-light leading-relaxed px-4">
-            We don't just build websites. We architect digital experiences that turn invisible businesses into 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 font-semibold"> local powerhouses</span>.
+            We don't just build websites. We build the complete system that gets your phone ringing — 
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 font-semibold"> maps, leads, follow-up, reviews. All of it.</span>
           </p>
-
-          {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4">
             <Link to="/book-call">
               <button className="group relative px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-base sm:text-lg rounded-none overflow-hidden hover-lift w-full sm:w-auto">
                 <span className="relative z-10 flex items-center justify-center gap-3">
-                  Book Strategy Call
+                  Get My Free Audit
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -437,16 +408,14 @@ export default function Home() {
               </button>
             </Link>
           </div>
-
-          {/* Floating stats */}
           <div className="mt-16 sm:mt-20 grid grid-cols-3 gap-4 sm:gap-8 lg:gap-12 max-w-3xl mx-auto px-4">
             {[
-              { value: '350%', label: 'Avg Growth' },
-              { value: '24/7', label: 'Support' },
-              { value: '2.4M', label: 'Total Reach' }
+              { value: '350%', label: 'Avg Pipeline Growth' },
+              { value: '48hr', label: 'First Lead Guarantee' },
+              { value: '2.4M', label: 'Total Reach Generated' }
             ].map((stat, i) => (
               <div key={i} className="text-center">
-                <div className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-violet-400 mb-1 sm:mb-2">
+                <div className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-violet-400 mb-1 sm:mb-2 stat-glow">
                   {stat.value}
                 </div>
                 <div className="font-body text-[0.65rem] sm:text-xs lg:text-sm text-gray-500 uppercase tracking-wider leading-tight">
@@ -455,8 +424,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-
-          {/* Scroll indicator - FIXED POSITION BELOW STATS */}
           <div className="mt-20 sm:mt-28 hidden sm:flex justify-center">
             <div className="flex flex-col items-center gap-2">
               <span className="font-body text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
@@ -466,24 +433,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CINEMATIC TRANSITION - MORPHING REVEAL */}
-      <div data-section-transition className="section-transition-morph">
-        <TabletShowcase 
-          screenImagePath="/models/images/screen-modern.png"
-        />
+      {/* TICKER TAPE — social proof always visible */}
+      <div className="relative py-3 bg-gradient-to-r from-cyan-500/10 via-violet-500/10 to-cyan-500/10 border-y border-white/10 overflow-hidden">
+        <div className="flex ticker-track whitespace-nowrap">
+          {[...tickerItems, ...tickerItems].map((item, i) => (
+            <span key={i} className="font-body text-sm text-gray-300 mx-8 flex-shrink-0">
+              {item} <span className="text-white/20 mx-4">|</span>
+            </span>
+          ))}
+        </div>
       </div>
 
-      {/* PROBLEMS SECTION - DIAGONAL WIPE TRANSITION */}
+      {/* TABLET SHOWCASE */}
+      <div data-section-transition className="section-transition-morph">
+        <TabletShowcase screenImagePath="/models/images/screen-modern.png" />
+      </div>
+
+      {/* PROBLEMS SECTION */}
       <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-diagonal">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12 sm:mb-16 lg:mb-20">
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 sm:mb-6">
-              <span className="text-white">You're </span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
-                Bleeding
-              </span>
+              <span className="text-white">Your Pipeline </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Has Holes</span>
               <br />
-              <span className="text-white">Customers</span>
+              <span className="text-white text-3xl sm:text-4xl md:text-5xl font-bold">in places you're not looking.</span>
             </h2>
             <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-red-500 to-orange-500" />
           </div>
@@ -492,55 +466,69 @@ export default function Home() {
             {problems.map((problem, index) => (
               <div key={index} className="group relative hover-lift">
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative bg-zinc-900 p-6 sm:p-8 lg:p-10 border-2 border-white/10 group-hover:border-cyan-500/50 transition-all duration-300">
-                  <problem.icon className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-cyan-400 mb-4 sm:mb-6" strokeWidth={1.5} />
-                  <h3 className="font-display text-2xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 text-white">{problem.title}</h3>
-                  <p className="font-body text-gray-400 leading-relaxed text-base sm:text-lg">{problem.description}</p>
-                  
-                  {/* Corner accent */}
+                <div className="relative bg-zinc-900 p-6 sm:p-8 lg:p-10 border-2 border-white/10 group-hover:border-cyan-500/50 transition-all duration-300 h-full">
+                  {/* Big stat up top */}
+                  <div className="problem-stat text-5xl sm:text-6xl font-black mb-2">{problem.stat}</div>
+                  <div className="font-body text-xs text-gray-500 uppercase tracking-widest mb-6">{problem.statLabel}</div>
+                  <problem.icon className="w-10 h-10 sm:w-12 sm:h-12 text-cyan-400 mb-4" strokeWidth={1.5} />
+                  <h3 className="font-display text-xl sm:text-2xl font-bold mb-3 text-white">{problem.title}</h3>
+                  <p className="font-body text-gray-400 leading-relaxed text-base">{problem.description}</p>
                   <div className="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 border-t-2 border-r-2 border-cyan-500/30 group-hover:border-cyan-500 transition-colors duration-300" />
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Bottom CTA nudge */}
+          <div className="mt-12 text-center">
+            <p className="font-body text-gray-400 text-lg mb-6">We fix all three. Most agencies only touch one.</p>
+            <Link to="/book-call">
+              <button className="group px-8 py-4 border-2 border-cyan-500/50 text-cyan-400 font-body font-semibold rounded-none hover:bg-cyan-500/10 transition-all duration-300">
+                See What You're Missing — Free Audit
+                <ArrowRight className="inline ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* SERVICES SECTION - SLIDE REVEAL TRANSITION WITH ILLUMINATED TEXT */}
+      {/* SERVICES SECTION */}
       <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 section-transition-slide">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8">
-              <span className="text-white">Our Arsenal of</span>
+              <span className="text-white">Everything That</span>
               <br />
-              <span className="text-illuminate glow-pulse">
-                Digital Dominance
-              </span>
+              <span className="text-illuminate glow-pulse">Makes Your Phone Ring</span>
             </h2>
             <p className="font-body text-base sm:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto px-4">
-              Premium websites and Google Business profiles that turn browsers into buyers
+              One agency. The complete system. From invisible to fully booked.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {services.map((service, index) => (
               <div key={index} className="group relative hover-lift cursor-pointer">
-                {/* Gradient border effect */}
                 <div className={`absolute -inset-[2px] bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500`} />
-                
-                <div className="relative bg-zinc-900 p-8 sm:p-10 lg:p-12 border border-white/10 group-hover:border-transparent transition-all duration-300">
-                  <div className={`inline-block p-3 sm:p-4 bg-gradient-to-br ${service.gradient} mb-4 sm:mb-6`}>
+                <div className="relative bg-zinc-900 p-8 sm:p-10 lg:p-12 border border-white/10 group-hover:border-transparent transition-all duration-300 h-full flex flex-col">
+                  {/* Tag badge */}
+                  {service.tag && (
+                    <div className="absolute -top-3 right-6">
+                      <span className="tag-pulse px-3 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-body font-bold text-xs uppercase tracking-wider">
+                        {service.tag}
+                      </span>
+                    </div>
+                  )}
+                  <div className={`inline-block p-3 sm:p-4 bg-gradient-to-br ${service.gradient} mb-4 sm:mb-6 w-fit`}>
                     <service.icon className="w-8 h-8 sm:w-10 sm:h-10 text-black" strokeWidth={2} />
                   </div>
-                  
-                  <h3 className="font-display text-2xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 text-white">
+                  <h3 className="font-display text-xl sm:text-2xl lg:text-2xl font-bold mb-3 sm:mb-4 text-white">
                     {service.title}
                   </h3>
-                  <p className="font-body text-gray-400 leading-relaxed mb-4 sm:mb-6 text-base sm:text-base">
+                  <p className="font-body text-gray-400 leading-relaxed mb-4 sm:mb-6 text-base flex-1">
                     {service.description}
                   </p>
-                  
-                  <div className="flex items-center gap-2 text-cyan-400 font-body font-semibold group-hover:gap-4 transition-all text-sm sm:text-base">
+                  <div className="flex items-center gap-2 text-cyan-400 font-body font-semibold group-hover:gap-4 transition-all text-sm sm:text-base mt-auto">
                     Learn More
                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
@@ -548,28 +536,39 @@ export default function Home() {
               </div>
             ))}
           </div>
+
+          {/* Pricing nudge */}
+          <div className="mt-16 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-violet-500/10 to-cyan-500/5" />
+            <div className="relative border border-white/10 p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div>
+                <p className="font-display text-2xl sm:text-3xl font-bold text-white mb-2">Starts at <span className="text-cyan-400">$997</span> one-time.</p>
+                <p className="font-body text-gray-400 text-base">One missed job covers the cost. Most clients see ROI in the first week.</p>
+              </div>
+              <Link to="/book-call" className="flex-shrink-0">
+                <button className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-lg rounded-none hover-lift">
+                  See Pricing & Tiers
+                  <ArrowRight className="inline ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* TESTIMONIALS - MORPH REVEAL TRANSITION WITH REALISTIC REVIEWS */}
+      {/* TESTIMONIALS — kept mostly intact */}
       <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-morph">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12 sm:mb-16 lg:mb-20">
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black">
               <span className="text-white">Real Results.</span>
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
-                Real Money.
-              </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">Real Money.</span>
             </h2>
           </div>
-
           <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
             {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="group hover-lift"
-              >
+              <div key={index} className="group hover-lift">
                 <div className="relative bg-zinc-900 p-6 sm:p-8 lg:p-10 border-l-4 border-cyan-500 group-hover:border-violet-500 transition-all duration-300">
                   <div className="flex gap-1 mb-4 sm:mb-6">
                     {[...Array(5)].map((_, i) => (
@@ -595,36 +594,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PROCESS - DIAGONAL WIPE TRANSITION */}
+      {/* PROCESS */}
       <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 overflow-hidden section-transition-diagonal">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
             <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8">
-              <span className="text-white">Simple Process.</span>
+              <span className="text-white">From Invisible</span>
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
-                Fast Results.
-              </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">To Fully Booked.</span>
             </h2>
+            <p className="font-body text-gray-400 text-lg max-w-2xl mx-auto">Four steps. Most clients see their first lead within 48 hours of launch.</p>
           </div>
-
           <div className="relative">
-            {/* Connecting line - hidden on mobile */}
             <div className="hidden md:block absolute top-0 left-12 md:left-1/2 w-1 h-full bg-gradient-to-b from-cyan-500 via-blue-500 to-violet-500 opacity-20" />
-
             {steps.map((step, index) => (
-              <div
-                key={index}
-                className={`relative flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-12 mb-12 sm:mb-16 lg:mb-24 ${index % 2 === 0 ? '' : 'md:flex-row-reverse'}`}
-              >
-                {/* Number badge */}
+              <div key={index} className={`relative flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-12 mb-12 sm:mb-16 lg:mb-24 ${index % 2 === 0 ? '' : 'md:flex-row-reverse'}`}>
                 <div className="flex-shrink-0 relative">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-cyan-500 to-violet-500 flex items-center justify-center border-2 sm:border-4 border-black">
                     <span className="font-display text-xl sm:text-2xl lg:text-3xl font-black text-black">{step.number}</span>
                   </div>
                 </div>
-
-                {/* Content */}
                 <div className="flex-1 bg-zinc-900 p-6 sm:p-8 border border-white/10 hover-lift w-full">
                   <h3 className="font-display text-2xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 text-white">{step.title}</h3>
                   <p className="font-body text-gray-400 text-base sm:text-lg leading-relaxed">{step.description}</p>
@@ -635,17 +624,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* INDUSTRIES - SLIDE REVEAL TRANSITION */}
+      {/* INDUSTRIES */}
       <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-slide">
         <div className="max-w-7xl mx-auto text-center">
-          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-8 sm:mb-12">
+          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 sm:mb-8">
             <span className="text-white">Built For</span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">
-              DFW Service Businesses
-            </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">Service Businesses</span>
           </h2>
-
+          <p className="font-body text-gray-400 text-lg mb-12 max-w-2xl mx-auto">
+            Serving Fort Worth, DFW, Arizona & Fresno — and expanding fast.
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
             {industries.map((industry, index) => (
               <div key={index} className="group relative overflow-hidden hover-lift">
@@ -659,15 +648,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FINAL CTA - MORPH REVEAL TRANSITION */}
+      {/* FINAL CTA */}
       <section data-section-transition className="relative py-20 sm:py-32 lg:py-40 px-4 sm:px-6 overflow-hidden section-transition-morph">
-        {/* Animated background */}
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-blue-500/20 to-violet-500/20" />
         <div className="absolute inset-0 opacity-30">
           {[...Array(30)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-2 h-2 bg-cyan-400 rounded-full"
+            <div key={i} className="absolute w-2 h-2 bg-cyan-400 rounded-full"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -676,44 +662,38 @@ export default function Home() {
             />
           ))}
         </div>
-
         <div className="relative z-10 max-w-5xl mx-auto text-center">
           <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-black mb-6 sm:mb-8 leading-none">
-            <span className="text-white">READY TO</span>
+            <span className="text-white">STOP LOSING</span>
             <br />
-            <span className="text-illuminate glow-pulse">
-              DOMINATE?
-            </span>
+            <span className="text-illuminate glow-pulse">JOBS DAILY.</span>
           </h2>
-
-          <p className="font-body text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 mb-12 sm:mb-16 max-w-3xl mx-auto font-light px-4">
-            Book a free 15-minute strategy call. We'll show you exactly what's costing you business and how to fix it.
+          <p className="font-body text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 mb-6 max-w-3xl mx-auto font-light px-4">
+            Every day without this system is another job going to your competitor.
           </p>
-
+          <p className="font-body text-base sm:text-lg text-gray-500 mb-12 sm:mb-16 px-4">
+            Free audit. No pitch. Just the truth about what your listing is costing you.
+          </p>
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 justify-center items-center mb-8 sm:mb-12 px-4">
             <Link to="/book-call">
               <button className="group relative px-10 sm:px-12 py-5 sm:py-6 bg-white text-black font-body font-bold text-lg sm:text-xl rounded-none overflow-hidden hover-lift w-full sm:w-auto">
                 <span className="relative z-10 flex items-center justify-center gap-3">
-                  Book Your Free Call Now
+                  Get My Free Audit Now
                   <Zap className="w-5 h-5 sm:w-6 sm:h-6 group-hover:rotate-12 transition-transform" />
                 </span>
               </button>
             </Link>
           </div>
-
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-400 font-body text-base sm:text-lg">
-            <span>Or call us:</span>
-            <a
-              href="tel:2145060806"
-              className="text-cyan-400 text-xl sm:text-2xl font-bold hover:text-violet-400 transition-colors duration-300"
-            >
+            <span>Or call us directly:</span>
+            <a href="tel:2145060806" className="text-cyan-400 text-xl sm:text-2xl font-bold hover:text-violet-400 transition-colors duration-300">
               (214) 506-0806
             </a>
           </div>
         </div>
       </section>
 
-      {/* FOOTER - MINIMAL */}
+      {/* FOOTER */}
       <footer className="bg-black border-t border-white/10 py-12 sm:py-16 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mb-8 sm:mb-12">
@@ -723,42 +703,24 @@ export default function Home() {
                 <br />
                 <span className="text-white">VISIBILITY</span>
               </div>
-              <p className="font-body text-gray-500 text-sm sm:text-base">Digital dominance for DFW businesses</p>
+              <p className="font-body text-gray-500 text-sm sm:text-base">Full-system growth for service businesses — maps, leads, automation, results.</p>
             </div>
-
             <div className="flex flex-col gap-3 sm:gap-4 font-body">
-              <Link to="/" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">
-                Home
-              </Link>
-              <Link to="/book-call" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">
-                Book a Call
-              </Link>
-              <Link to="/portfolio" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">
-                Portfolio
-              </Link>
-              <Link to="/contact" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">
-                Contact
-              </Link>
+              <Link to="/" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">Home</Link>
+              <Link to="/book-call" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">Book a Call</Link>
+              <Link to="/portfolio" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">Portfolio</Link>
+              <Link to="/contact" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">Contact</Link>
             </div>
-
             <div className="sm:text-left lg:text-right">
-              <a
-                href="tel:2145060806"
-                className="block font-display text-xl sm:text-2xl font-bold text-cyan-400 mb-3 sm:mb-4 hover:text-violet-400 transition-colors"
-              >
+              <a href="tel:2145060806" className="block font-display text-xl sm:text-2xl font-bold text-cyan-400 mb-3 sm:mb-4 hover:text-violet-400 transition-colors">
                 (214) 506-0806
               </a>
-              <a
-                href="https://www.instagram.com/primevisibilitymedia/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-body text-gray-400 hover:text-cyan-400 transition-colors text-sm sm:text-base"
-              >
+              <a href="https://www.instagram.com/primevisibilitymedia/" target="_blank" rel="noopener noreferrer"
+                className="font-body text-gray-400 hover:text-cyan-400 transition-colors text-sm sm:text-base">
                 @primevisibilitymedia
               </a>
             </div>
           </div>
-
           <div className="border-t border-white/10 pt-6 sm:pt-8 text-center">
             <p className="font-body text-gray-600 text-sm sm:text-base">© 2025 Prime Visibility Media. All rights reserved.</p>
           </div>

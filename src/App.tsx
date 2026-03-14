@@ -7,6 +7,8 @@ import Contact from './pages/Contact';
 import TieredGrowth from "./pages/TieredGrowth";
 import Meeting from "./pages/Meeting";
 import VSL from "./pages/VSL";
+import Tier3 from "./pages/Tier3";
+
 
 function AppContent(): JSX.Element {
   const location = useLocation();

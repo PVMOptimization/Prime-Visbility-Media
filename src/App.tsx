@@ -23,6 +23,7 @@ function AppContent(): JSX.Element {
         <Route path="/pricing" element={<TieredGrowth />} />
         <Route path="/meeting" element={<Meeting />} />
         <Route path="/vsl" element={<VSL />} />
+        <Route path="/tier3" element={<Tier3 />} />
       </Routes>
     </>
   );

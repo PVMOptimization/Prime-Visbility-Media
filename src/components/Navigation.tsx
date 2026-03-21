@@ -61,7 +61,9 @@ export default function Navigation({ showStickyCTA = false }: NavigationProps) {
     { to: '/', label: 'Home' },
     { to: '/portfolio', label: 'Portfolio' },
     { to: '/book-call', label: 'Book a Call' },
-    { to: '/contact', label: 'Contact' }
+    { to: '/contact', label: 'Contact' },
+    { to: '/comparison', label: 'Compare Us' },
+    { to: '/vsl', label: 'See How It Works' }
   ];
 
   return (

@@ -9,6 +9,7 @@ import Meeting from "./pages/Meeting";
 import VSL from "./pages/VSL";
 import Tier3 from "./pages/Tier3";
 import Pricecomparison from "./pages/Pricecomparison";
+import Fourkillers from "./pages/FourKillers";
 
 
 function AppContent(): JSX.Element {
@@ -27,6 +28,7 @@ function AppContent(): JSX.Element {
         <Route path="/meeting" element={<Meeting />} />
         <Route path="/vsl" element={<VSL />} />
         <Route path="/tier3" element={<Tier3 />} />
+        <Route path="/4killers" element={<FourKillers />} />
         <Route path="/comparison" element={<Pricecomparison />} />
       </Routes>
     </>

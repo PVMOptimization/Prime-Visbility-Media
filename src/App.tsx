@@ -9,7 +9,7 @@ import Meeting from "./pages/Meeting";
 import VSL from "./pages/VSL";
 import Tier3 from "./pages/Tier3";
 import Pricecomparison from "./pages/Pricecomparison";
-import Fourkillers from "./pages/FourKillers";
+import FourKillers from "./pages/FourKillers";
 
 
 function AppContent(): JSX.Element {

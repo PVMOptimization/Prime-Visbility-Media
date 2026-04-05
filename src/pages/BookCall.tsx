@@ -295,7 +295,7 @@ export default function BookCall() {
                 </p>
                 <div 
                   className="calendly-inline-widget" 
-                  data-url="https://calendly.com" 
+                  data-url="https://calendly.com/optimization-primivisibilitymedia/10min" 
                   style={{ minWidth: '320px', height: '630px' }} 
                 />
               </div>

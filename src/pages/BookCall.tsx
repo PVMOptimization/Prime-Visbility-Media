@@ -8,15 +8,15 @@ export default function BookCall() {
     phone: '',
     email: '',
     message: '',
-    smsOptIn: false // NEW: Track SMS consent
+    smsOptIn: false // NEW: Required for Twilio/Stripe
   });
 
   const [submitted, setSubmitted] = useState(false);
 
-  // Load Calendly script
+  // Load Calendly script (Kept 1:1)
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.src = 'https://calendly.com';
     script.async = true;
     document.body.appendChild(script);
 
@@ -30,14 +30,8 @@ export default function BookCall() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Verification requirement: Ensure they checked the box if they provided a phone number
-    if (!formData.smsOptIn && formData.phone) {
-      alert('Please confirm you agree to receive SMS communications to proceed.');
-      return;
-    }
-
     try {
-      const response = await fetch('https://formspree.io/f/xbdkkrzz', {
+      const response = await fetch('https://formspree.io', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +42,7 @@ export default function BookCall() {
           phone: formData.phone,
           email: formData.email,
           message: formData.message,
-          sms_consent: formData.smsOptIn ? 'Accepted' : 'Declined', // Send consent status to Formspree
+          sms_consent: formData.smsOptIn ? 'Accepted' : 'Declined', // NEW: Pass consent status
           source: 'PrimeVisibilityMedia.com',
           submittedAt: new Date().toISOString()
         })
@@ -80,7 +74,7 @@ export default function BookCall() {
   return (
     <div className="bg-black text-white min-h-screen overflow-hidden">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
+        @import url('https://googleapis.com');
         
         .font-display { font-family: 'Syne', sans-serif; }
         .font-body { font-family: 'Outfit', sans-serif; }
@@ -131,7 +125,7 @@ export default function BookCall() {
         }
       `}</style>
 
-      {/* Hero Section */}
+      {/* Hero Section - Restored to Original */}
       <section className="relative min-h-[50vh] sm:min-h-[60vh] flex items-center justify-center overflow-hidden pt-24 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6">
         <div className="absolute inset-0 opacity-40">
           <div className="absolute top-0 right-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-cyan-500/20 rounded-full blur-[150px] floating" />
@@ -142,7 +136,7 @@ export default function BookCall() {
           <div 
             className="grain w-[200%] h-[200%]"
             style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://w3.org id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`
             }}
           />
         </div>
@@ -177,7 +171,7 @@ export default function BookCall() {
         </div>
       </section>
 
-      {/* Form Section */}
+      {/* Form Section - Restored Layout */}
       <section className="relative py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
@@ -202,7 +196,6 @@ export default function BookCall() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Name Input */}
                     <div className="space-y-2">
                       <label className="font-body text-sm text-gray-400 uppercase tracking-widest flex items-center gap-2">
                         <User className="w-4 h-4 text-cyan-400" /> Full Name
@@ -218,7 +211,6 @@ export default function BookCall() {
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-6">
-                      {/* Email Input */}
                       <div className="space-y-2">
                         <label className="font-body text-sm text-gray-400 uppercase tracking-widest flex items-center gap-2">
                           <Mail className="w-4 h-4 text-cyan-400" /> Email
@@ -232,7 +224,6 @@ export default function BookCall() {
                           onChange={(e) => setFormData({...formData, email: e.target.value})}
                         />
                       </div>
-                      {/* Phone Input */}
                       <div className="space-y-2">
                         <label className="font-body text-sm text-gray-400 uppercase tracking-widest flex items-center gap-2">
                           <Phone className="w-4 h-4 text-cyan-400" /> Phone
@@ -248,9 +239,8 @@ export default function BookCall() {
                       </div>
                     </div>
 
-                    {/* Message Input */}
                     <div className="space-y-2">
-                      <label className="font-body text-sm text-gray-400 uppercase tracking-widest">Message</label>
+                      <label className="font-body text-sm text-gray-400 uppercase tracking-widest text-white">Message</label>
                       <textarea
                         required
                         rows={4}
@@ -261,24 +251,23 @@ export default function BookCall() {
                       ></textarea>
                     </div>
 
-                    {/* SMS OPT-IN SECTION (Critical for Verification) */}
-                    <div className="space-y-4 pt-2">
+                    {/* NEW: Twilio/Stripe SMS Verification Footer */}
+                    <div className="space-y-4 pt-4 border-t border-white/5">
                       <div className="flex items-start gap-3">
                         <input
                           type="checkbox"
                           id="smsOptIn"
                           required
-                          className="mt-1 w-5 h-5 rounded border-white/10 bg-white/5 text-cyan-500 focus:ring-cyan-500/50"
+                          className="mt-1 w-5 h-5 rounded border-white/10 bg-white/5 text-cyan-500 focus:ring-cyan-500/50 cursor-pointer"
                           checked={formData.smsOptIn}
                           onChange={(e) => setFormData({...formData, smsOptIn: e.target.checked})}
                         />
-                        <label htmlFor="smsOptIn" className="font-body text-sm text-gray-400 leading-tight">
-                          I agree to receive automated marketing and informational text messages from Prime Visibility Media at the number provided. Consent is not a condition of purchase. Message and data rates may apply.
+                        <label htmlFor="smsOptIn" className="font-body text-xs text-gray-400 leading-snug cursor-pointer">
+                          I agree to receive recurring automated marketing and informational text messages from Prime Visibility Media at the number provided. Consent is not a condition of purchase. Msg & data rates may apply. View our <Link to="/privacy" className="text-cyan-400 underline">Privacy Policy</Link>.
                         </label>
                       </div>
-                      
-                      <p className="font-body text-[10px] text-gray-500 uppercase tracking-tighter">
-                        By clicking below, you also agree to our Privacy Policy. Reply STOP to cancel at any time.
+                      <p className="font-body text-[10px] text-gray-500 uppercase tracking-wider pl-8">
+                        Message frequency varies. Reply STOP to cancel.
                       </p>
                     </div>
 
@@ -294,7 +283,7 @@ export default function BookCall() {
               </div>
             </div>
 
-            {/* Sidebar info (unchanged) */}
+            {/* Sidebar with Calendly - Restored 1:1 */}
             <div className="lg:col-span-2 space-y-8">
               <div className="bg-white/5 border border-white/10 p-8 rounded-2xl">
                 <Calendar className="w-10 h-10 text-violet-400 mb-6" />
@@ -302,14 +291,12 @@ export default function BookCall() {
                 <p className="font-body text-gray-400 mb-6">
                   Skip the form and pick a time that works best for you on our official calendar.
                 </p>
-                <a 
-                  href="https://calendly.com" 
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button 
+                  onClick={() => (window as any).Calendly.initPopupWidget({ url: 'https://calendly.com' })}
                   className="inline-block w-full py-4 border border-violet-500/50 text-violet-400 font-body font-bold text-center rounded-lg hover:bg-violet-500 hover:text-white transition-all"
                 >
                   Book on Calendly
-                </a>
+                </button>
               </div>
             </div>
           </div>

@@ -8,15 +8,15 @@ export default function BookCall() {
     phone: '',
     email: '',
     message: '',
-    smsOptIn: false // NEW: Required for Twilio/Stripe
+    smsOptIn: false // NEW: Track consent for Twilio
   });
 
   const [submitted, setSubmitted] = useState(false);
 
-  // Load Calendly script (Kept 1:1)
+  // Load Calendly script
   useEffect(() => {
     const script = document.createElement('script');
-    script.src = 'https://calendly.com';
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
     script.async = true;
     document.body.appendChild(script);
 
@@ -31,7 +31,7 @@ export default function BookCall() {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://formspree.io', {
+      const response = await fetch('https://formspree.io/f/xbdkkrzz', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export default function BookCall() {
           phone: formData.phone,
           email: formData.email,
           message: formData.message,
-          sms_consent: formData.smsOptIn ? 'Accepted' : 'Declined', // NEW: Pass consent status
+          sms_consent: formData.smsOptIn ? 'Accepted' : 'Declined', // NEW: Pass status
           source: 'PrimeVisibilityMedia.com',
           submittedAt: new Date().toISOString()
         })
@@ -74,7 +74,7 @@ export default function BookCall() {
   return (
     <div className="bg-black text-white min-h-screen overflow-hidden">
       <style>{`
-        @import url('https://googleapis.com');
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
         
         .font-display { font-family: 'Syne', sans-serif; }
         .font-body { font-family: 'Outfit', sans-serif; }
@@ -123,9 +123,13 @@ export default function BookCall() {
         .input-glow:focus {
           box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.2);
         }
+
+        .checkbox-glow:checked {
+          background: linear-gradient(135deg, #00F0FF 0%, #B026FF 100%);
+        }
       `}</style>
 
-      {/* Hero Section - Restored to Original */}
+      {/* Hero Section */}
       <section className="relative min-h-[50vh] sm:min-h-[60vh] flex items-center justify-center overflow-hidden pt-24 sm:pt-32 pb-16 sm:pb-20 px-4 sm:px-6">
         <div className="absolute inset-0 opacity-40">
           <div className="absolute top-0 right-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-cyan-500/20 rounded-full blur-[150px] floating" />
@@ -136,7 +140,7 @@ export default function BookCall() {
           <div 
             className="grain w-[200%] h-[200%]"
             style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://w3.org id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`
             }}
           />
         </div>
@@ -171,7 +175,6 @@ export default function BookCall() {
         </div>
       </section>
 
-      {/* Form Section - Restored Layout */}
       <section className="relative py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
@@ -251,7 +254,7 @@ export default function BookCall() {
                       ></textarea>
                     </div>
 
-                    {/* NEW: Twilio/Stripe SMS Verification Footer */}
+                    {/* COMPLIANCE BLOCK: MANDATORY FOR TWILIO APPROVAL */}
                     <div className="space-y-4 pt-4 border-t border-white/5">
                       <div className="flex items-start gap-3">
                         <input
@@ -262,7 +265,7 @@ export default function BookCall() {
                           checked={formData.smsOptIn}
                           onChange={(e) => setFormData({...formData, smsOptIn: e.target.checked})}
                         />
-                        <label htmlFor="smsOptIn" className="font-body text-xs text-gray-400 leading-snug cursor-pointer">
+                        <label htmlFor="smsOptIn" className="font-body text-[11px] text-gray-400 leading-snug cursor-pointer">
                           I agree to receive recurring automated marketing and informational text messages from Prime Visibility Media at the number provided. Consent is not a condition of purchase. Msg & data rates may apply. View our <Link to="/privacy" className="text-cyan-400 underline">Privacy Policy</Link>.
                         </label>
                       </div>
@@ -283,7 +286,6 @@ export default function BookCall() {
               </div>
             </div>
 
-            {/* Sidebar with Calendly - Restored 1:1 */}
             <div className="lg:col-span-2 space-y-8">
               <div className="bg-white/5 border border-white/10 p-8 rounded-2xl">
                 <Calendar className="w-10 h-10 text-violet-400 mb-6" />
@@ -291,12 +293,11 @@ export default function BookCall() {
                 <p className="font-body text-gray-400 mb-6">
                   Skip the form and pick a time that works best for you on our official calendar.
                 </p>
-                <button 
-                  onClick={() => (window as any).Calendly.initPopupWidget({ url: 'https://calendly.com' })}
-                  className="inline-block w-full py-4 border border-violet-500/50 text-violet-400 font-body font-bold text-center rounded-lg hover:bg-violet-500 hover:text-white transition-all"
-                >
-                  Book on Calendly
-                </button>
+                <div 
+                  className="calendly-inline-widget" 
+                  data-url="https://calendly.com" 
+                  style={{ minWidth: '320px', height: '630px' }} 
+                />
               </div>
             </div>
           </div>

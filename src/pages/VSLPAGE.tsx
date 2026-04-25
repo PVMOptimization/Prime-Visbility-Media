@@ -379,7 +379,7 @@ export default function BookCall() {
                 <div className="absolute -inset-[2px] border-trace opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
 
                 {/* Inner card */}
-                <div className="relative bg-zinc-900 overflow-hidden aspect-[4/5]">
+                <div className="relative bg-zinc-900 overflow-hidden">
                   {/* Corner accent marks */}
                   <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-cyan-400 z-20 pointer-events-none" />
                   <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-cyan-400 z-20 pointer-events-none" />

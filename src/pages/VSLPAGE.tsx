@@ -302,7 +302,7 @@ export default function BookCall() {
               BOOK YOUR
             </span>
             <span className="block text-illuminate text-5xl sm:text-7xl md:text-8xl lg:text-9xl">
-              MEETING
+              CALL
             </span>
           </h2>
 

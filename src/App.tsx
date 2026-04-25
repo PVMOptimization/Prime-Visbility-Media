@@ -11,6 +11,7 @@ import Tier3 from "./pages/Tier3";
 import Pricecomparison from "./pages/Pricecomparison";
 import FourKillers from "./pages/FourKillers";
 import Policy from "./pages/Policy";
+import VSLPAGE from "./pages/VSLPAGE";
 
 
 function AppContent(): JSX.Element {
@@ -32,6 +33,7 @@ function AppContent(): JSX.Element {
         <Route path="/4killers" element={<FourKillers />} />
         <Route path="/privacy-policy" element={<Policy />} />
         <Route path="/comparison" element={<Pricecomparison />} />
+        <Route path="/bookyourcall" element={<VSLPAGE />} />
       </Routes>
     </>
   );

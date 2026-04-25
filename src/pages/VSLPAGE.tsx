@@ -4,9 +4,9 @@ import Navigation from '../components/Navigation';
 
 // ── Swap these paths for your actual testimonial images ──
 const TESTIMONIAL_IMAGES = [
-  '/images/testimonial-1.jpg',
-  '/images/testimonial-2.jpg',
-  '/images/testimonial-3.jpg',
+  '../assets/DashboardB_ACOMP.png',
+  '../assets/REVIEWS_ARE_CRUCIAL__3_.png',
+  '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png',
 ];
 
 // ── Swap this for your video thumbnail and video URL ──

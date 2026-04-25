@@ -2,12 +2,13 @@ import { useState, useRef } from 'react';
 import { Play, AlertTriangle, ArrowRight, Calendar, Zap, Clock } from 'lucide-react';
 import Navigation from '../components/Navigation';
 
-// ── Swap these paths for your actual testimonial images ──
-const TESTIMONIAL_IMAGES = [
-  '../assets/DashboardB_ACOMP.png',
-  '../assets/REVIEWS_ARE_CRUCIAL__3_.png',
-  '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png',
-];
+// ✅ ADD THESE IMPORTS
+import img1 from '../assets/DashboardB_ACOMP.png';
+import img2 from '../assets/REVIEWS_ARE_CRUCIAL__3_.png';
+import img3 from '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png';
+
+// ✅ REPLACE YOUR ARRAY WITH THIS
+const TESTIMONIAL_IMAGES = [img1, img2, img3];
 
 // ── Swap this for your video thumbnail and video URL ──
 const VIDEO_THUMBNAIL = '/images/video-thumbnail.jpg';

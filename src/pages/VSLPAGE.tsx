@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { Play, AlertTriangle, ArrowRight, Calendar, Zap, Clock } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { AlertTriangle, ArrowRight, Zap, Clock } from 'lucide-react';
 import Navigation from '../components/Navigation';
 
 // ✅ ADD THESE IMPORTS
@@ -13,6 +13,35 @@ const TESTIMONIAL_IMAGES = [img1, img2, img3];
 // ── Swap this for your video thumbnail and video URL ──
 const VIDEO_THUMBNAIL = '/images/video-thumbnail.jpg';
 const VIDEO_URL = 'https://www.youtube.com/embed/YOUR_VIDEO_ID';
+
+// ── Embedded Calendly Component ──
+function CalendlyEmbed({ url }: { url: string }) {
+  useEffect(() => {
+    if (!document.getElementById('calendly-script')) {
+      const script = document.createElement('script');
+      script.id = 'calendly-script';
+      script.src = 'https://assets.calendly.com/assets/external/widget.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  return (
+    <div className="relative">
+      {/* Glowing border frame */}
+      <div className="absolute -inset-[2px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 opacity-50 blur-sm" />
+      <div className="absolute -inset-[1px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 opacity-60" />
+
+      <div className="relative bg-zinc-950 overflow-hidden">
+        <div
+          className="calendly-inline-widget"
+          data-url={`${url}?hide_gdpr_banner=1&background_color=09090b&text_color=ffffff&primary_color=00F0FF`}
+          style={{ minWidth: '320px', height: '700px' }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function BookCall() {
   const [videoPlaying, setVideoPlaying] = useState(false);
@@ -100,7 +129,6 @@ export default function BookCall() {
           SECTION 1 — TOP WARNING BANNER
       ───────────────────────────────────────────── */}
       <section className="relative pt-24 pb-0">
-        {/* Subtle red glow background */}
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/40 via-black to-black pointer-events-none" />
 
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pt-12 pb-0">
@@ -128,7 +156,6 @@ export default function BookCall() {
 
           {/* Warning card */}
           <div className="warn-pulse relative overflow-hidden border-2 border-red-500/70 bg-red-950/30 backdrop-blur-sm p-6 sm:p-8 mb-0">
-            {/* Corner accents */}
             <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-red-400" />
             <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-red-400" />
             <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-red-400" />
@@ -157,7 +184,7 @@ export default function BookCall() {
           <div className="grid grid-cols-3 gap-0 border-x border-b border-white/10">
             {[
               { n: '01', label: 'Watch the 2-min breakdown below' },
-              { n: '02', label: 'Click "Book Your Meeting"'         },
+              { n: '02', label: 'Pick a time in the calendar below' },
               { n: '03', label: 'Confirm your calendar invite'      },
             ].map((step, i) => (
               <div
@@ -189,7 +216,6 @@ export default function BookCall() {
         </div>
 
         <div className="relative max-w-4xl mx-auto text-center">
-          {/* Label */}
           <div className="inline-flex items-center gap-2 px-5 py-2 border border-violet-500/30 bg-violet-500/5 rounded-full mb-6">
             <Clock className="w-4 h-4 text-violet-400" />
             <span className="font-body text-sm text-violet-300 tracking-widest uppercase">2 Minute System Breakdown</span>
@@ -206,14 +232,12 @@ export default function BookCall() {
 
           {/* Video player */}
           <div className="relative group mx-auto max-w-3xl">
-            {/* Glowing border frame */}
             <div className="absolute -inset-[2px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 opacity-60 blur-sm rounded-none" />
             <div className="absolute -inset-[1px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 rounded-none" />
 
             <div className="relative bg-zinc-950 aspect-video w-full overflow-hidden">
               {!videoPlaying ? (
                 <>
-                  {/* Thumbnail */}
                   <img
                     src={VIDEO_THUMBNAIL}
                     alt="Video thumbnail"
@@ -228,10 +252,7 @@ export default function BookCall() {
                       }
                     }}
                   />
-                  {/* Dark overlay */}
                   <div className="absolute inset-0 bg-black/40" />
-
-                  {/* Grid pattern overlay */}
                   <div
                     className="absolute inset-0 opacity-10"
                     style={{
@@ -240,22 +261,19 @@ export default function BookCall() {
                       backgroundSize: '60px 60px',
                     }}
                   />
-
-                  {/* Center text when no thumbnail */}
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                     <p className="font-display text-white/20 text-lg tracking-widest uppercase mb-16">
                       Place Your Thumbnail Here
                     </p>
                   </div>
-
-                  {/* Play button */}
                   <button
                     onClick={() => setVideoPlaying(true)}
                     className="absolute inset-0 flex items-center justify-center group/btn"
                     aria-label="Play video"
                   >
                     <div className="play-pulse relative w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center shadow-2xl">
-                      <Play className="w-8 h-8 sm:w-10 sm:h-10 text-black fill-black translate-x-1" />
+                      {/* Play icon inline to avoid unused import warning */}
+                      <svg className="w-8 h-8 sm:w-10 sm:h-10 text-black fill-black translate-x-1" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
                     </div>
                   </button>
                 </>
@@ -272,7 +290,6 @@ export default function BookCall() {
             </div>
           </div>
 
-          {/* Caption */}
           <p className="font-body text-gray-600 text-sm mt-5 italic">
             Can't watch right now? Your rep will walk you through it on the call.
           </p>
@@ -280,7 +297,7 @@ export default function BookCall() {
       </section>
 
       {/* ─────────────────────────────────────────────
-          SECTION 3 — GIANT CALENDLY CTA
+          SECTION 3 — EMBEDDED CALENDLY
       ───────────────────────────────────────────── */}
       <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
         {/* Background glow blobs */}
@@ -313,37 +330,11 @@ export default function BookCall() {
             Own your lead flow.
           </p>
 
-          {/* CTA Button */}
-          <a
-            href="https://calendly.com/optimization-primivisibilitymedia/10min"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-block"
-          >
-            <div className="hover-lift relative">
-              {/* Animated glow border */}
-              <div className="absolute -inset-[3px] border-trace opacity-80" />
-              <button className="relative flex items-center justify-center gap-4 px-10 sm:px-16 py-6 sm:py-8 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-display font-black text-xl sm:text-2xl md:text-3xl tracking-wide w-full sm:w-auto">
-                <Calendar className="w-7 h-7 sm:w-8 sm:h-8 shrink-0" />
-                Book Your Free 10-Min Call
-                <ArrowRight className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 group-hover:translate-x-2 transition-transform duration-300" />
-              </button>
-            </div>
-          </a>
-
-          {/* Trust signals */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 mt-10 text-gray-500 font-body text-sm">
-            {[
-              '✓ No pitch. No pressure.',
-              '✓ Real numbers, real talk.',
-              '✓ Takes 10 minutes flat.',
-            ].map((t) => (
-              <span key={t} className="text-gray-400">{t}</span>
-            ))}
-          </div>
+          {/* ── Embedded Calendly ── */}
+          <CalendlyEmbed url="https://calendly.com/optimization-primivisibilitymedia/10min" />
 
           {/* Or call */}
-          <div className="mt-8">
+          <div className="mt-10">
             <span className="font-body text-gray-600 text-base">Or call us directly: </span>
             <a
               href="tel:2145060806"
@@ -375,18 +366,13 @@ export default function BookCall() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             {TESTIMONIAL_IMAGES.map((src, i) => (
               <div key={i} className="hover-lift group relative">
-                {/* Animated gradient border */}
                 <div className="absolute -inset-[2px] border-trace opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-
-                {/* Inner card */}
                 <div className="relative bg-zinc-900 overflow-hidden">
-                  {/* Corner accent marks */}
                   <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-cyan-400 z-20 pointer-events-none" />
                   <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-cyan-400 z-20 pointer-events-none" />
                   <div className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-violet-400 z-20 pointer-events-none" />
                   <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-violet-400 z-20 pointer-events-none" />
 
-                  {/* Image */}
                   <img
                     src={src}
                     alt={`Client result ${i + 1}`}
@@ -414,7 +400,6 @@ export default function BookCall() {
                     }}
                   />
 
-                  {/* Bottom gradient overlay */}
                   <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent z-10 pointer-events-none" />
                 </div>
               </div>

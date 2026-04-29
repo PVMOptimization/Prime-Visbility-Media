@@ -37,7 +37,7 @@ const faqs = [
   },
   {
     q: "What if I sign up and it doesn't work?",
-    a: "We start with a free demo so you can see the work before you commit. No long contracts, no hidden fees. If we're not delivering, we want to know about it. Our reputation is built on results, not retainers."
+    a: "We offer a 30 day period to prove our system, if it doesn't work you get a full refund. No long contracts, no hidden fees. If we're not delivering, we want to know about it. Our reputation is built on results, not retainers."
   },
   {
     q: "My business runs on word of mouth. Do I really need this?",

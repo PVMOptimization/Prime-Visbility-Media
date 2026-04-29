@@ -5,7 +5,7 @@ import Navigation from '../components/Navigation';
 import img1 from '../assets/DashboardB_ACOMP.png';
 import img2 from '../assets/REVIEWS_ARE_CRUCIAL__3_.png';
 import img3 from '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png';
-import videoThumbnail from '../assets/15Qualified-Leads-Guaranteed.png';
+import videoThumbnail from '../assets/15Qualified Leads Guaranteed.png';
 
 const TESTIMONIAL_IMAGES = [img1, img2, img3];
 const VIDEO_URL = 'https://www.youtube.com/embed/XKq-T9Y9BeY';

@@ -33,7 +33,7 @@ const faqs = [
   },
   {
     q: "What makes you different from every other agency?",
-    a: "We only work with local service businesses in DFW and we go deep, not wide. You're not getting a cookie-cutter package. You get a custom system built for your specific business, your market, and your goals. And we show you proof before you pay a dime."
+    a: "We only work with local service businesses and we go deep, not wide. You're not getting a cookie-cutter package. You get a custom system built for your specific business, your market, and your goals. And we show you proof before you pay a dime."
   },
   {
     q: "What if I sign up and it doesn't work?",

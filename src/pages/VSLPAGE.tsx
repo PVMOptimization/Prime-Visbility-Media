@@ -281,7 +281,7 @@ export default function BookCall() {
           {/* Steps */}
           <div className="grid grid-cols-3 gap-0 border-x border-b border-white/10">
             {[
-              { n: '01', label: 'Watch the 2-min breakdown below' },
+              { n: '01', label: 'Watch the 3-min breakdown below' },
               { n: '02', label: 'Pick a time in the calendar below' },
               { n: '03', label: 'Confirm your calendar invite' },
             ].map((step, i) => (
@@ -315,7 +315,7 @@ export default function BookCall() {
           <div className="inline-flex items-center gap-2 px-5 py-2 border border-violet-500/30 bg-violet-500/5 rounded-full mb-6">
             <Clock className="w-4 h-4 text-violet-400" />
             <span className="font-body text-sm text-violet-300 tracking-widest uppercase">
-              2 Minute System Breakdown
+              3 Minute System Breakdown
             </span>
           </div>
 
@@ -327,8 +327,7 @@ export default function BookCall() {
           </h2>
 
           <p className="font-body text-gray-400 text-base sm:text-lg mb-12 max-w-xl mx-auto">
-            Watch this before your call — clients who watch this close faster
-            and get better results from day one.
+            Watch this before your call — clients who watch this get better results from day one.
           </p>
 
           {/* Video player */}

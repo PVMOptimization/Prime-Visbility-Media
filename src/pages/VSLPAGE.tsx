@@ -5,9 +5,9 @@ import Navigation from '../components/Navigation';
 import img1 from '../assets/DashboardB_ACOMP.png';
 import img2 from '../assets/REVIEWS_ARE_CRUCIAL__3_.png';
 import img3 from '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png';
+import videoThumbnail from '../assets/15Qualified-Leads-Guaranteed.png';
 
 const TESTIMONIAL_IMAGES = [img1, img2, img3];
-
 const VIDEO_URL = 'https://www.youtube.com/embed/XKq-T9Y9BeY';
 
 const faqs = [
@@ -79,7 +79,6 @@ function FAQ() {
   return (
     <section className="relative py-20 sm:py-28 px-4 sm:px-6 bg-zinc-950">
       <div className="max-w-3xl mx-auto">
-        {/* Heading */}
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-5 py-2 border border-white/10 rounded-full mb-5">
             <span className="font-body text-xs text-gray-400 uppercase tracking-widest">
@@ -95,46 +94,33 @@ function FAQ() {
           </p>
         </div>
 
-        {/* Accordion */}
         <div className="space-y-3">
           {faqs.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
-              <div
-                key={i}
-                className="group relative"
-              >
-                {/* Animated border on open */}
+              <div key={i} className="group relative">
                 <div
                   className={`absolute -inset-[1px] bg-gradient-to-r from-cyan-500 via-violet-500 to-cyan-500 transition-opacity duration-300 ${isOpen ? 'opacity-60' : 'opacity-0'}`}
                 />
                 <div className="relative bg-zinc-900 border border-white/10">
-                  {/* Question row */}
                   <button
                     onClick={() => setOpenIndex(isOpen ? null : i)}
                     className="w-full flex items-center justify-between gap-4 p-5 sm:p-6 text-left"
                   >
-                    {/* Corner accents when open */}
                     {isOpen && (
                       <>
                         <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-cyan-400 pointer-events-none" />
                         <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-cyan-400 pointer-events-none" />
                       </>
                     )}
-                    <span
-                      className={`font-display font-bold text-base sm:text-lg transition-colors duration-200 ${isOpen ? 'text-cyan-300' : 'text-white group-hover:text-cyan-200'}`}
-                    >
+                    <span className={`font-display font-bold text-base sm:text-lg transition-colors duration-200 ${isOpen ? 'text-cyan-300' : 'text-white group-hover:text-cyan-200'}`}>
                       {faq.q}
                     </span>
                     <ChevronDown
                       className={`shrink-0 w-5 h-5 text-gray-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-cyan-400' : ''}`}
                     />
                   </button>
-
-                  {/* Answer */}
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
-                  >
+                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
                     <div className="px-5 sm:px-6 pb-6 pt-0">
                       <div className="h-px bg-gradient-to-r from-cyan-500/30 via-violet-500/30 to-transparent mb-4" />
                       <p className="font-body text-gray-300 text-sm sm:text-base leading-relaxed">
@@ -148,7 +134,6 @@ function FAQ() {
           })}
         </div>
 
-        {/* CTA below FAQ */}
         <div className="text-center mt-12">
           <p className="font-body text-gray-500 text-sm mb-4">
             Still have questions? We answer everything on the call.
@@ -246,8 +231,8 @@ export default function BookCall() {
       {/* ── SECTION 1: WARNING BANNER ── */}
       <section className="relative pt-24 pb-0">
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/40 via-black to-black pointer-events-none" />
-
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pt-12 pb-0">
+
           <div className="flex justify-center mb-8">
             <div className="px-6 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm">
               <span className="font-body text-xs sm:text-sm tracking-[0.25em] text-cyan-400 uppercase">
@@ -298,7 +283,7 @@ export default function BookCall() {
             {[
               { n: '01', label: 'Watch the 2-min breakdown below' },
               { n: '02', label: 'Pick a time in the calendar below' },
-              { n: '03', label: 'Confirm your calendar invite'      },
+              { n: '03', label: 'Confirm your calendar invite' },
             ].map((step, i) => (
               <div
                 key={i}
@@ -334,7 +319,6 @@ export default function BookCall() {
             </span>
           </div>
 
-          {/* ── UPDATED HEADLINE ── */}
           <h2 className="font-display font-black text-3xl sm:text-5xl md:text-6xl text-white mb-2 leading-tight">
             15 Qualified Appointments
           </h2>
@@ -348,37 +332,34 @@ export default function BookCall() {
           </p>
 
           {/* Video player */}
-          <div className="relative group mx-auto max-w-3xl">
+          <div className="relative mx-auto max-w-3xl">
             <div className="absolute -inset-[2px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 opacity-60 blur-sm" />
             <div className="absolute -inset-[1px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500" />
 
             <div className="relative bg-zinc-950 aspect-video w-full overflow-hidden">
               {!videoPlaying ? (
                 <>
-                  {/* Dark grid background as thumbnail placeholder */}
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: 'linear-gradient(135deg, #0e1a2e 0%, #1a0a2e 50%, #0e1a2e 100%)' }}
+                  {/* ── THUMBNAIL IMAGE ── */}
+                  <img
+                    src={videoThumbnail}
+                    alt="15 Qualified Leads Guaranteed"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                  <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                      backgroundImage: `linear-gradient(rgba(0,240,255,0.2) 1px, transparent 1px),
-                                        linear-gradient(90deg, rgba(0,240,255,0.2) 1px, transparent 1px)`,
-                      backgroundSize: '60px 60px',
-                    }}
-                  />
+                  {/* Subtle dark overlay so play button pops */}
+                  <div className="absolute inset-0 bg-black/30" />
+
+                  {/* Play button */}
                   <button
                     onClick={() => setVideoPlaying(true)}
-                    className="absolute inset-0 flex flex-col items-center justify-center gap-6"
+                    className="absolute inset-0 flex flex-col items-center justify-center gap-4"
                     aria-label="Play video"
                   >
-                    <div className="play-pulse relative w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center shadow-2xl">
+                    <div className="play-pulse w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center shadow-2xl">
                       <svg className="w-8 h-8 sm:w-10 sm:h-10 fill-black translate-x-1" viewBox="0 0 24 24">
                         <polygon points="5,3 19,12 5,21" />
                       </svg>
                     </div>
-                    <span className="font-body text-white/50 text-sm uppercase tracking-widest">
+                    <span className="font-body text-white/70 text-sm uppercase tracking-widest drop-shadow-lg">
                       Click to play
                     </span>
                   </button>
@@ -431,7 +412,10 @@ export default function BookCall() {
 
           <div className="mt-10">
             <span className="font-body text-gray-600 text-base">Or call us directly: </span>
-            <a href="tel:2145060806" className="font-display text-cyan-400 text-xl font-bold hover:text-violet-400 transition-colors">
+            <a
+              href="tel:2145060806"
+              className="font-display text-cyan-400 text-xl font-bold hover:text-violet-400 transition-colors"
+            >
               (214) 506-0806
             </a>
           </div>

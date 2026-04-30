@@ -87,6 +87,7 @@ function useMetaPixel() {
 /* ── LeadConnector Calendar Embed ── */
 function LeadConnectorCalendar() {
   useEffect(() => {
+    // Load embed script
     if (!document.getElementById('lc-form-embed-script')) {
       const script = document.createElement('script');
       script.id = 'lc-form-embed-script';
@@ -95,6 +96,30 @@ function LeadConnectorCalendar() {
       script.async = true;
       document.body.appendChild(script);
     }
+
+    // Fire Meta Pixel Schedule event when booking is confirmed via iframe postMessage
+    const handleMessage = (event: MessageEvent) => {
+      if (!event.data) return;
+      const data = event.data;
+
+      const isBookingConfirmed =
+        data?.type === 'booking_confirmed' ||
+        data?.action === 'booking_confirmed' ||
+        data?.event === 'booking_confirmed' ||
+        data?.type === 'appointment_booked' ||
+        data?.action === 'appointment_booked' ||
+        data?.event === 'appointment_booked' ||
+        (typeof data === 'string' && data.includes('booking_confirmed'));
+
+      if (isBookingConfirmed) {
+        if ((window as any).fbq) {
+          (window as any).fbq('track', 'Schedule');
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   return (
@@ -347,7 +372,7 @@ export default function BookCall() {
             </div>
           </div>
 
-          {/* ── UPDATED HEADLINE ── */}
+          {/* Headline */}
           <div className="text-center mb-10">
             <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl leading-tight mb-5">
               <span className="text-white">Claim Your </span>
@@ -496,10 +521,9 @@ export default function BookCall() {
             Own your lead flow.
           </p>
 
-          {/* Calendar */}
+          {/* ── CALENDAR — fires fbq Schedule on booking confirmed ── */}
           <LeadConnectorCalendar />
 
-          {/* Or call */}
           <div className="mt-10">
             <span className="font-body text-gray-600 text-base">Or call us directly: </span>
             <a

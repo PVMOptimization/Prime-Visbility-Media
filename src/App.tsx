@@ -27,7 +27,6 @@ function AppContent(): JSX.Element {
         <Route path="/contact" element={<Contact />} />
         <Route path="/pricing" element={<TieredGrowth />} />
         <Route path="/meeting" element={<Meeting />} />
-        <Route path="/vsl" element={<VSL />} />
         <Route path="/tier3" element={<Tier3 />} />
         <Route path="/4killers" element={<FourKillers />} />
         <Route path="/privacy-policy" element={<Policy />} />

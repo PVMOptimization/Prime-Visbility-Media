@@ -7,6 +7,14 @@ import img2 from '../assets/REVIEWS_ARE_CRUCIAL__3_.png';
 import img3 from '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png';
 import videoThumbnail from '../assets/15Qualified Leads Guaranteed.png';
 
+// ── Meta Pixel ID ──
+const META_PIXEL_ID = '4447826168834056';
+
+// ── NOTE: Conversion API Access Token should only be used server-side.
+// ── Never expose access tokens in client-side code in production.
+// ── Token: EAAYEtVT7WigBRZAGHzgZAxcLRstzNgkYuBkxaZCkrZBwPRDkgHszZCV8OeCuHuq7...
+// ── Wire this up via a backend endpoint or a service like Vercel Edge Functions.
+
 const TESTIMONIAL_IMAGES = [img1, img2, img3];
 const VIDEO_URL = 'https://www.youtube.com/embed/XKq-T9Y9BeY';
 
@@ -45,13 +53,52 @@ const faqs = [
   }
 ];
 
-/* ── Calendly Embed ── */
-function CalendlyEmbed({ url }: { url: string }) {
+/* ── Meta Pixel Hook ── */
+function useMetaPixel() {
   useEffect(() => {
-    if (!document.getElementById('calendly-script')) {
+    if (typeof window === 'undefined') return;
+    // Inject pixel script once
+    if (!(window as any).fbq) {
       const script = document.createElement('script');
-      script.id = 'calendly-script';
-      script.src = 'https://assets.calendly.com/assets/external/widget.js';
+      script.innerHTML = `
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '${META_PIXEL_ID}');
+        fbq('track', 'PageView');
+      `;
+      document.head.appendChild(script);
+
+      // Noscript pixel fallback
+      const noscript = document.createElement('noscript');
+      const img = document.createElement('img');
+      img.height = 1;
+      img.width = 1;
+      img.style.display = 'none';
+      img.src = `https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`;
+      noscript.appendChild(img);
+      document.head.appendChild(noscript);
+    } else {
+      // fbq already loaded, just track PageView
+      (window as any).fbq('track', 'PageView');
+    }
+  }, []);
+}
+
+/* ── LeadConnector Calendar Embed ── */
+function LeadConnectorCalendar() {
+  useEffect(() => {
+    // Inject LeadConnector embed script once
+    if (!document.getElementById('lc-form-embed-script')) {
+      const script = document.createElement('script');
+      script.id = 'lc-form-embed-script';
+      script.src = 'https://link.msgsndr.com/js/form_embed.js';
+      script.type = 'text/javascript';
       script.async = true;
       document.body.appendChild(script);
     }
@@ -59,15 +106,42 @@ function CalendlyEmbed({ url }: { url: string }) {
 
   return (
     <div className="relative">
+      {/* Glowing border frame */}
       <div className="absolute -inset-[2px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 opacity-50 blur-sm" />
       <div className="absolute -inset-[1px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 opacity-60" />
       <div className="relative bg-zinc-950 overflow-hidden">
-        <div
-          className="calendly-inline-widget"
-          data-url={`${url}?hide_gdpr_banner=1&background_color=09090b&text_color=ffffff&primary_color=00F0FF`}
-          style={{ minWidth: '320px', height: '700px' }}
+        <iframe
+          src="https://api.leadconnectorhq.com/widget/booking/a83VMkrtnlh8urDI0GBj"
+          style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: '700px' }}
+          scrolling="no"
+          id="a83VMkrtnlh8urDI0GBj_1777560153049"
+          title="Book Your Call"
         />
       </div>
+    </div>
+  );
+}
+
+/* ── Scroll Indicator ── */
+function ScrollIndicator({ label = 'Keep Scrolling' }: { label?: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-8 gap-2 select-none pointer-events-none">
+      <span className="font-body text-[10px] uppercase tracking-[0.3em] text-gray-600">{label}</span>
+      <div className="flex flex-col items-center gap-1">
+        {[0, 1, 2].map((i) => (
+          <ChevronDown
+            key={i}
+            className="w-4 h-4 text-cyan-500/40"
+            style={{ animation: `scrollBounce 1.4s ease-in-out ${i * 0.2}s infinite` }}
+          />
+        ))}
+      </div>
+      <style>{`
+        @keyframes scrollBounce {
+          0%, 100% { opacity: 0.2; transform: translateY(-4px); }
+          50%       { opacity: 0.8; transform: translateY(4px); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -139,7 +213,7 @@ function FAQ() {
             Still have questions? We answer everything on the call.
           </p>
           <a
-            href="https://calendly.com/optimization-primivisibilitymedia/10min"
+            href="https://api.leadconnectorhq.com/widget/booking/a83VMkrtnlh8urDI0GBj"
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold hover:from-blue-600 hover:to-violet-600 transition-all duration-300"
@@ -157,6 +231,9 @@ function FAQ() {
 export default function BookCall() {
   const [videoPlaying, setVideoPlaying] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Fire Meta Pixel on mount
+  useMetaPixel();
 
   return (
     <div className="bg-black text-white overflow-hidden">
@@ -224,6 +301,13 @@ export default function BookCall() {
           to   { opacity:1; transform:translateY(0); }
         }
         .fade-step { animation: fadeInUp 0.6s ease-out forwards; }
+
+        /* Scroll indicator divider line */
+        .section-divider {
+          width: 100%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(0,240,255,0.15), rgba(176,38,255,0.15), transparent);
+        }
       `}</style>
 
       <Navigation showStickyCTA={false} />
@@ -300,6 +384,11 @@ export default function BookCall() {
         </div>
       </section>
 
+      {/* ── SCROLL INDICATOR 1 ── */}
+      <div className="section-divider" />
+      <ScrollIndicator label="Step 1 — Watch the Video" />
+      <div className="section-divider" />
+
       {/* ── SECTION 2: VIDEO ── */}
       <section className="relative py-20 sm:py-28 px-4 sm:px-6">
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
@@ -338,16 +427,12 @@ export default function BookCall() {
             <div className="relative bg-zinc-950 aspect-video w-full overflow-hidden">
               {!videoPlaying ? (
                 <>
-                  {/* ── THUMBNAIL IMAGE ── */}
                   <img
                     src={videoThumbnail}
                     alt="15 Qualified Leads Guaranteed"
                     className="absolute inset-0 w-full h-full object-cover"
                   />
-                  {/* Subtle dark overlay so play button pops */}
                   <div className="absolute inset-0 bg-black/30" />
-
-                  {/* Play button */}
                   <button
                     onClick={() => setVideoPlaying(true)}
                     className="absolute inset-0 flex flex-col items-center justify-center gap-4"
@@ -382,7 +467,12 @@ export default function BookCall() {
         </div>
       </section>
 
-      {/* ── SECTION 3: CALENDLY ── */}
+      {/* ── SCROLL INDICATOR 2 ── */}
+      <div className="section-divider" />
+      <ScrollIndicator label="Step 2 — Book Your Call" />
+      <div className="section-divider" />
+
+      {/* ── SECTION 3: LEADCONNECTOR CALENDAR ── */}
       <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-violet-500/10 blur-[100px] pointer-events-none" />
@@ -407,7 +497,8 @@ export default function BookCall() {
             Own your lead flow.
           </p>
 
-          <CalendlyEmbed url="https://calendly.com/optimization-primivisibilitymedia/10min" />
+          {/* ── LEADCONNECTOR CALENDAR ── */}
+          <LeadConnectorCalendar />
 
           <div className="mt-10">
             <span className="font-body text-gray-600 text-base">Or call us directly: </span>
@@ -421,8 +512,18 @@ export default function BookCall() {
         </div>
       </section>
 
+      {/* ── SCROLL INDICATOR 3 ── */}
+      <div className="section-divider" />
+      <ScrollIndicator label="Common Questions" />
+      <div className="section-divider" />
+
       {/* ── SECTION 4: FAQ OBJECTIONS ── */}
       <FAQ />
+
+      {/* ── SCROLL INDICATOR 4 ── */}
+      <div className="section-divider" />
+      <ScrollIndicator label="Real Results" />
+      <div className="section-divider" />
 
       {/* ── SECTION 5: TESTIMONIAL IMAGES ── */}
       <section className="relative py-20 sm:py-28 px-4 sm:px-6 bg-black">
@@ -476,7 +577,7 @@ export default function BookCall() {
 
           <div className="text-center mt-14">
             <a
-              href="https://calendly.com/optimization-primivisibilitymedia/10min"
+              href="https://api.leadconnectorhq.com/widget/booking/a83VMkrtnlh8urDI0GBj"
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 px-8 py-4 border-2 border-cyan-500/50 text-cyan-400 font-body font-semibold hover:bg-cyan-500/10 transition-all duration-300"

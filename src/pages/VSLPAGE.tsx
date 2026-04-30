@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { AlertTriangle, ArrowRight, Zap, Clock, ChevronDown } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Zap, Clock, ChevronDown, ShieldCheck } from 'lucide-react';
 import Navigation from '../components/Navigation';
 
 import img1 from '../assets/DashboardB_ACOMP.png';
@@ -10,6 +10,8 @@ import videoThumbnail from '../assets/15Qualified Leads Guaranteed.png';
 // ── Meta Pixel ID ──
 const META_PIXEL_ID = '4447826168834056';
 
+// ── NOTE: Conversion API Access Token must only be used server-side.
+// ── Never expose it in client-side code. Use a backend endpoint instead.
 
 const TESTIMONIAL_IMAGES = [img1, img2, img3];
 const VIDEO_URL = 'https://www.youtube.com/embed/XKq-T9Y9BeY';
@@ -53,7 +55,6 @@ const faqs = [
 function useMetaPixel() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    // Inject pixel script once
     if (!(window as any).fbq) {
       const script = document.createElement('script');
       script.innerHTML = `
@@ -69,8 +70,6 @@ function useMetaPixel() {
         fbq('track', 'PageView');
       `;
       document.head.appendChild(script);
-
-      // Noscript pixel fallback
       const noscript = document.createElement('noscript');
       const img = document.createElement('img');
       img.height = 1;
@@ -80,7 +79,6 @@ function useMetaPixel() {
       noscript.appendChild(img);
       document.head.appendChild(noscript);
     } else {
-      // fbq already loaded, just track PageView
       (window as any).fbq('track', 'PageView');
     }
   }, []);
@@ -89,7 +87,6 @@ function useMetaPixel() {
 /* ── LeadConnector Calendar Embed ── */
 function LeadConnectorCalendar() {
   useEffect(() => {
-    // Inject LeadConnector embed script once
     if (!document.getElementById('lc-form-embed-script')) {
       const script = document.createElement('script');
       script.id = 'lc-form-embed-script';
@@ -102,7 +99,6 @@ function LeadConnectorCalendar() {
 
   return (
     <div className="relative">
-      {/* Glowing border frame */}
       <div className="absolute -inset-[2px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 opacity-50 blur-sm" />
       <div className="absolute -inset-[1px] bg-gradient-to-br from-cyan-500 via-violet-500 to-cyan-500 opacity-60" />
       <div className="relative bg-zinc-950 overflow-hidden">
@@ -113,6 +109,35 @@ function LeadConnectorCalendar() {
           id="a83VMkrtnlh8urDI0GBj_1777560153049"
           title="Book Your Call"
         />
+      </div>
+    </div>
+  );
+}
+
+/* ── No-Show Policy Card ── */
+function NoShowPolicy() {
+  return (
+    <div className="warn-pulse relative overflow-hidden border-2 border-red-500/70 bg-red-950/30 backdrop-blur-sm p-6 sm:p-8 mt-10">
+      <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-red-400" />
+      <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-red-400" />
+      <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-red-400" />
+      <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-red-400" />
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="shrink-0 w-12 h-12 bg-red-500/20 border border-red-500/50 flex items-center justify-center">
+          <AlertTriangle className="w-6 h-6 text-red-400" />
+        </div>
+        <div>
+          <p className="font-display font-bold text-red-300 text-lg sm:text-xl mb-1 uppercase tracking-wide">
+            ⚠ No-Show Policy — Read After Booking
+          </p>
+          <p className="font-body text-red-200/80 text-sm sm:text-base leading-relaxed">
+            We take no-shows <strong className="text-red-300">very seriously.</strong>{' '}
+            If you cannot make your scheduled time,{' '}
+            <strong className="text-white">please reschedule at least 2 hours in advance.</strong>{' '}
+            Repeated no-shows will result in being permanently{' '}
+            <strong className="text-red-300">blacklisted</strong> from all future bookings.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -228,7 +253,6 @@ export default function BookCall() {
   const [videoPlaying, setVideoPlaying] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-  // Fire Meta Pixel on mount
   useMetaPixel();
 
   return (
@@ -298,7 +322,6 @@ export default function BookCall() {
         }
         .fade-step { animation: fadeInUp 0.6s ease-out forwards; }
 
-        /* Scroll indicator divider line */
         .section-divider {
           width: 100%;
           height: 1px;
@@ -308,61 +331,41 @@ export default function BookCall() {
 
       <Navigation showStickyCTA={false} />
 
-      {/* ── SECTION 1: WARNING BANNER ── */}
+      {/* ── SECTION 1: HERO ── */}
       <section className="relative pt-24 pb-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-red-950/40 via-black to-black pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-cyan-950/20 via-black to-black pointer-events-none" />
+
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pt-12 pb-0">
 
+          {/* Guarantee badge */}
           <div className="flex justify-center mb-8">
-            <div className="px-6 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm">
-              <span className="font-body text-xs sm:text-sm tracking-[0.25em] text-cyan-400 uppercase">
-                You're almost there
+            <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm">
+              <ShieldCheck className="w-4 h-4 text-cyan-400" />
+              <span className="font-body text-xs sm:text-sm tracking-[0.2em] text-cyan-400 uppercase">
+                30-Day Guarantee — No Results, No Charge
               </span>
             </div>
           </div>
 
+          {/* ── UPDATED HEADLINE ── */}
           <div className="text-center mb-10">
-            <h1 className="font-display font-black text-4xl sm:text-5xl md:text-6xl leading-tight mb-4">
-              <span className="text-white">Thank You.</span>
+            <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl leading-tight mb-5">
+              <span className="text-white">Claim Your </span>
+              <span className="text-illuminate">15 Guaranteed</span>
               <br />
-              <span className="text-illuminate">One Last Step.</span>
+              <span className="text-white">Appointments Below.</span>
             </h1>
             <p className="font-body text-gray-300 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
-              Please complete <strong className="text-white">every step</strong> below to finalize your booking.
-              Your spot is not confirmed until the calendar invite is sent.
+              Watch the 3-minute breakdown, then pick your time.{' '}
+              <strong className="text-white">Your spot isn't locked in until you see the calendar invite.</strong>
             </p>
           </div>
 
-          {/* Warning card */}
-          <div className="warn-pulse relative overflow-hidden border-2 border-red-500/70 bg-red-950/30 backdrop-blur-sm p-6 sm:p-8 mb-0">
-            <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-red-400" />
-            <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-red-400" />
-            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-red-400" />
-            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-red-400" />
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div className="shrink-0 w-12 h-12 bg-red-500/20 border border-red-500/50 flex items-center justify-center">
-                <AlertTriangle className="w-6 h-6 text-red-400" />
-              </div>
-              <div>
-                <p className="font-display font-bold text-red-300 text-lg sm:text-xl mb-1 uppercase tracking-wide">
-                  ⚠ No-Show Policy — Read Before Booking
-                </p>
-                <p className="font-body text-red-200/80 text-sm sm:text-base leading-relaxed">
-                  We take no-shows <strong className="text-red-300">very seriously.</strong>{' '}
-                  If you cannot make your scheduled time,{' '}
-                  <strong className="text-white">please reschedule at least 2 hours in advance.</strong>{' '}
-                  Repeated no-shows will result in being permanently{' '}
-                  <strong className="text-red-300">blacklisted</strong> from all future bookings.
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Steps */}
-          <div className="grid grid-cols-3 gap-0 border-x border-b border-white/10">
+          <div className="grid grid-cols-3 gap-0 border border-white/10">
             {[
               { n: '01', label: 'Watch the 3-min breakdown below' },
-              { n: '02', label: 'Pick a time in the calendar below' },
+              { n: '02', label: 'Pick a time on the calendar' },
               { n: '03', label: 'Confirm your calendar invite' },
             ].map((step, i) => (
               <div
@@ -465,10 +468,10 @@ export default function BookCall() {
 
       {/* ── SCROLL INDICATOR 2 ── */}
       <div className="section-divider" />
-      <ScrollIndicator label="Step 2 — Book Your Call" />
+      <ScrollIndicator label="Step 2 — Pick Your Time" />
       <div className="section-divider" />
 
-      {/* ── SECTION 3: LEADCONNECTOR CALENDAR ── */}
+      {/* ── SECTION 3: CALENDAR ── */}
       <section className="relative py-20 sm:py-28 px-4 sm:px-6 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-cyan-500/10 blur-[120px] pointer-events-none" />
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-violet-500/10 blur-[100px] pointer-events-none" />
@@ -493,9 +496,10 @@ export default function BookCall() {
             Own your lead flow.
           </p>
 
-          {/* ── LEADCONNECTOR CALENDAR ── */}
+          {/* Calendar */}
           <LeadConnectorCalendar />
 
+          {/* Or call */}
           <div className="mt-10">
             <span className="font-body text-gray-600 text-base">Or call us directly: </span>
             <a
@@ -505,6 +509,9 @@ export default function BookCall() {
               (214) 506-0806
             </a>
           </div>
+
+          {/* ── NO-SHOW POLICY — below calendar ── */}
+          <NoShowPolicy />
         </div>
       </section>
 
@@ -513,7 +520,7 @@ export default function BookCall() {
       <ScrollIndicator label="Common Questions" />
       <div className="section-divider" />
 
-      {/* ── SECTION 4: FAQ OBJECTIONS ── */}
+      {/* ── SECTION 4: FAQ ── */}
       <FAQ />
 
       {/* ── SCROLL INDICATOR 4 ── */}

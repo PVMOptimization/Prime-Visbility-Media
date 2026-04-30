@@ -6,7 +6,6 @@ import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import TieredGrowth from "./pages/TieredGrowth";
 import Meeting from "./pages/Meeting";
-import VSL from "./pages/VSL";
 import Tier3 from "./pages/Tier3";
 import Pricecomparison from "./pages/Pricecomparison";
 import FourKillers from "./pages/FourKillers";

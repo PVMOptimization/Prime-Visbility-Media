@@ -10,10 +10,6 @@ import videoThumbnail from '../assets/15Qualified Leads Guaranteed.png';
 // ── Meta Pixel ID ──
 const META_PIXEL_ID = '4447826168834056';
 
-// ── NOTE: Conversion API Access Token should only be used server-side.
-// ── Never expose access tokens in client-side code in production.
-// ── Token: EAAYEtVT7WigBRZAGHzgZAxcLRstzNgkYuBkxaZCkrZBwPRDkgHszZCV8OeCuHuq7...
-// ── Wire this up via a backend endpoint or a service like Vercel Edge Functions.
 
 const TESTIMONIAL_IMAGES = [img1, img2, img3];
 const VIDEO_URL = 'https://www.youtube.com/embed/XKq-T9Y9BeY';

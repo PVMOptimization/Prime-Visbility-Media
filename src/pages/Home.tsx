@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import TabletShowcase from './TabletShowcase';
 import Navigation from '../components/Navigation';
+import Footer from '../components/Footer';
 
 export default function Home() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -693,39 +694,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="bg-black border-t border-white/10 py-12 sm:py-16 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 mb-8 sm:mb-12">
-            <div>
-              <div className="font-display text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">
-                <span className="text-cyan-400">PRIME</span>
-                <br />
-                <span className="text-white">VISIBILITY</span>
-              </div>
-              <p className="font-body text-gray-500 text-sm sm:text-base">Full-system growth for service businesses — maps, leads, automation, results.</p>
-            </div>
-            <div className="flex flex-col gap-3 sm:gap-4 font-body">
-              <Link to="/" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">Home</Link>
-              <Link to="/book-call" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">Book a Call</Link>
-              <Link to="/portfolio" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">Portfolio</Link>
-              <Link to="/contact" className="text-gray-400 hover:text-cyan-400 transition-colors text-base sm:text-lg">Contact</Link>
-            </div>
-            <div className="sm:text-left lg:text-right">
-              <a href="tel:2145060806" className="block font-display text-xl sm:text-2xl font-bold text-cyan-400 mb-3 sm:mb-4 hover:text-violet-400 transition-colors">
-                (214) 506-0806
-              </a>
-              <a href="https://www.instagram.com/primevisibilitymedia/" target="_blank" rel="noopener noreferrer"
-                className="font-body text-gray-400 hover:text-cyan-400 transition-colors text-sm sm:text-base">
-                @primevisibilitymedia
-              </a>
-            </div>
-          </div>
-          <div className="border-t border-white/10 pt-6 sm:pt-8 text-center">
-            <p className="font-body text-gray-600 text-sm sm:text-base">© 2025 Prime Visibility Media. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

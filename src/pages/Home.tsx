@@ -26,7 +26,7 @@ export default function Home() {
   const [showStickyCTA, setShowStickyCTA] = useState(false);
   const heroRef = useRef(null);
 
-  // --- LeadConnector Chat Widget Integration ---
+  // --- Chat Widget Injection ---
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "https://widgets.leadconnectorhq.com/loader.js";
@@ -34,14 +34,11 @@ export default function Home() {
     script.setAttribute('data-resources-url', 'https://widgets.leadconnectorhq.com/chat-widget/loader.js');
     script.setAttribute('data-widget-id', '69f6b5aebf766193af66d95c');
     script.setAttribute('data-source', 'WEB_USER');
-    
     document.body.appendChild(script);
 
     return () => {
-      // Cleanup to prevent multiple widgets on re-renders
-      const existingScript = document.querySelector(`script[src="${script.src}"]`);
-      if (existingScript) {
-        document.body.removeChild(existingScript);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
       }
     };
   }, []);
@@ -205,6 +202,7 @@ export default function Home() {
     'Salons & Med Spas', 'Auto Detailers', 'Pressure Washing', 'And more...'
   ];
 
+  // Ticker items for the scrolling bar
   const tickerItems = [
     '🔥 $23K closed in one month', '⚡ 15x more inbound calls', '📍 Top 3 Google Maps ranking', 
     '🤖 24/7 AI follow-up', '⭐ Automated 5-star reviews', '📈 40% revenue increase',
@@ -243,24 +241,82 @@ export default function Home() {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        @keyframes fadeInLeft {
+          from { opacity: 0; transform: translateX(-50px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes fadeInRight {
+          from { opacity: 0; transform: translateX(50px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.8); }
+          to { opacity: 1; transform: scale(1); }
+        }
 
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-fadeInLeft { animation: fadeInLeft 0.8s ease-out forwards; }
+        .animate-fadeInRight { animation: fadeInRight 0.8s ease-out forwards; }
+        .animate-scaleIn { animation: scaleIn 0.6s ease-out forwards; }
+
+        @keyframes float-kinetic {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          25% { transform: translateY(-10px) rotate(1deg); }
+          50% { transform: translateY(-5px) rotate(-1deg); }
+          75% { transform: translateY(-15px) rotate(0.5deg); }
+        }
         @keyframes pulse-glow {
           0%, 100% { text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); }
           50% { text-shadow: 0 0 40px rgba(0, 240, 255, 0.8), 0 0 60px rgba(176, 38, 255, 0.6); }
         }
+        @keyframes letter-wave {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+
+        .kinetic-text { animation: float-kinetic 8s ease-in-out infinite; }
         .glow-pulse { animation: pulse-glow 3s ease-in-out infinite; }
+        .letter-animate {
+          display: inline-block;
+          animation: letter-wave 2s ease-in-out infinite;
+        }
+        .letter-animate:nth-child(1) { animation-delay: 0s; }
+        .letter-animate:nth-child(2) { animation-delay: 0.1s; }
+        .letter-animate:nth-child(3) { animation-delay: 0.2s; }
+        .letter-animate:nth-child(4) { animation-delay: 0.3s; }
+        .letter-animate:nth-child(5) { animation-delay: 0.4s; }
+        .letter-animate:nth-child(6) { animation-delay: 0.5s; }
+        .letter-animate:nth-child(7) { animation-delay: 0.6s; }
+        .letter-animate:nth-child(8) { animation-delay: 0.7s; }
+        .letter-animate:nth-child(9) { animation-delay: 0.8s; }
+        .letter-animate:nth-child(10) { animation-delay: 0.9s; }
 
         [data-section-transition] { opacity: 0; }
-        .section-visible.section-transition-morph { animation: morphReveal 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
-        .section-visible.section-transition-slide { animation: slideReveal 1s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
-        .section-visible.section-transition-diagonal { animation: diagonalWipe 1s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+        [data-section-transition].section-visible.section-transition-morph {
+          animation: morphReveal 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+        [data-section-transition].section-visible.section-transition-slide {
+          animation: slideReveal 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
+        [data-section-transition].section-visible.section-transition-diagonal {
+          animation: diagonalWipe 1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+        }
 
-        @keyframes morphReveal { 0% { clip-path: circle(0% at 50% 50%); opacity: 0; } 100% { clip-path: circle(150% at 50% 50%); opacity: 1; } }
-        @keyframes slideReveal { 0% { clip-path: inset(0 100% 0 0); opacity: 0; } 100% { clip-path: inset(0 0 0 0); opacity: 1; } }
-        @keyframes diagonalWipe { 0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); opacity: 0; } 100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; } }
+        @keyframes morphReveal {
+          0% { clip-path: circle(0% at 50% 50%); opacity: 0; }
+          100% { clip-path: circle(150% at 50% 50%); opacity: 1; }
+        }
+        @keyframes slideReveal {
+          0% { clip-path: inset(0 100% 0 0); opacity: 0; }
+          100% { clip-path: inset(0 0 0 0); opacity: 1; }
+        }
+        @keyframes diagonalWipe {
+          0% { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); opacity: 0; }
+          100% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; }
+        }
 
         .text-illuminate {
+          position: relative;
           background: linear-gradient(45deg, #00F0FF, #B026FF, #00F0FF);
           background-size: 200% 200%;
           -webkit-background-clip: text;
@@ -268,13 +324,35 @@ export default function Home() {
           -webkit-text-fill-color: transparent;
           animation: illuminate 3s ease-in-out infinite;
         }
-        @keyframes illuminate { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        @keyframes illuminate {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
 
-        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        /* Ticker tape */
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
         .ticker-track { animation: ticker 20s linear infinite; }
+        .ticker-track:hover { animation-play-state: paused; }
 
+        /* Service card tag pulse */
+        @keyframes tagPulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.4); }
+          50% { box-shadow: 0 0 0 6px rgba(0, 240, 255, 0); }
+        }
+        .tag-pulse { animation: tagPulse 2s ease-in-out infinite; }
+
+        /* Stat counter glow */
+        .stat-glow {
+          text-shadow: 0 0 30px rgba(0, 240, 255, 0.6);
+        }
+
+        /* Problem card number */
         .problem-stat {
           font-family: 'Syne', sans-serif;
+          font-weight: 800;
           background: linear-gradient(135deg, #00F0FF, #B026FF);
           -webkit-background-clip: text;
           background-clip: text;
@@ -285,7 +363,7 @@ export default function Home() {
       <Navigation showStickyCTA={showStickyCTA} />
 
       {/* HERO SECTION */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 sm:pt-24">
         <div 
           className="absolute inset-0 opacity-40 transition-all duration-1000"
           style={{
@@ -293,26 +371,82 @@ export default function Home() {
                          radial-gradient(circle at ${100-mousePosition.x}% ${100-mousePosition.y}%, rgba(176,38,255,0.15) 0%, transparent 50%)`
           }}
         />
-        <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
-          <div className="inline-block mb-8">
-            <div className="px-6 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm">
-              <span className="font-body text-xs tracking-[0.3em] text-cyan-400 uppercase font-light">Digital Dominance Starts Here</span>
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+          <div className="grain w-[200%] h-[200%]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E")`
+            }}
+          />
+        </div>
+        <div className="absolute inset-0 opacity-[0.02]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                             linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+            backgroundSize: '100px 100px'
+          }}
+        />
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-24 text-center">
+          <div className="inline-block mb-6 sm:mb-8">
+            <div className="px-4 sm:px-6 py-1.5 sm:py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm">
+              <span className="font-body text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] text-cyan-400 uppercase font-light">
+                Digital Dominance Starts Here
+              </span>
             </div>
           </div>
-          <h1 className="font-display font-black text-6xl md:text-8xl lg:text-9xl leading-[0.85] mb-8">
-            <span className="block text-white">PRIME</span>
-            <span className="block text-illuminate glow-pulse">VISIBILITY</span>
+          <h1 className="font-display font-black text-[2.75rem] xs:text-[3.5rem] sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl leading-[0.85] mb-6 sm:mb-8 px-2">
+            <div className="overflow-visible">
+              <span className="block text-white kinetic-text">
+                {'PRIME'.split('').map((letter, i) => (
+                  <span key={i} className="letter-animate">{letter}</span>
+                ))}
+              </span>
+            </div>
+            <div className="relative overflow-visible">
+              <span className="block text-illuminate whitespace-nowrap glow-pulse">VISIBILITY</span>
+              <div className="absolute -bottom-2 sm:-bottom-4 left-0 right-0 h-0.5 sm:h-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500" />
+            </div>
           </h1>
-          <p className="font-body text-xl md:text-3xl text-gray-400 mb-16 max-w-4xl mx-auto font-light leading-relaxed">
+          <p className="font-body text-base sm:text-xl md:text-2xl lg:text-3xl text-gray-400 mb-12 sm:mb-16 max-w-4xl mx-auto font-light leading-relaxed px-4">
             We don't just build websites. We build the complete system that gets your phone ringing — 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 font-semibold"> 15 Appointments in 30 Days. Guaranteed.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 font-semibold"> maps, leads, follow-up, reviews. All of it.</span>
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center px-4">
             <Link to="/book-call">
-              <button className="group px-10 py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-lg rounded-none hover-lift w-full sm:w-auto">
-                Get My Free Audit <ArrowRight className="inline ml-2 w-5 h-5" />
+              <button className="group relative px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-base sm:text-lg rounded-none overflow-hidden hover-lift w-full sm:w-auto">
+                <span className="relative z-10 flex items-center justify-center gap-3">
+                  Get My Free Audit
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
             </Link>
+            <Link to="/portfolio">
+              <button className="group px-8 sm:px-10 py-4 sm:py-5 border-2 border-white/20 text-white font-body font-semibold text-base sm:text-lg rounded-none hover:border-cyan-400 hover:bg-cyan-500/10 transition-all duration-300 w-full sm:w-auto">
+                View Our Work
+              </button>
+            </Link>
+          </div>
+          <div className="mt-16 sm:mt-20 grid grid-cols-3 gap-4 sm:gap-8 lg:gap-12 max-w-3xl mx-auto px-4">
+            {[
+              { value: '350%', label: 'Avg Pipeline Growth' },
+              { value: '48hr', label: 'First Lead Guarantee' },
+              { value: '2.4M', label: 'Total Reach Generated' }
+            ].map((stat, i) => (
+              <div key={i} className="text-center">
+                <div className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-violet-400 mb-1 sm:mb-2 stat-glow">
+                  {stat.value}
+                </div>
+                <div className="font-body text-[0.65rem] sm:text-xs lg:text-sm text-gray-500 uppercase tracking-wider leading-tight">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-20 sm:mt-28 hidden sm:flex justify-center">
+            <div className="flex flex-col items-center gap-2">
+              <span className="font-body text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
+              <div className="w-[2px] h-12 bg-gradient-to-b from-cyan-500 to-transparent" />
+            </div>
           </div>
         </div>
       </section>
@@ -328,45 +462,200 @@ export default function Home() {
         </div>
       </div>
 
+      {/* TABLET SHOWCASE */}
       <div data-section-transition className="section-transition-morph">
         <TabletShowcase screenImagePath="/models/images/screen-modern.png" />
       </div>
 
       {/* PROBLEMS SECTION */}
-      <section data-section-transition className="relative py-24 px-6 bg-zinc-950 section-transition-diagonal">
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-diagonal">
         <div className="max-w-7xl mx-auto">
-          <h2 className="font-display text-5xl md:text-7xl font-black mb-12">
-            <span className="text-white">Your Pipeline </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Has Holes</span>
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {problems.map((p, i) => (
-              <div key={i} className="bg-zinc-900 p-10 border-2 border-white/10 hover-lift h-full">
-                <div className="problem-stat text-6xl font-black mb-2">{p.stat}</div>
-                <h3 className="font-display text-2xl font-bold mb-4 text-white">{p.title}</h3>
-                <p className="font-body text-gray-400 leading-relaxed">{p.description}</p>
+          <div className="mb-12 sm:mb-16 lg:mb-20">
+            <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 sm:mb-6">
+              <span className="text-white">Your Pipeline </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Has Holes</span>
+              <br />
+              <span className="text-white text-3xl sm:text-4xl md:text-5xl font-bold">in places you're not looking.</span>
+            </h2>
+            <div className="w-24 sm:w-32 h-1 bg-gradient-to-r from-red-500 to-orange-500" />
+          </div>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+            {problems.map((problem, index) => (
+              <div key={index} className="group relative hover-lift">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="relative bg-zinc-900 p-6 sm:p-8 lg:p-10 border-2 border-white/10 group-hover:border-cyan-500/50 transition-all duration-300 h-full">
+                  <div className="problem-stat text-5xl sm:text-6xl font-black mb-2">{problem.stat}</div>
+                  <div className="font-body text-xs text-gray-500 uppercase tracking-widest mb-6">{problem.statLabel}</div>
+                  <problem.icon className="w-10 h-10 sm:w-12 sm:h-12 text-cyan-400 mb-4" strokeWidth={1.5} />
+                  <h3 className="font-display text-xl sm:text-2xl font-bold mb-3 text-white">{problem.title}</h3>
+                  <p className="font-body text-gray-400 leading-relaxed text-base">{problem.description}</p>
+                  <div className="absolute top-0 right-0 w-16 h-16 sm:w-20 sm:h-20 border-t-2 border-r-2 border-cyan-500/30 group-hover:border-cyan-500 transition-colors duration-300" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="font-body text-gray-400 text-lg mb-6">We fix all three. Most agencies only touch one.</p>
+            <Link to="/book-call">
+              <button className="group px-8 py-4 border-2 border-cyan-500/50 text-cyan-400 font-body font-semibold rounded-none hover:bg-cyan-500/10 transition-all duration-300">
+                See What You're Missing — Free Audit
+                <ArrowRight className="inline ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* SERVICES SECTION */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 section-transition-slide">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+            <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8">
+              <span className="text-white">Everything That</span>
+              <br />
+              <span className="text-illuminate glow-pulse">Makes Your Phone Ring</span>
+            </h2>
+            <p className="font-body text-base sm:text-lg lg:text-xl text-gray-400 max-w-3xl mx-auto px-4">
+              One agency. The complete system. From invisible to fully booked.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {services.map((service, index) => (
+              <div key={index} className="group relative hover-lift cursor-pointer">
+                <div className={`absolute -inset-[2px] bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-100 blur-xl transition-all duration-500`} />
+                <div className="relative bg-zinc-900 p-8 sm:p-10 lg:p-12 border border-white/10 group-hover:border-transparent transition-all duration-300 h-full flex flex-col">
+                  {service.tag && (
+                    <div className="absolute -top-3 right-6">
+                      <span className="tag-pulse px-3 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-body font-bold text-xs uppercase tracking-wider">
+                        {service.tag}
+                      </span>
+                    </div>
+                  )}
+                  <div className={`inline-block p-3 sm:p-4 bg-gradient-to-br ${service.gradient} mb-4 sm:mb-6 w-fit`}>
+                    <service.icon className="w-8 h-8 sm:w-10 sm:h-10 text-black" strokeWidth={2} />
+                  </div>
+                  <h3 className="font-display text-xl sm:text-2xl lg:text-2xl font-bold mb-3 sm:mb-4 text-white">
+                    {service.title}
+                  </h3>
+                  <p className="font-body text-gray-400 leading-relaxed mb-4 sm:mb-6 text-base flex-1">
+                    {service.description}
+                  </p>
+                  <div className="flex items-center gap-2 text-cyan-400 font-body font-semibold group-hover:gap-4 transition-all text-sm sm:text-base mt-auto">
+                    Learn More
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-16 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-violet-500/10 to-cyan-500/5" />
+            <div className="relative border border-white/10 p-8 sm:p-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div>
+                <p className="font-display text-2xl sm:text-3xl font-bold text-white mb-2">Starts at <span className="text-cyan-400">$997</span> one-time.</p>
+                <p className="font-body text-gray-400 text-base">One missed job covers the cost. Most clients see ROI in the first week.</p>
+              </div>
+              <Link to="/pricing" className="flex-shrink-0">
+                <button className="group px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-lg rounded-none hover-lift">
+                  See Pricing & Tiers
+                  <ArrowRight className="inline ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-morph">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-12 sm:mb-16 lg:mb-20">
+            <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black">
+              <span className="text-white">Real Results.</span>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">Real Money.</span>
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="group hover-lift">
+                <div className="relative bg-zinc-900 p-6 sm:p-8 lg:p-10 border-l-4 border-cyan-500 group-hover:border-violet-500 transition-all duration-300">
+                  <div className="flex gap-1 mb-4 sm:mb-6">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-cyan-400 text-xl sm:text-2xl">★</span>
+                    ))}
+                  </div>
+                  <p className="font-body text-lg sm:text-xl text-gray-300 mb-6 sm:mb-8 leading-relaxed">
+                    "{testimonial.text}"
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-display font-bold text-white text-base sm:text-lg">{testimonial.author}</p>
+                      <p className="font-body text-gray-500 text-sm sm:text-base">{testimonial.business}</p>
+                    </div>
+                    <div className="px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-violet-500/20 border border-cyan-500/30 rounded">
+                      <p className="font-display text-cyan-400 font-bold text-sm whitespace-nowrap">{testimonial.result}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* SERVICES SECTION */}
-      <section data-section-transition className="relative py-24 px-6 section-transition-slide">
+      {/* PROCESS */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 overflow-hidden section-transition-diagonal">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h2 className="font-display text-6xl md:text-8xl font-black mb-8">
-              <span className="text-illuminate">The System.</span>
+          <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+            <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 sm:mb-8">
+              <span className="text-white">From Invisible</span>
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">To Fully Booked.</span>
             </h2>
+            <p className="font-body text-gray-400 text-lg max-w-2xl mx-auto">Four steps. Most clients see their first lead within 48 hours of launch.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {services.map((s, i) => (
-              <div key={i} className="group relative bg-zinc-900 p-12 border border-white/10 hover-lift">
-                <div className={`inline-block p-4 bg-gradient-to-br ${s.gradient} mb-6`}>
-                  <s.icon className="w-10 h-10 text-black" />
+          <div className="relative">
+            <div className="hidden md:block absolute top-0 left-12 md:left-1/2 w-1 h-full bg-gradient-to-b from-cyan-500 via-blue-500 to-violet-500 opacity-20" />
+            {steps.map((step, index) => (
+              <div key={index} className={`relative flex flex-col md:flex-row items-start md:items-center gap-6 sm:gap-12 mb-12 sm:mb-16 lg:mb-24 ${index % 2 === 0 ? '' : 'md:flex-row-reverse'}`}>
+                <div className="flex-shrink-0 relative">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-cyan-500 to-violet-500 flex items-center justify-center border-2 sm:border-4 border-black">
+                    <span className="font-display text-xl sm:text-2xl lg:text-3xl font-black text-black">{step.number}</span>
+                  </div>
                 </div>
-                <h3 className="font-display text-2xl font-bold mb-4 text-white">{s.title}</h3>
-                <p className="font-body text-gray-400 mb-6">{s.description}</p>
+                <div className="flex-1 bg-zinc-900 p-6 sm:p-8 border border-white/10 hover-lift w-full">
+                  <h3 className="font-display text-2xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4 text-white">{step.title}</h3>
+                  <p className="font-body text-gray-400 text-base sm:text-lg leading-relaxed">{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* INDUSTRIES */}
+      <section data-section-transition className="relative py-16 sm:py-24 lg:py-32 px-4 sm:px-6 bg-zinc-950 section-transition-slide">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 sm:mb-8">
+            <span className="text-white">Built For</span>
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-500">Service Businesses</span>
+          </h2>
+          <p className="font-body text-gray-400 text-lg mb-12 max-w-2xl mx-auto">
+            Serving Fort Worth, DFW, Arizona & Fresno — and expanding fast.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
+            {industries.map((industry, index) => (
+              <div key={index} className="group relative overflow-hidden hover-lift">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative bg-zinc-900 p-4 sm:p-6 border border-white/10 group-hover:border-cyan-500/50 transition-all duration-300">
+                  <p className="font-body text-sm sm:text-base lg:text-lg font-semibold text-white">{industry}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -374,23 +663,46 @@ export default function Home() {
       </section>
 
       {/* FINAL CTA */}
-      <section data-section-transition className="relative py-40 px-6 overflow-hidden section-transition-morph">
+      <section data-section-transition className="relative py-20 sm:py-32 lg:py-40 px-4 sm:px-6 overflow-hidden section-transition-morph">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-blue-500/20 to-violet-500/20" />
+        <div className="absolute inset-0 opacity-30">
+          {[...Array(30)].map((_, i) => (
+            <div key={i} className="absolute w-2 h-2 bg-cyan-400 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animation: `pulse 3s ease-in-out ${Math.random() * 2}s infinite`
+              }}
+            />
+          ))}
+        </div>
         <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <h2 className="font-display text-6xl md:text-9xl font-black mb-8 leading-none">
+          <h2 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-black mb-6 sm:mb-8 leading-none">
             <span className="text-white">STOP LOSING</span>
             <br />
             <span className="text-illuminate glow-pulse">JOBS DAILY.</span>
           </h2>
-          <p className="font-body text-2xl text-gray-300 mb-16 max-w-3xl mx-auto">
-            Comment <span className="text-cyan-400 font-bold">"GB"</span> on Instagram for the 47 Insider Secrets, or activate your audit below.
+          <p className="font-body text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-300 mb-6 max-w-3xl mx-auto font-light px-4">
+            Every day without this system is another job going to your competitor.
           </p>
-          <Link to="/book-call">
-            <button className="px-12 py-6 bg-white text-black font-body font-bold text-xl hover-lift">
-              Get My Free Audit Now <Zap className="inline ml-3 w-6 h-6" />
-            </button>
-          </Link>
-          <div className="mt-12 text-gray-400 font-body text-xl">
-            Or call: <a href="tel:2145060806" className="text-cyan-400 font-bold">(214) 506-0806</a>
+          <p className="font-body text-base sm:text-lg text-gray-500 mb-12 sm:mb-16 px-4">
+            Free audit. No pitch. Just the truth about what your listing is costing you.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 justify-center items-center mb-8 sm:mb-12 px-4">
+            <Link to="/book-call">
+              <button className="group relative px-10 sm:px-12 py-5 sm:py-6 bg-white text-black font-body font-bold text-lg sm:text-xl rounded-none overflow-hidden hover-lift w-full sm:w-auto">
+                <span className="relative z-10 flex items-center justify-center gap-3">
+                  Get My Free Audit Now
+                  <Zap className="w-5 h-5 sm:w-6 sm:h-6 group-hover:rotate-12 transition-transform" />
+                </span>
+              </button>
+            </Link>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-400 font-body text-base sm:text-lg">
+            <span>Or call us directly:</span>
+            <a href="tel:2145060806" className="text-cyan-400 text-xl sm:text-2xl font-bold hover:text-violet-400 transition-colors duration-300">
+              (214) 506-0806
+            </a>
           </div>
         </div>
       </section>

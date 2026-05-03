@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
@@ -13,10 +14,30 @@ import Policy from "./pages/Policy";
 import ThankYou from "./pages/ThankYou";
 import VSLPAGE from "./pages/VSLPAGE";
 
-
 function AppContent(): JSX.Element {
   const location = useLocation();
   const hideNav: boolean = location.pathname === '/vsl';
+
+  // --- GHL Chat Widget Integration ---
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://leadconnectorhq.com";
+    script.dataset.resourcesUrl = "https://leadconnectorhq.com";
+    script.dataset.widgetId = "69f6b5aebf766193af66d95c";
+    script.dataset.source = "WEB_USER";
+    script.async = true;
+
+    document.body.appendChild(script);
+
+    // Optional: Cleanup script if the component unmounts
+    return () => {
+      const existingScript = document.querySelector(`script[data-widget-id="69f6b5aebf766193af66d95c"]`);
+      if (existingScript) {
+        document.body.removeChild(existingScript);
+      }
+    };
+  }, []);
+  // ------------------------------------
 
   return (
     <>

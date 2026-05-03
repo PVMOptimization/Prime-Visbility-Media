@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
-import BookCall from './pages/BookCall';
 import Portfolio from './pages/Portfolio';
 import Contact from './pages/Contact';
 import TieredGrowth from "./pages/TieredGrowth";
@@ -44,7 +43,6 @@ function AppContent(): JSX.Element {
       {!hideNav && <Navigation />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/book-call" element={<BookCall />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/pricing" element={<TieredGrowth />} />

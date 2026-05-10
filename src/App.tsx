@@ -12,6 +12,7 @@ import FourKillers from "./pages/FourKillers";
 import Policy from "./pages/Policy";
 import ThankYou from "./pages/ThankYou";
 import VSLPAGE from "./pages/VSLPAGE";
+import Casestudy from "./pages/Casestudy";
 
 function AppContent(): JSX.Element {
   const location = useLocation();
@@ -52,6 +53,7 @@ function AppContent(): JSX.Element {
         <Route path="/privacy-policy" element={<Policy />} />
         <Route path="/comparison" element={<Pricecomparison />} />
         <Route path="/thank-you" element={<ThankYou />} />
+        <Route path="/case-study" element={<Casestudy />} />
         <Route path="/bookyourcall" element={<VSLPAGE />} />
       </Routes>
     </>

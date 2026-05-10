@@ -355,6 +355,41 @@ export default function CaseStudy() {
             </p>
           </div>
 
+          {/* TOP CALLOUT — 50 to 600 leads */}
+          <div className="mb-12 sm:mb-16 group hover-lift">
+            <div className="text-center mb-6">
+              <span className="font-body text-xs sm:text-sm tracking-[0.3em] text-cyan-400 uppercase font-light">
+                Result 01 — Lead Volume
+              </span>
+              <h3 className="font-display text-3xl sm:text-4xl md:text-5xl font-black mt-3">
+                <span className="text-gray-600 line-through decoration-red-500/60">50 Leads</span>
+                <span className="text-cyan-400 mx-3 sm:mx-4">→</span>
+                <span className="text-illuminate glow-pulse">600 Leads</span>
+              </h3>
+              <p className="font-body text-gray-400 text-sm mt-3">in 30 days</p>
+            </div>
+            <div className="relative bg-zinc-900 border border-white/10 group-hover:border-cyan-500/50 transition-all duration-500 overflow-hidden dashboard-glow">
+              <div className="scanline" />
+              <div className="aspect-[16/9] bg-zinc-800/50 flex items-center justify-center relative">
+                <img
+                  src="/case-study/leads-50-to-600.png"
+                  alt="Lead volume growth from 50 to 600 in 30 days"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+                <div className="absolute inset-0 hidden flex-col items-center justify-center text-gray-600 font-body">
+                  <TrendingUp className="w-12 h-12 mb-2 opacity-30" />
+                  <span className="text-sm">Lead Growth Visual</span>
+                  <span className="text-xs mt-1 opacity-60">/case-study/leads-50-to-600.png</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="grid lg:grid-cols-2 gap-8 sm:gap-12">
             {/* Dashboard 1 */}
             <div className="group hover-lift">
@@ -435,6 +470,43 @@ export default function CaseStudy() {
             <p className="font-body text-gray-500 text-sm italic">
               Client identifiers redacted for confidentiality.
             </p>
+          </div>
+
+          {/* BOTTOM CALLOUT — 14 reviews to 129 inbound leads for $0 cost */}
+          <div className="mt-16 sm:mt-20 group hover-lift">
+            <div className="text-center mb-6">
+              <span className="font-body text-xs sm:text-sm tracking-[0.3em] text-violet-400 uppercase font-light">
+                Result 02 — Organic Inbound
+              </span>
+              <h3 className="font-display text-3xl sm:text-4xl md:text-5xl font-black mt-3">
+                <span className="text-gray-600 line-through decoration-red-500/60">14 Reviews</span>
+                <span className="text-violet-400 mx-3 sm:mx-4">→</span>
+                <span className="text-illuminate glow-pulse">129 Inbound Leads</span>
+              </h3>
+              <p className="font-body text-gray-400 text-sm mt-3">
+                for <span className="text-cyan-400 font-bold">$0 cost</span> — pure organic from review automation
+              </p>
+            </div>
+            <div className="relative bg-zinc-900 border border-white/10 group-hover:border-violet-500/50 transition-all duration-500 overflow-hidden dashboard-glow">
+              <div className="scanline" />
+              <div className="aspect-[16/9] bg-zinc-800/50 flex items-center justify-center relative">
+                <img
+                  src="/case-study/reviews-14-to-129.png"
+                  alt="Reviews growing from 14 to 129 driving inbound leads at zero cost"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'flex';
+                  }}
+                />
+                <div className="absolute inset-0 hidden flex-col items-center justify-center text-gray-600 font-body">
+                  <TrendingUp className="w-12 h-12 mb-2 opacity-30" />
+                  <span className="text-sm">Reviews → Inbound Visual</span>
+                  <span className="text-xs mt-1 opacity-60">/case-study/reviews-14-to-129.png</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

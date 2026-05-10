@@ -372,7 +372,7 @@ export default function CaseStudy() {
               <div className="scanline" />
               <div className="aspect-[16/9] bg-zinc-800/50 flex items-center justify-center relative">
                 <img
-                  src="/case-study/leads-50-to-600.png"
+                  src="public/images/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png"
                   alt="Lead volume growth from 50 to 600 in 30 days"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -404,7 +404,7 @@ export default function CaseStudy() {
                 <div className="scanline" />
                 <div className="aspect-[16/10] bg-zinc-800/50 flex items-center justify-center relative">
                   <img 
-                    src="/case-study/dashboard-1.png" 
+                    src="public/images/image2.png" 
                     alt="Lead generation dashboard showing growth from baseline"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -441,7 +441,7 @@ export default function CaseStudy() {
                 <div className="scanline" />
                 <div className="aspect-[16/10] bg-zinc-800/50 flex items-center justify-center relative">
                   <img 
-                    src="/case-study/dashboard-2.png" 
+                    src="public/images/DashboardB&ACOMPlete.jpg" 
                     alt="Revenue and conversion dashboard"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -491,7 +491,7 @@ export default function CaseStudy() {
               <div className="scanline" />
               <div className="aspect-[16/9] bg-zinc-800/50 flex items-center justify-center relative">
                 <img
-                  src="/case-study/reviews-14-to-129.png"
+                  src="public/images/REVIEWS ARE CRUCIAL (4).png"
                   alt="Reviews growing from 14 to 129 driving inbound leads at zero cost"
                   className="w-full h-full object-cover"
                   onError={(e) => {

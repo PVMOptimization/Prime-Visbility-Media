@@ -372,7 +372,7 @@ export default function CaseStudy() {
               <div className="scanline" />
               <div className="aspect-[16/9] bg-zinc-800/50 flex items-center justify-center relative">
                 <img
-                  src="/workspaces/Prime-Visbility-Media/public/images/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png"
+                  src="/images/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png"
                   alt="Lead volume growth from 50 to 600 in 30 days"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -404,7 +404,7 @@ export default function CaseStudy() {
                 <div className="scanline" />
                 <div className="aspect-[16/10] bg-zinc-800/50 flex items-center justify-center relative">
                   <img 
-                    src="/public/images/image2.png" 
+                    src="/images/image2.png" 
                     alt="Lead generation dashboard showing growth from baseline"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -441,7 +441,7 @@ export default function CaseStudy() {
                 <div className="scanline" />
                 <div className="aspect-[16/10] bg-zinc-800/50 flex items-center justify-center relative">
                   <img 
-                    src="/public/images/DashboardB&ACOMPlete.jpg" 
+                    src="/images/DashboardB&ACOMPlete.jpg" 
                     alt="Revenue and conversion dashboard"
                     className="w-full h-full object-cover"
                     onError={(e) => {
@@ -491,7 +491,7 @@ export default function CaseStudy() {
               <div className="scanline" />
               <div className="aspect-[16/9] bg-zinc-800/50 flex items-center justify-center relative">
                 <img
-                  src="/public/images/REVIEWS ARE CRUCIAL (4).png"
+                  src="/images/REVIEWS ARE CRUCIAL (4).png"
                   alt="Reviews growing from 14 to 129 driving inbound leads at zero cost"
                   className="w-full h-full object-cover"
                   onError={(e) => {

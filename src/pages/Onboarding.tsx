@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ChangeEvent, FormEvent, ComponentType, SVGProps } from 'react';
 import { useForm, ValidationError } from '@formspree/react';
 import {
   ArrowRight,
@@ -17,17 +17,88 @@ import {
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 
+type OnboardingFormData = {
+  business_name?: string;
+  contact_name?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  website?: string;
+  value_prop?: string;
+  differentiator?: string;
+  years_in_business?: string;
+  target_jobs?: string[];
+  target_jobs_other?: string;
+  avg_ticket?: string;
+  service_area?: string;
+  has_gbp?: string;
+  google_email?: string;
+  review_volume?: string;
+  has_business_manager?: string;
+  meta_admin_email?: string;
+  facebook_page?: string;
+  instagram_handle?: string;
+  ad_budget?: string;
+  creative_assets?: string[];
+  brand_colors?: string;
+  brand_notes?: string;
+  additional_notes?: string;
+  authorize_management?: boolean;
+  understand_ad_spend?: boolean;
+  provide_access?: boolean;
+  signature?: string;
+  signature_date?: string;
+};
+
 const TOTAL_STEPS = 8;
+
+type InputChangeEvent = ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>;
+type MultiCheckboxField = 'target_jobs' | 'creative_assets';
+
+type StepHeaderProps = {
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  label: string;
+  title: string;
+};
+
+type FieldProps = {
+  label: string;
+  name: string;
+  type?: string;
+  placeholder?: string;
+  required?: boolean;
+  value: string;
+  onChange: (e: InputChangeEvent) => void;
+  helper?: string;
+};
+
+type TextareaFieldProps = Omit<FieldProps, 'type'>;
+
+type SelectFieldProps = {
+  label: string;
+  name: string;
+  options: string[];
+  required?: boolean;
+  value: string;
+  onChange: (e: InputChangeEvent) => void;
+};
+
+type CheckboxOptionProps = {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+  required?: boolean;
+};
 
 export default function Onboarding() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<OnboardingFormData>({});
   const [state, handleSubmit] = useForm('xbdkkrzz');
-  const formRef = useRef(null);
+  const formRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth) * 100,
         y: (e.clientY / window.innerHeight) * 100
@@ -44,17 +115,20 @@ export default function Onboarding() {
     }
   }, [currentStep]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (e: InputChangeEvent) => {
+    const target = e.target as HTMLInputElement;
+    const { name, value, type } = target;
+    const checked = type === 'checkbox' ? target.checked : undefined;
+
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
   };
 
-  const handleMultiCheckbox = (name, value) => {
+  const handleMultiCheckbox = (name: MultiCheckboxField, value: string) => {
     setFormData((prev) => {
-      const currentValues = prev[name] || [];
+      const currentValues = (prev[name] as string[]) || [];
       const newValues = currentValues.includes(value)
         ? currentValues.filter((v) => v !== value)
         : [...currentValues, value];
@@ -74,7 +148,7 @@ export default function Onboarding() {
     }
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleSubmit(formData);
   };
@@ -720,7 +794,7 @@ export default function Onboarding() {
    REUSABLE FIELD COMPONENTS
    ======================================================== */
 
-function StepHeader({ icon: Icon, label, title }) {
+function StepHeader({ icon: Icon, label, title }: StepHeaderProps) {
   return (
     <div className="mb-8">
       <div className="flex items-center gap-3 mb-4">
@@ -736,7 +810,7 @@ function StepHeader({ icon: Icon, label, title }) {
   );
 }
 
-function Field({ label, name, type = 'text', placeholder, required, value, onChange, helper }) {
+function Field({ label, name, type = 'text', placeholder, required, value, onChange, helper }: FieldProps) {
   return (
     <div>
       <label htmlFor={name} className="block font-body text-sm font-semibold text-white mb-2">
@@ -757,7 +831,7 @@ function Field({ label, name, type = 'text', placeholder, required, value, onCha
   );
 }
 
-function TextareaField({ label, name, placeholder, required, value, onChange, helper }) {
+function TextareaField({ label, name, placeholder, required, value, onChange, helper }: TextareaFieldProps) {
   return (
     <div>
       <label htmlFor={name} className="block font-body text-sm font-semibold text-white mb-2">
@@ -778,7 +852,7 @@ function TextareaField({ label, name, placeholder, required, value, onChange, he
   );
 }
 
-function SelectField({ label, name, options, required, value, onChange }) {
+function SelectField({ label, name, options, required, value, onChange }: SelectFieldProps) {
   return (
     <div>
       <label htmlFor={name} className="block font-body text-sm font-semibold text-white mb-2">
@@ -810,7 +884,7 @@ function SelectField({ label, name, options, required, value, onChange }) {
   );
 }
 
-function CheckboxOption({ label, checked, onChange, required }) {
+function CheckboxOption({ label, checked, onChange, required }: CheckboxOptionProps) {
   return (
     <label className="flex items-start gap-3 p-3 bg-black/40 border border-white/10 cursor-pointer hover:border-cyan-500/40 transition-colors group">
       <div className="relative flex-shrink-0 mt-0.5">

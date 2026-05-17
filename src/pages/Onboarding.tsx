@@ -340,9 +340,9 @@ export default function Onboarding() {
                         'Water damage restoration',
                         'Air quality testing',
                         'HVAC mold cleaning',
-                        'Attic / crawlspace work',
+                        'Roofing',
                         'Emergency / 24-hr response',
-                        'Insurance claims work',
+                        'General Contractor',
                         'Real estate transaction work',
                         'Other (specify below)'
                       ].map((job) => (
@@ -354,6 +354,21 @@ export default function Onboarding() {
                         />
                       ))}
                     </div>
+
+                    {/* Conditional input field for Industry / Other specifier */}
+                    {(formData.target_jobs || []).includes('Other (specify below)') && (
+                      <div className="mt-4 step-fade-in">
+                        <Field
+                          label="Please specify your industry or other jobs"
+                          name="target_jobs_other"
+                          placeholder="e.g., Fire damage restoration, Asbestos abatement"
+                          required={(formData.target_jobs || []).includes('Other (specify below)')}
+                          value={formData.target_jobs_other || ''}
+                          onChange={handleChange}
+                        />
+                      </div>
+                    )}
+
                     {/* Hidden field to submit the array */}
                     <input type="hidden" name="target_jobs" value={(formData.target_jobs || []).join(', ')} />
                   </div>

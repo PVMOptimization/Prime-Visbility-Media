@@ -12,7 +12,7 @@ import FourKillers from "./pages/FourKillers";
 import Policy from "./pages/Policy";
 import ThankYou from "./pages/ThankYou";
 import VSLPAGE from "./pages/VSLPAGE";
-import Formspree from "./pages/Formspree";
+import Onboarding from "./pages/Onboarding";
 import Casestudy from "./pages/Casestudy";
 
 function AppContent(): JSX.Element {
@@ -55,7 +55,7 @@ function AppContent(): JSX.Element {
         <Route path="/comparison" element={<Pricecomparison />} />
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/case-study" element={<Casestudy />} />
-        <Route path="/onboarding" element={<Formspree />} />
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/bookyourcall" element={<VSLPAGE />} />
       </Routes>
     </>

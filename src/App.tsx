@@ -14,6 +14,7 @@ import ThankYou from "./pages/ThankYou";
 import VSLPAGE from "./pages/VSLPAGE";
 import Onboarding from "./pages/Onboarding";
 import Casestudy from "./pages/Casestudy";
+import Pricing from "./pages/Pricing";
 
 function AppContent(): JSX.Element {
   const location = useLocation();
@@ -57,6 +58,7 @@ function AppContent(): JSX.Element {
         <Route path="/case-study" element={<Casestudy />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/bookyourcall" element={<VSLPAGE />} />
+        <Route path="/join-now" element={<Pricing />} />
       </Routes>
     </>
   );

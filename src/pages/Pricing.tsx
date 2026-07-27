@@ -65,6 +65,7 @@ const pricingTiers: PricingTier[] = [
       { name: "Integrated Quoting & Job Pipeline System" },
       { name: "Review Automation Engine" },
       { name: "Ongoing Growth Management" },
+      { name: "24/7 Live Voice Receptionist" },
     ],
     cta: "Own Your Market",
   },

@@ -290,7 +290,7 @@ const comparisonRows = [
   { feature: "Review Generation Engine", them: false, us: true },
   { feature: "Google Map Pack Strategy", them: "Partial", us: true },
   { feature: "Conversion-Focused Website", them: "Extra cost", us: true },
-  { feature: "4/7 Webite Concierge + FAQ Assistant", them: false, us: true },
+  { feature: "24/7 Webite Concierge + FAQ Assistant", them: false, us: true },
   { feature: "Job Pipeline System", them: false, us: true },
   { feature: "Paid Traffic (Google & Meta)", them: "Add-on", us: true },
   { feature: "Monthly Performance Reports", them: true, us: true },

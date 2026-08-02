@@ -431,7 +431,7 @@ export default function PriceComparison() {
                   <div style={{ fontSize: 11, color: "#5a4090", marginTop: 4 }}>Complete infrastructure setup</div>
                 </div>
                 <div style={{ textAlign: "center", padding: "20px", borderRadius: 12, background: "rgba(0,212,255,0.06)", border: "1px solid rgba(0,212,255,0.2)" }}>
-                  <div style={{ fontFamily: "'Orbitron', monospace", fontSize: 11, color: "#4a8a9a", letterSpacing: 2, marginBottom: 8, textTransform: "uppercase" }}>Monthly Growth</div>
+                  <div style={{ fontFamily: "'Orbitron', monospace", fontSize: 11, color: "#4a8a9a", letterSpacing: 2, marginBottom: 8, textTransform: "uppercase" }}>Pay Per Job</div>
                   <div style={{ fontSize: 32, fontWeight: 700 }}><span className="shimmer-text">$150</span></div>
                   <div style={{ fontSize: 11, color: "#3a6070", marginTop: 4 }}>Per Showed Appointment</div>
                 </div>
@@ -474,7 +474,7 @@ export default function PriceComparison() {
                 className="bottom-cta"
                 style={{ display: "block", textAlign: "center" }}
               >
-                Get The Full System →
+                30 Day Money Back Guarantee →
               </a>
             </div>
           </div>

@@ -1,14 +1,65 @@
 import { Link } from 'react-router-dom';
-import { TrendingUp, Star, Zap } from 'lucide-react';
+import { TrendingUp, Star, Zap, DollarSign } from 'lucide-react';
 import Button from '../components/Button';
 
 // Place these images in src/assets/
+import roofingImg from '../assets/SanAntonioRoofer-Results.png'; // TODO: replace with your actual screenshot/graphic
 import dashboardImg from '../assets/DashboardB_ACOMP.png';
 import reviewsImg from '../assets/REVIEWS_ARE_CRUCIAL__3_.png';
 import leadSystemImg from '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png';
 
+type StudyColor = 'cyan' | 'purple' | 'orange';
+
+const COLOR_MAP: Record<
+  StudyColor,
+  {
+    accentColor: string;
+    accentColorLight: string;
+    accentClass: string;
+    borderClass: string;
+    glowClass: string;
+    hoverGlowClass: string;
+  }
+> = {
+  cyan: {
+    accentColor: '#00F0FF',
+    accentColorLight: 'rgba(0,240,255,0.15)',
+    accentClass: 'text-[#00F0FF]',
+    borderClass: 'border-[#00F0FF]/30',
+    glowClass: 'shadow-[0_0_60px_rgba(0,240,255,0.12)]',
+    hoverGlowClass: 'hover:shadow-[0_0_80px_rgba(0,240,255,0.22)]'
+  },
+  purple: {
+    accentColor: '#B026FF',
+    accentColorLight: 'rgba(176,38,255,0.15)',
+    accentClass: 'text-[#B026FF]',
+    borderClass: 'border-[#B026FF]/30',
+    glowClass: 'shadow-[0_0_60px_rgba(176,38,255,0.12)]',
+    hoverGlowClass: 'hover:shadow-[0_0_80px_rgba(176,38,255,0.22)]'
+  },
+  orange: {
+    accentColor: '#FF8A00',
+    accentColorLight: 'rgba(255,138,0,0.15)',
+    accentClass: 'text-[#FF8A00]',
+    borderClass: 'border-[#FF8A00]/30',
+    glowClass: 'shadow-[0_0_60px_rgba(255,138,0,0.12)]',
+    hoverGlowClass: 'hover:shadow-[0_0_80px_rgba(255,138,0,0.22)]'
+  }
+};
+
 export default function Portfolio() {
   const caseStudies = [
+    {
+      label: 'Roofing Client Results',
+      headline: '$70K in Revenue in 30 Days',
+      stat: '$70K',
+      statLabel: '30-Day Revenue',
+      color: 'orange' as const,
+      icon: DollarSign,
+      img: roofingImg,
+      description:
+        'A San Antonio roofing company added $70,000 in new revenue in their first 30 days after launching the lead capture, booking, and follow-up system.'
+    },
     {
       label: 'CRM & Pipeline Results',
       headline: 'From 4 Leads to $34K in Revenue',
@@ -80,16 +131,14 @@ export default function Portfolio() {
           <div className="space-y-20 mb-24">
             {caseStudies.map((study, index) => {
               const isEven = index % 2 === 0;
-              const accentColor = study.color === 'cyan' ? '#00F0FF' : '#B026FF';
-              const accentColorLight = study.color === 'cyan' ? 'rgba(0,240,255,0.15)' : 'rgba(176,38,255,0.15)';
-              const accentClass = study.color === 'cyan' ? 'text-[#00F0FF]' : 'text-[#B026FF]';
-              const borderClass = study.color === 'cyan' ? 'border-[#00F0FF]/30' : 'border-[#B026FF]/30';
-              const glowClass = study.color === 'cyan'
-                ? 'shadow-[0_0_60px_rgba(0,240,255,0.12)]'
-                : 'shadow-[0_0_60px_rgba(176,38,255,0.12)]';
-              const hoverGlowClass = study.color === 'cyan'
-                ? 'hover:shadow-[0_0_80px_rgba(0,240,255,0.22)]'
-                : 'hover:shadow-[0_0_80px_rgba(176,38,255,0.22)]';
+              const {
+                accentColor,
+                accentColorLight,
+                accentClass,
+                borderClass,
+                glowClass,
+                hoverGlowClass
+              } = COLOR_MAP[study.color as StudyColor];
 
               return (
                 <div

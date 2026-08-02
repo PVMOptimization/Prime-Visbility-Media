@@ -3,7 +3,7 @@ import { TrendingUp, Star, Zap, DollarSign } from 'lucide-react';
 import Button from '../components/Button';
 
 // Place these images in src/assets/
-import roofingImg from '../assets/SanAntonioRoofer-Results.png'; // TODO: replace with your actual screenshot/graphic
+import roofingImg from '../assets/SanAntonioRoofer-Results.jpg'; // TODO: replace with your actual screenshot/graphic
 import dashboardImg from '../assets/DashboardB_ACOMP.png';
 import reviewsImg from '../assets/REVIEWS_ARE_CRUCIAL__3_.png';
 import leadSystemImg from '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png';

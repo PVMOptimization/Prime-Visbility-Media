@@ -453,7 +453,7 @@ export default function PriceComparison() {
                   "On-Demand Lead Flow",
                   "ROI Transparency Reports",
                   "Organic Visibility Foundation",
-                  "ROngoing Reputation Protection",
+                  "Ongoing Reputation Protection",
                 ].map(f => (
                   <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, fontWeight: 500, color: "#b0a0ff" }}>
                     <span className="check-icon">✓</span> {f}

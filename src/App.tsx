@@ -15,7 +15,7 @@ import VSLPAGE from "./pages/VSLPAGE";
 import Onboarding from "./pages/Onboarding";
 import Casestudy from "./pages/Casestudy";
 import Pricing from "./pages/Pricing";
-import GrowthPipelinePage from "./pages/GrowthPipelinePage";
+import GrowthPipeline from "./pages/GrowthPipeline";
 
 function AppContent(): JSX.Element {
   const location = useLocation();

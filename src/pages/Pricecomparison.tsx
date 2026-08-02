@@ -256,7 +256,7 @@ const competitors = [
     setupFee: "None",
     color: "#ff4444",
     what: "SEO reporting & keyword tracking only",
-    missing: ["No AI call answering", "No booking automation", "No reputation system", "No pipeline", "No lead nurture", "No paid ads management"],
+    missing: ["No 24/7 Missed Call Recovery", "No booking automation", "No reputation system", "No pipeline", "No lead nurture", "No paid ads management"],
     included: ["SEO Reports", "Keyword Tracking", "Some content writing"],
   },
   {
@@ -267,7 +267,7 @@ const competitors = [
     setupFee: "$1,500+",
     color: "#ff6633",
     what: "Website + basic ad management",
-    missing: ["No 24/7 AI answering", "No automation", "No reputation engine", "No appointment booking", "No lead follow-up"],
+    missing: ["No 24/7 Missed Call Recovery", "No automation", "No reputation engine", "No appointment booking", "No lead follow-up"],
     included: ["Website design", "Google Ads management", "Basic analytics"],
   },
   {
@@ -278,19 +278,19 @@ const competitors = [
     setupFee: "$500",
     color: "#ff9933",
     what: "Reviews + basic texting only",
-    missing: ["No website", "No SEO", "No AI answering", "No booking system", "No paid ads", "No pipeline"],
+    missing: ["No website", "No SEO", "No 24/7 Missed Call Recovery", "No booking system", "No paid ads", "No pipeline"],
     included: ["Review requests", "Basic SMS", "Simple chat widget"],
   },
 ];
 
 const comparisonRows = [
-  { feature: "24/7 AI Call Answering", them: false, us: true },
+  { feature: "24/7 Missed Call Recovery", them: false, us: true },
   { feature: "Automated Booking & Reminders", them: false, us: true },
   { feature: "Instant Lead Follow-Up", them: false, us: true },
   { feature: "Review Generation Engine", them: false, us: true },
   { feature: "Google Map Pack Strategy", them: "Partial", us: true },
   { feature: "Conversion-Focused Website", them: "Extra cost", us: true },
-  { feature: "AI Talking Website + FAQ Bot", them: false, us: true },
+  { feature: "4/7 Webite Concierge + FAQ Assistant", them: false, us: true },
   { feature: "Job Pipeline System", them: false, us: true },
   { feature: "Paid Traffic (Google & Meta)", them: "Add-on", us: true },
   { feature: "Monthly Performance Reports", them: true, us: true },

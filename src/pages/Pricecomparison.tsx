@@ -432,8 +432,8 @@ export default function PriceComparison() {
                 </div>
                 <div style={{ textAlign: "center", padding: "20px", borderRadius: 12, background: "rgba(0,212,255,0.06)", border: "1px solid rgba(0,212,255,0.2)" }}>
                   <div style={{ fontFamily: "'Orbitron', monospace", fontSize: 11, color: "#4a8a9a", letterSpacing: 2, marginBottom: 8, textTransform: "uppercase" }}>Monthly Growth</div>
-                  <div style={{ fontSize: 32, fontWeight: 700 }}><span className="shimmer-text">$1,000</span></div>
-                  <div style={{ fontSize: 11, color: "#3a6070", marginTop: 4 }}>Ongoing management & scaling</div>
+                  <div style={{ fontSize: 32, fontWeight: 700 }}><span className="shimmer-text">$150</span></div>
+                  <div style={{ fontSize: 11, color: "#3a6070", marginTop: 4 }}>Per Showed Appointment</div>
                 </div>
               </div>
 
@@ -441,18 +441,19 @@ export default function PriceComparison() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
                 {[
-                  "24/7 AI Call Answering",
+                  "24/7 Missed Call Recovery",
+                  "5-Min First-Response Advantage",
                   "Instant Lead Follow-Up",
                   "Automated Booking System",
-                  "Review Generation Engine",
-                  "Google Map Pack Strategy",
-                  "Conversion-Focused Website",
-                  "AI Talking Website + FAQ Bot",
+                  "5-Star Review Growth Engine",
+                  "Top-3 Map Visibility Strategy",
+                  "Conversion & Booking-Ready Website",
+                  "24/7 Webite Concierge",
                   "Job Pipeline System",
-                  "Google & Meta Paid Ads",
-                  "Monthly Performance Reports",
-                  "Local SEO Structure",
-                  "Reputation Automation",
+                  "On-Demand Lead Flow",
+                  "ROI Transparency Reports",
+                  "Organic Visibility Foundation",
+                  "ROngoing Reputation Protection",
                 ].map(f => (
                   <div key={f} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, fontWeight: 500, color: "#b0a0ff" }}>
                     <span className="check-icon">✓</span> {f}

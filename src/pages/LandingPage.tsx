@@ -39,7 +39,7 @@ const HeroSection = () => {
             <iframe
               width="100%"
               height="100%"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              src="https://youtu.be/hv0If8_hXRk?si=wy8ejrBDAmJspJnw"
               title="System Demo"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -167,7 +167,7 @@ const TestimonialsCarousel = () => {
       id: 2,
       title: "Top 3 Google Rankings",
       subtitle: "Long-term Growth Strategy",
-      image: "/workspaces/Prime-Visbility-Media/src/assets/REVIEWS_ARE_CRUCIAL__3_.png",
+      image: "src/assets/REVIEWS_ARE_CRUCIAL__3_.png",
       stat: "6 Months"
     },
     {
@@ -229,16 +229,25 @@ const TestimonialsCarousel = () => {
               className="flex flex-col md:flex-row items-center justify-center gap-12"
             >
               {/* Image */}
-              <div className="flex-1 flex justify-center">
-                <div className="relative group">
-                  <img
-                    src={testimonials[currentIndex].image}
-                    alt={testimonials[currentIndex].title}
-                    className={`rounded-2xl shadow-2xl ${
-                      currentIndex === 4 ? 'w-48 h-96' : 'w-full max-w-sm'
-                    } object-cover`}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
+              <div className="flex-1 flex justify-center px-4">
+                <div className="relative group w-full max-w-sm">
+                  {/* Glowing White Gradient Background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/20 to-slate-200/30 rounded-2xl blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-white/5 rounded-2xl blur-xl opacity-40"></div>
+                  
+                  {/* Image Container */}
+                  <div className="relative bg-white/5 rounded-2xl overflow-hidden border border-white/10 backdrop-blur-sm">
+                    <div className="aspect-square md:aspect-auto md:h-96 overflow-hidden rounded-2xl">
+                      <img
+                        src={testimonials[currentIndex].image}
+                        alt={testimonials[currentIndex].title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-2xl pointer-events-none"></div>
                 </div>
               </div>
 

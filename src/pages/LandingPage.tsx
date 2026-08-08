@@ -160,21 +160,21 @@ const TestimonialsCarousel = () => {
       id: 1,
       title: "$70k Collected in 30 Days",
       subtitle: "San Antonio Contractor",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=1000&fit=crop",
+      image: "../assets/SanAntonioRoofer-Results.jpg",
       stat: "$70,000"
     },
     {
       id: 2,
       title: "Top 3 Google Rankings",
       subtitle: "Long-term Growth Strategy",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=1000&fit=crop",
+      image: "../assets/REVIEWS_ARE_CRUCIAL__3_.png",
       stat: "6 Months"
     },
     {
       id: 3,
       title: "Revenue Growth",
       subtitle: "30 Days Results",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=1000&fit=crop",
+      image: "../assets/DashboardB_ACOMP.png",
       stat: "$4.5k → $30k"
     },
     {

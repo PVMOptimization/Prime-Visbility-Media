@@ -16,6 +16,7 @@ import Onboarding from "./pages/Onboarding";
 import Casestudy from "./pages/Casestudy";
 import Pricing from "./pages/Pricing";
 import GrowthPipeline from "./pages/GrowthPipeline";
+ import LandingPage from './pages/LandingPage';
 
 function AppContent(): JSX.Element {
   const location = useLocation();
@@ -61,6 +62,7 @@ function AppContent(): JSX.Element {
         <Route path="/bookyourcall" element={<VSLPAGE />} />
         <Route path="/join-now" element={<Pricing />} />
         <Route path="/growth-pipeline" element={<GrowthPipeline />} />
+        <Route path="/" element={<LandingPage />} />
       </Routes>
     </>
   );

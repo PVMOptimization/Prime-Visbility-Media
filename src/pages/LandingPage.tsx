@@ -160,21 +160,21 @@ const TestimonialsCarousel = () => {
       id: 1,
       title: "$70k Collected in 30 Days",
       subtitle: "San Antonio Contractor",
-      image: "../assets/SanAntonioRoofer-Results.jpg",
+      image: "/workspaces/Prime-Visbility-Media/src/assets/SanAntonioRoofer-Results.jpg",
       stat: "$70,000"
     },
     {
       id: 2,
       title: "Top 3 Google Rankings",
       subtitle: "Long-term Growth Strategy",
-      image: "../assets/REVIEWS_ARE_CRUCIAL__3_.png",
+      image: "/workspaces/Prime-Visbility-Media/src/assets/REVIEWS_ARE_CRUCIAL__3_.png",
       stat: "6 Months"
     },
     {
       id: 3,
       title: "Revenue Growth",
       subtitle: "30 Days Results",
-      image: "../assets/DashboardB_ACOMP.png",
+      image: "/workspaces/Prime-Visbility-Media/src/assets/DashboardB_ACOMP.png",
       stat: "$4.5k → $30k"
     },
     {

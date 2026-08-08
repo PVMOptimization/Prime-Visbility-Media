@@ -23,7 +23,7 @@ const HeroSection = () => {
             <iframe
               width="100%"
               height="100%"
-              src="https://youtu.be/hv0If8_hXRk?si=wy8ejrBDAmJspJnw"
+              src="https://youtu.be/hv0If8_hXRk?si=525PQdzEkCH1kUJC"
               title="System Demo"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -136,21 +136,21 @@ const TestimonialsCarousel = () => {
       id: 1,
       title: "$70k Collected in 30 Days",
       subtitle: "San Antonio Contractor",
-      image: "/workspaces/Prime-Visbility-Media/src/assets/SanAntonioRoofer-Results.jpg",
+      image: ".../assets/SanAntonioRoofer-Results.jpg",
       stat: "$70,000"
     },
     {
       id: 2,
       title: "Top 3 Google Rankings",
       subtitle: "Long-term Growth Strategy",
-      image: "src/assets/REVIEWS_ARE_CRUCIAL__3_.png",
+      image: ".../assets/REVIEWS_ARE_CRUCIAL__3_.png",
       stat: "6 Months"
     },
     {
       id: 3,
       title: "Revenue Growth",
       subtitle: "30 Days Results",
-      image: "/workspaces/Prime-Visbility-Media/src/assets/DashboardB_ACOMP.png",
+      image: ".../assets/DashboardB_ACOMP.png",
       stat: "$4.5k → $30k"
     },
     {

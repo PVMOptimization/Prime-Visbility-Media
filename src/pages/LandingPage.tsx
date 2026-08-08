@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Zap, Users, Clock, MessageSquare, Calendar, DollarSign } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 // Import images from assets
 import roofingImg from '../assets/SanAntonioRoofer-Results.jpg';
@@ -42,11 +41,9 @@ const HeroSection = () => {
         </div>
 
         {/* CTA Button */}
-        <Link to="/growth-pipeline" className="inline-block">
-  <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
-    See The Full System
-  </button>
-</Link>
+        <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
+          Book Your Strategy Call
+        </button>
       </div>
     </section>
   );
@@ -129,6 +126,54 @@ const FeaturesSection = () => {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// FAQ Video Section
+const FAQVideoSection = () => {
+  return (
+    <section className="bg-slate-950 py-20 px-6">
+      <div className="max-w-6xl mx-auto">
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <p className="text-sm tracking-widest text-blue-400 font-semibold mb-4">FAQ</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Common Questions
+          </h2>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+            Watch real answers to contractor questions about our system.
+          </p>
+        </div>
+
+        {/* iPhone Frame */}
+        <div className="flex justify-center">
+          <div className="relative w-80">
+            {/* iPhone Notch */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-40 h-7 bg-black rounded-b-3xl z-20"></div>
+            
+            {/* iPhone Body */}
+            <div className="bg-black rounded-3xl shadow-2xl overflow-hidden border-[12px] border-black">
+              {/* Screen */}
+              <div className="bg-slate-900 aspect-[9/16] overflow-hidden relative">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src="https://www.youtube.com/embed/hv0If8_hXRk"
+                  title="FAQ"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
+            </div>
+
+            {/* Home Indicator */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-black rounded-full"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -293,6 +338,7 @@ export default function LandingPage() {
     <div className="bg-slate-950 overflow-hidden">
       <HeroSection />
       <FeaturesSection />
+      <FAQVideoSection />
       <TestimonialsCarousel />
     </div>
   );

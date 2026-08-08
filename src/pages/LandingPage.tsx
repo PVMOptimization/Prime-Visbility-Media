@@ -167,7 +167,7 @@ const TestimonialsCarousel = () => {
       id: 2,
       title: "Top 3 Google Rankings",
       subtitle: "Long-term Growth Strategy",
-      image: "src/assets/REVIEWS_ARE_CRUCIAL__3_.png",
+      image: "/workspaces/Prime-Visbility-Media/src/assets/REVIEWS_ARE_CRUCIAL__3_.png",
       stat: "6 Months"
     },
     {

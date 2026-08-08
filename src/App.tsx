@@ -62,7 +62,7 @@ function AppContent(): JSX.Element {
         <Route path="/bookyourcall" element={<VSLPAGE />} />
         <Route path="/join-now" element={<Pricing />} />
         <Route path="/growth-pipeline" element={<GrowthPipeline />} />
-        <Route path="/" element={<LandingPage />} />
+        <Route path="How-it-works" element={<LandingPage />} />
       </Routes>
     </>
   );

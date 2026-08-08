@@ -161,7 +161,7 @@ const FAQVideoSection = () => {
                 <iframe
                   width="100%"
                   height="100%"
-                  src="https://www.youtube.com/shorts/v9iNj1Fvaig"
+                  src="https://www.youtube.com/embed/v9iNj1Fvaig"
                   title="FAQ"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

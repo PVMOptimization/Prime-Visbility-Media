@@ -44,7 +44,7 @@ const HeroSection = () => {
         {/* CTA Button */}
         <Link to="/growth-pipeline" className="inline-block">
   <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
-    Book Your Strategy Call
+    See The Full System
   </button>
 </Link>
       </div>

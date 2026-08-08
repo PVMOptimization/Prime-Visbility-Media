@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Zap, Users, Clock, MessageSquare, Calendar, DollarSign } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Import images from assets
 import roofingImg from '../assets/SanAntonioRoofer-Results.jpg';
@@ -41,9 +42,11 @@ const HeroSection = () => {
         </div>
 
         {/* CTA Button */}
-        <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
-          Book Your Strategy Call
-        </button>
+        <Link to="/growth-pipeline" className="inline-block">
+  <button className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-xl hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105">
+    Book Your Strategy Call
+  </button>
+</Link>
       </div>
     </section>
   );

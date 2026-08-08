@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Zap, Users, Clock, MessageSquare, Calendar, DollarSign } from 'lucide-react';
 
+// Import images from assets
+import roofingImg from '../assets/SanAntonioRoofer-Results.jpg';
+import dashboardImg from '../assets/DashboardB_ACOMP.png';
+import reviewsImg from '../assets/REVIEWS_ARE_CRUCIAL__3_.png';
+import leadSystemImg from '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png';
+
 // Hero Section
 const HeroSection = () => {
   return (
@@ -23,7 +29,7 @@ const HeroSection = () => {
             <iframe
               width="100%"
               height="100%"
-              src="https://youtu.be/hv0If8_hXRk?si=525PQdzEkCH1kUJC"
+              src="https://www.youtube.com/embed/hv0If8_hXRk"
               title="System Demo"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -136,36 +142,29 @@ const TestimonialsCarousel = () => {
       id: 1,
       title: "$70k Collected in 30 Days",
       subtitle: "San Antonio Contractor",
-      image: ".../assets/SanAntonioRoofer-Results.jpg",
+      image: roofingImg,
       stat: "$70,000"
     },
     {
       id: 2,
-      title: "Top 3 Google Rankings",
-      subtitle: "Long-term Growth Strategy",
-      image: ".../assets/REVIEWS_ARE_CRUCIAL__3_.png",
-      stat: "6 Months"
+      title: "Dashboard Results",
+      subtitle: "Real-Time Tracking",
+      image: dashboardImg,
+      stat: "Live Data"
     },
     {
       id: 3,
-      title: "Revenue Growth",
-      subtitle: "30 Days Results",
-      image: ".../assets/DashboardB_ACOMP.png",
-      stat: "$4.5k → $30k"
+      title: "Review Generation",
+      subtitle: "Social Proof Building",
+      image: reviewsImg,
+      stat: "+50 Reviews"
     },
     {
       id: 4,
-      title: "Consistent Growth",
-      subtitle: "Month Over Month",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=500&fit=crop",
-      stat: "$3.9k → $31k"
-    },
-    {
-      id: 5,
-      title: "First Week Results",
-      subtitle: "iPhone Screenshot",
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&h=600&fit=crop",
-      stat: "$20k Jobs"
+      title: "Lead Automation",
+      subtitle: "24/7 System",
+      image: leadSystemImg,
+      stat: "Fully Automated"
     }
   ];
 

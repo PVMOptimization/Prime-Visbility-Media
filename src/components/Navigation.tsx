@@ -147,10 +147,10 @@ export default function Navigation({ showStickyCTA = false }: NavigationProps) {
                 </Link>
               ))}
               <a
-                href="tel:2145060806"
+                href="tel:4692862839"
                 className="font-body font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
               >
-                (214) 506-0806
+                (469) 286-2839
               </a>
               <Link to="/book-call">
                 <button className="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold rounded-full hover:scale-105 transition-transform shadow-lg">
@@ -187,10 +187,10 @@ export default function Navigation({ showStickyCTA = false }: NavigationProps) {
                 </Link>
               ))}
               <a
-                href="tel:2145060806"
+                href="tel:4692862839"
                 className="block font-body text-lg font-semibold text-cyan-400 hover:text-cyan-300 transition-colors"
               >
-                (214) 506-0806
+                (469) 286-2839
               </a>
               <Link to="/book-call">
                 <button 
@@ -207,7 +207,7 @@ export default function Navigation({ showStickyCTA = false }: NavigationProps) {
 
       {/* Floating Phone CTA - Top Right (Desktop) */}
       <motion.a
-        href="tel:2145060806"
+        href="tel:4692862839"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 2 }}
@@ -221,7 +221,7 @@ export default function Navigation({ showStickyCTA = false }: NavigationProps) {
         <div className="flex flex-col">
           <span className="font-body text-xs text-gray-400 uppercase tracking-wider">Call Now</span>
           <span className="font-display text-lg font-bold text-cyan-400 group-hover:text-cyan-300 transition-colors">
-            (214) 506-0806
+            (469) 286-2839
           </span>
         </div>
       </motion.a>
@@ -245,7 +245,7 @@ export default function Navigation({ showStickyCTA = false }: NavigationProps) {
       {/* Mobile Quick Actions - Fixed at bottom (Mobile Only) */}
       <div className="lg:hidden fixed bottom-4 left-4 right-4 z-40 flex gap-3 opacity-0 animate-fadeInUp" style={{ animationDelay: '2s' }}>
         <a
-          href="tel:2145060806"
+          href="tel:4692862839"
           className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full shadow-lg active:scale-95 transition-transform"
         >
           <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">

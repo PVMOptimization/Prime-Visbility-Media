@@ -430,7 +430,7 @@ export default function Home() {
             {[
               { value: '350%', label: 'Avg Pipeline Growth' },
               { value: '48hr', label: 'First Lead Guarantee' },
-              { value: '2.4M', label: 'Total Reach Generated' }
+              { value: '100M+', label: 'Total Reach Generated' }
             ].map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-cyan-400 to-violet-400 mb-1 sm:mb-2 stat-glow">

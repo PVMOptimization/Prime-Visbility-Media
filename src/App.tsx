@@ -7,7 +7,6 @@ import Contact from './pages/Contact';
 import TieredGrowth from "./pages/TieredGrowth";
 import Meeting from "./pages/Meeting";
 import Tier3 from "./pages/Tier3";
-import Pricecomparison from "./pages/Pricecomparison";
 import FourKillers from "./pages/FourKillers";
 import Policy from "./pages/Policy";
 import ThankYou from "./pages/ThankYou";
@@ -55,7 +54,6 @@ function AppContent(): JSX.Element {
         <Route path="/tier3" element={<Tier3 />} />
         <Route path="/4killers" element={<FourKillers />} />
         <Route path="/privacy-policy" element={<Policy />} />
-        <Route path="/comparison" element={<Pricecomparison />} />
         <Route path="/thank-you" element={<ThankYou />} />
         <Route path="/case-study" element={<Casestudy />} />
         <Route path="/onboarding" element={<Onboarding />} />

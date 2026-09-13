@@ -61,7 +61,6 @@ export default function Navigation({ showStickyCTA = false }: NavigationProps) {
     { to: '/', label: 'Home' },
     { to: '/portfolio', label: 'Portfolio' },
     { to: '/contact', label: 'Contact' },
-    { to: '/comparison', label: 'Compare Us' }
   ];
 
   return (

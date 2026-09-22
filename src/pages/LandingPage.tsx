@@ -78,6 +78,13 @@ wistia-player[media-id='pvt6x4gsuiy']:not(:defined){
   filter:blur(5px);
 }
 
+wistia-player[media-id='lzk313rj1u']:not(:defined){
+  background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/lzk313rj1u/swatch');
+  display:block;
+  filter:blur(5px);
+  padding-top:177.78%;
+}
+
 @media (prefers-reduced-motion:reduce){
   .pv-drop{animation:none;opacity:0}
   .pv-swap{animation:none}
@@ -240,9 +247,9 @@ const CtaButton = ({ children, variant = 'primary', size = 'lg', arrow = true, c
 
 /* ------------------------------------------------------------------ */
 /*  Wistia embed loader                                                */
-/*  Injects the two Wistia <script> tags once, on mount, and cleans    */
-/*  them up on unmount. <wistia-player> itself is rendered in JSX      */
-/*  further down inside HeroSection.                                   */
+/*  Injects the Wistia <script> tags once, on mount, and cleans        */
+/*  them up on unmount. <wistia-player> elements themselves are        */
+/*  rendered in JSX further down inside HeroSection.                   */
 /* ------------------------------------------------------------------ */
 
 const useWistiaScripts = () => {
@@ -250,6 +257,7 @@ const useWistiaScripts = () => {
     const scripts = [
       { src: 'https://fast.wistia.com/player.js', type: undefined },
       { src: 'https://fast.wistia.com/embed/pvt6x4gsui.js', type: 'module' },
+      { src: 'https://fast.wistia.com/embed/lzk313rj1u.js', type: 'module' },
     ];
 
     const added = scripts.map(({ src, type }) => {
@@ -394,8 +402,27 @@ const HeroSection = () => (
         </div>
       </div>
 
-      <div className="mb-24">
-        <CtaButton>Get Your Pipeline Built</CtaButton>
+      <div className="mb-24 flex flex-col items-center">
+        <CtaButton>View The Full System</CtaButton>
+
+        {/* Vertical (1080x1920) video */}
+        <div className="group relative mt-14 w-full max-w-[320px]">
+          <div className="absolute -inset-1 rounded-3xl bg-gradient-to-b from-blue-400/35 to-transparent opacity-60 blur-xl transition-opacity duration-700 group-hover:opacity-90" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#090D16] shadow-2xl">
+            <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5" aria-hidden="true">
+              <span className="h-2 w-2 rounded-full bg-white/20" />
+              <span className="h-2 w-2 rounded-full bg-white/20" />
+              <span className="h-2 w-2 rounded-full bg-white/20" />
+            </div>
+            <div className="relative w-full" style={{ aspectRatio: '0.5625' }}>
+              <wistia-player
+                media-id="lzk313rj1u"
+                aspect="0.5625"
+                className="h-full w-full"
+              ></wistia-player>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="grid w-full max-w-5xl grid-cols-1 gap-6 px-4 md:grid-cols-3">

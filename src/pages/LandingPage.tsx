@@ -5,10 +5,6 @@ import {
   ShieldCheck, CheckCircle2, ChevronDown, Calculator, Sparkles,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Script from 'next/script';
-
-<Script src="https://fast.wistia.com/player.js" strategy="lazyOnload" />
-<Script src="https://fast.wistia.com/embed/s7tem1xbry.js" strategy="lazyOnload" type="module" />
 
 // Import assets
 import roofingImg from '../assets/SanAntonioRoofer-Results.jpg';
@@ -75,6 +71,12 @@ const css = `
 }
 .pv-range::-moz-range-track{background:transparent}
 .pv-range:focus-visible{outline:2px solid #67e8f9;outline-offset:8px}
+
+wistia-player[media-id='s7tem1xbry']:not(:defined){
+  background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/s7tem1xbry/swatch');
+  display:block;
+  filter:blur(5px);
+}
 
 @media (prefers-reduced-motion:reduce){
   .pv-drop{animation:none;opacity:0}
@@ -237,6 +239,36 @@ const CtaButton = ({ children, variant = 'primary', size = 'lg', arrow = true, c
 };
 
 /* ------------------------------------------------------------------ */
+/*  Wistia embed loader                                                */
+/*  Injects the two Wistia <script> tags once, on mount, and cleans    */
+/*  them up on unmount. <wistia-player> itself is rendered in JSX      */
+/*  further down inside HeroSection.                                   */
+/* ------------------------------------------------------------------ */
+
+const useWistiaScripts = () => {
+  useEffect(() => {
+    const scripts = [
+      { src: 'https://fast.wistia.com/player.js', type: undefined },
+      { src: 'https://fast.wistia.com/embed/s7tem1xbry.js', type: 'module' },
+    ];
+
+    const added = scripts.map(({ src, type }) => {
+      if (document.querySelector(`script[src="${src}"]`)) return null;
+      const el = document.createElement('script');
+      el.src = src;
+      el.async = true;
+      if (type) el.type = type;
+      document.body.appendChild(el);
+      return el;
+    });
+
+    return () => {
+      added.forEach((el) => el && document.body.removeChild(el));
+    };
+  }, []);
+};
+
+/* ------------------------------------------------------------------ */
 /*  1. Header                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -353,12 +385,12 @@ const HeroSection = () => (
             <span className="h-2 w-2 rounded-full bg-white/20" />
           </div>
           <div className="relative aspect-video w-full">
-  <wistia-player
-    media-id="s7tem1xbry"
-    aspect="1.7777777777777777"
-    className="h-full w-full"
-  ></wistia-player>
-</div>
+            <wistia-player
+              media-id="s7tem1xbry"
+              aspect="1.7777777777777777"
+              className="h-full w-full"
+            ></wistia-player>
+          </div>
         </div>
       </div>
 
@@ -908,6 +940,9 @@ const Footer = () => (
 /* ------------------------------------------------------------------ */
 
 export default function LandingPage() {
+  // Load the Wistia player scripts once
+  useWistiaScripts();
+
   // Smooth-scroll for the in-page nav links; restored on unmount
   useEffect(() => {
     const html = document.documentElement;

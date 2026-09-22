@@ -72,8 +72,8 @@ const css = `
 .pv-range::-moz-range-track{background:transparent}
 .pv-range:focus-visible{outline:2px solid #67e8f9;outline-offset:8px}
 
-wistia-player[media-id='s7tem1xbry']:not(:defined){
-  background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/s7tem1xbry/swatch');
+wistia-player[media-id='pvt6x4gsuiy']:not(:defined){
+  background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/pvt6x4gsui/swatch');
   display:block;
   filter:blur(5px);
 }
@@ -249,7 +249,7 @@ const useWistiaScripts = () => {
   useEffect(() => {
     const scripts = [
       { src: 'https://fast.wistia.com/player.js', type: undefined },
-      { src: 'https://fast.wistia.com/embed/s7tem1xbry.js', type: 'module' },
+      { src: 'https://fast.wistia.com/embed/pvt6x4gsui.js', type: 'module' },
     ];
 
     const added = scripts.map(({ src, type }) => {
@@ -386,7 +386,7 @@ const HeroSection = () => (
           </div>
           <div className="relative aspect-video w-full">
             <wistia-player
-              media-id="s7tem1xbry"
+              media-id="pvt6x4gsui"
               aspect="1.7777777777777777"
               className="h-full w-full"
             ></wistia-player>

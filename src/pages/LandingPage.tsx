@@ -5,6 +5,10 @@ import {
   ShieldCheck, CheckCircle2, ChevronDown, Calculator, Sparkles,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Script from 'next/script';
+
+<Script src="https://fast.wistia.com/player.js" strategy="lazyOnload" />
+<Script src="https://fast.wistia.com/embed/s7tem1xbry.js" strategy="lazyOnload" type="module" />
 
 // Import assets
 import roofingImg from '../assets/SanAntonioRoofer-Results.jpg';
@@ -349,17 +353,12 @@ const HeroSection = () => (
             <span className="h-2 w-2 rounded-full bg-white/20" />
           </div>
           <div className="relative aspect-video w-full">
-            <iframe
-              width="100%"
-              height="100%"
-              src="https://www.youtube.com/embed/txX-mx9YMLU?vq=hd1080"
-              title="System Demo"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="h-full w-full"
-            ></iframe>
-          </div>
+  <wistia-player
+    media-id="s7tem1xbry"
+    aspect="1.7777777777777777"
+    className="h-full w-full"
+  ></wistia-player>
+</div>
         </div>
       </div>
 

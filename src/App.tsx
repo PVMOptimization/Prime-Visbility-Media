@@ -16,7 +16,7 @@ import Casestudy from "./pages/Casestudy";
 import Pricing from "./pages/Pricing";
 import GrowthPipeline from "./pages/GrowthPipeline";
  import LandingPage from './pages/LandingPage';
-import LandingPage from './pages/BookCall';
+import BookCall from './pages/BookCall';
 
 function AppContent(): JSX.Element {
   const location = useLocation();

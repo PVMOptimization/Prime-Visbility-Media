@@ -700,8 +700,8 @@ export default function Home() {
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-gray-400 font-body text-base sm:text-lg">
             <span>Or call us directly:</span>
-            <a href="tel:2145060806" className="text-cyan-400 text-xl sm:text-2xl font-bold hover:text-violet-400 transition-colors duration-300">
-              (214) 506-0806
+            <a href="tel:4692862839" className="text-cyan-400 text-xl sm:text-2xl font-bold hover:text-violet-400 transition-colors duration-300">
+              (469) 286-2839
             </a>
           </div>
         </div>

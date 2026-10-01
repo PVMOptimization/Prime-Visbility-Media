@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { Check, Phone, Mail, User, Sparkles, Calendar, ChevronDown } from 'lucide-react';
+import { Calendar, ChevronDown } from 'lucide-react';
 import React from 'react';
 
-// Wistia script loader
 const useWistiaScripts = () => {
   useEffect(() => {
     const scripts = [
@@ -11,7 +10,6 @@ const useWistiaScripts = () => {
       { src: 'https://fast.wistia.com/embed/pvt6x4gsui.js', type: 'module' },
       { src: 'https://fast.wistia.com/embed/lzk313rj1u.js', type: 'module' },
     ];
-
     const added = scripts.map(({ src, type }) => {
       if (document.querySelector(`script[src="${src}"]`)) return null;
       const el = document.createElement('script');
@@ -21,7 +19,6 @@ const useWistiaScripts = () => {
       document.body.appendChild(el);
       return el;
     });
-
     return () => {
       added.forEach((el) => el && document.body.contains(el) && document.body.removeChild(el));
     };
@@ -30,56 +27,16 @@ const useWistiaScripts = () => {
 
 export default function BookCall() {
   useWistiaScripts();
-
   const bookingRef = useRef(null);
-
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    message: '',
-    smsOptIn: false,
-  });
-
-  const [submitted, setSubmitted] = useState(false);
 
   const scrollToBooking = () => {
     bookingRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch('https://formspree.io/f/xbdkkrzz', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          phone: formData.phone,
-          email: formData.email,
-          message: formData.message,
-          sms_consent: formData.smsOptIn ? 'Accepted' : 'Declined',
-          source: 'PrimeVisibilityMedia.com',
-          submittedAt: new Date().toISOString(),
-        }),
-      });
-      if (!response.ok) throw new Error('Form submission failed');
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setFormData({ name: '', phone: '', email: '', message: '', smsOptIn: false });
-      }, 3000);
-    } catch (error) {
-      console.error('Formspree error:', error);
-      alert('Something went wrong. Please try again.');
-    }
   };
 
   return (
     <div className="bg-black text-white min-h-screen overflow-hidden">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
-
         .font-display { font-family: 'Syne', sans-serif; }
         .font-body { font-family: 'Outfit', sans-serif; }
 
@@ -115,8 +72,6 @@ export default function BookCall() {
         }
         .bounce-slow { animation: bounce-slow 1.8s ease-in-out infinite; }
 
-        .input-glow:focus { box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.2); }
-
         wistia-player[media-id='pvt6x4gsui']:not(:defined) {
           background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/pvt6x4gsui/swatch');
           display: block;
@@ -130,15 +85,13 @@ export default function BookCall() {
         }
       `}</style>
 
-      {/* ── HERO SECTION ── */}
+      {/* HERO SECTION */}
       <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4 sm:px-6 pt-24 pb-16">
-        {/* Ambient glows */}
         <div className="absolute inset-0 opacity-40 pointer-events-none">
           <div className="absolute top-0 right-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-cyan-500/20 rounded-full blur-[150px] floating" />
           <div className="absolute bottom-0 left-0 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-violet-500/20 rounded-full blur-[120px] floating" style={{ animationDelay: '2s' }} />
         </div>
 
-        {/* Film grain */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
           <div
             className="grain w-[200%] h-[200%]"
@@ -147,14 +100,12 @@ export default function BookCall() {
         </div>
 
         <div className="relative z-10 max-w-4xl mx-auto text-center w-full">
-          {/* Eyebrow */}
           <div className="inline-block mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm opacity-0 animate-fadeInUp">
             <span className="font-body text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] text-cyan-400 uppercase font-light">
               Prime Visibility Media
             </span>
           </div>
 
-          {/* Headline */}
           <h1
             className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 sm:mb-6 leading-[0.95] sm:leading-[0.9] opacity-0 animate-fadeInUp"
             style={{ animationDelay: '0.2s' }}
@@ -173,7 +124,7 @@ export default function BookCall() {
             Built for contractors doing $200k–$1M/year who are tired of chasing leads, missing calls, and leaving money on the table.
           </p>
 
-          {/* Main VSL — 16:9 */}
+          {/* Main VSL 16:9 */}
           <div
             className="group relative mb-10 w-full opacity-0 animate-fadeInUp"
             style={{ animationDelay: '0.5s' }}
@@ -235,8 +186,6 @@ export default function BookCall() {
               <Calendar className="w-5 h-5" />
               BOOK NOW
             </button>
-
-            {/* Scroll arrow */}
             <button
               onClick={scrollToBooking}
               aria-label="Scroll to booking"
@@ -249,26 +198,36 @@ export default function BookCall() {
         </div>
       </section>
 
-            {/* Cal.com Booking */}
-            <div className="lg:col-span-2">
-              <div className="bg-white/5 border border-white/10 p-6 rounded-2xl h-full flex flex-col">
-                <Calendar className="w-10 h-10 text-cyan-400 mb-4" />
-                <h3 className="font-display text-2xl font-bold mb-2 text-white">Pick a Time Directly</h3>
-                <p className="font-body text-gray-400 mb-6 text-sm">
-                  Skip the form. Choose a slot that works for you.
-                </p>
-                <div className="flex-1 rounded-xl overflow-hidden border border-white/10 min-h-[600px]">
-                  <iframe
-                    src="https://cal.com/prime-media-shogdp/30min"
-                    width="100%"
-                    height="100%"
-                    style={{ minHeight: '600px', border: 'none', borderRadius: '12px' }}
-                    title="Book a call with Prime Visibility Media"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
+      {/* BOOKING SECTION — calendar only */}
+      <section ref={bookingRef} className="relative py-16 sm:py-24 px-4 sm:px-6">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-cyan-500/30 rounded-full blur-[120px]" />
+        </div>
+
+        <div className="relative z-10 max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="inline-block mb-4 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/5 backdrop-blur-sm">
+              <span className="font-body text-xs tracking-[0.3em] text-cyan-400 uppercase font-light">
+                Schedule Your Call
+              </span>
             </div>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3">
+              Pick a Time That Works
+            </h2>
+            <p className="font-body text-gray-400 text-base sm:text-lg max-w-xl mx-auto">
+              15 minutes. No pitch. Just a real conversation about growing your pipeline.
+            </p>
+          </div>
+
+          <div className="rounded-2xl overflow-hidden border border-white/10 bg-white/5">
+            <iframe
+              src="https://cal.com/prime-media-shogdp/30min"
+              width="100%"
+              height="700"
+              style={{ border: 'none', display: 'block' }}
+              title="Book a call with Prime Visibility Media"
+              loading="lazy"
+            />
           </div>
         </div>
       </section>

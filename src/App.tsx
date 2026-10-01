@@ -16,7 +16,7 @@ import Casestudy from "./pages/Casestudy";
 import Pricing from "./pages/Pricing";
 import GrowthPipeline from "./pages/GrowthPipeline";
  import LandingPage from './pages/LandingPage';
-import LandingPage from './pages/BookNow';
+import LandingPage from './pages/BookCall';
 
 function AppContent(): JSX.Element {
   const location = useLocation();
@@ -62,7 +62,7 @@ function AppContent(): JSX.Element {
         <Route path="/join-now" element={<Pricing />} />
         <Route path="/growth-pipeline" element={<GrowthPipeline />} />
         <Route path="How-it-works" element={<LandingPage />} />
-       <Route path="Book-now" element={<BookNow />} />
+       <Route path="Book-now" element={<BookCall />} />
       </Routes>
     </>
   );

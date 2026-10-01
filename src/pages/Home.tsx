@@ -414,7 +414,7 @@ export default function Home() {
             <Link to="/book-call">
               <button className="group relative px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-body font-bold text-base sm:text-lg rounded-none overflow-hidden hover-lift w-full sm:w-auto">
                 <span className="relative z-10 flex items-center justify-center gap-3">
-                  Get My Free Audit
+                  Book A Call
                   <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-violet-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -500,7 +500,7 @@ export default function Home() {
             <p className="font-body text-gray-400 text-lg mb-6">We fix all three. Most agencies only touch one.</p>
             <Link to="/book-call">
               <button className="group px-8 py-4 border-2 border-cyan-500/50 text-cyan-400 font-body font-semibold rounded-none hover:bg-cyan-500/10 transition-all duration-300">
-                See What You're Missing — Free Audit
+                See What You're Missing — Book A Call
                 <ArrowRight className="inline ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
             </Link>
@@ -692,7 +692,7 @@ export default function Home() {
             <Link to="/book-call">
               <button className="group relative px-10 sm:px-12 py-5 sm:py-6 bg-white text-black font-body font-bold text-lg sm:text-xl rounded-none overflow-hidden hover-lift w-full sm:w-auto">
                 <span className="relative z-10 flex items-center justify-center gap-3">
-                  Get My Free Audit Now
+                  Book A Call
                   <Zap className="w-5 h-5 sm:w-6 sm:h-6 group-hover:rotate-12 transition-transform" />
                 </span>
               </button>

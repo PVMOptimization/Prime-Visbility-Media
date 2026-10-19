@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Check, CornerDownLeft, Lock, ShieldCheck, Sparkles } from 'lucide-react';
+import { getAttribution, saveUser, trackEvent } from '../lib/tracking';
 
 /* ------------------------------------------------------------------ */
 /*  Config                                                             */
@@ -16,7 +17,8 @@ const DEFAULT_CAL_HEIGHT = 950;
 const MIN_CAL_HEIGHT = 700;
 
 const BUSINESS_NAME = 'Prime Visibility Media';
-const PRIVACY_URL = '/privacy';
+const FUNNEL_NAME = 'Growth Pipeline Funnel';
+const PRIVACY_URL = '/privacy-policy';
 const TERMS_URL = '/terms';
 
 const OWNER_OPTIONS = ["Yes, I'm the owner", "I'm a partner / co-owner", 'No, I manage marketing or sales'];
@@ -107,6 +109,13 @@ const isValid = (step, d) => {
   }
 };
 
+const userFrom = (d) => ({
+  email: d.email.trim().toLowerCase(),
+  phone: e164(d.phone),
+  firstName: d.firstName.trim(),
+  lastName: d.lastName.trim(),
+});
+
 const buildPayload = (d, stage) => ({
   stage,
   hp: d.hp,
@@ -121,6 +130,7 @@ const buildPayload = (d, stage) => ({
   revenue: d.revenue,
   smsTransactional: d.smsTransactional,
   smsMarketing: d.smsMarketing,
+  attribution: getAttribution(),
 });
 
 const buildCalendarSrc = (d) => {
@@ -184,7 +194,6 @@ const labelFor = (phase, step) => {
 /* ------------------------------------------------------------------ */
 
 const css = `
-@import url('https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap');
 .pv-root{font-family:'Switzer',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
 
 @keyframes pv-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -407,6 +416,7 @@ export default function GrowthPipeline() {
 
   const queue = useRef(Promise.resolve());
   const busy = useRef(false);
+  const leadFired = useRef(false);
   const inputRef = useRef(null);
   const cardRef = useRef(null);
 
@@ -485,14 +495,31 @@ export default function GrowthPipeline() {
       setError(ERRORS[current.id]);
       return;
     }
+
     // From the email step onward, every answer is saved to GHL
-    if (step >= 1) submit(d, isLast ? 'complete' : 'partial');
+    if (step >= 1) {
+      submit(d, isLast ? 'complete' : 'partial');
+      saveUser(userFrom(d));
+    }
+
+    // Meta: Lead fires once, as soon as we have their email
+    if (step === 1 && !leadFired.current) {
+      leadFired.current = true;
+      trackEvent('Lead', { user: userFrom(d), custom: { content_name: FUNNEL_NAME } });
+    }
+
     celebrate(isLast);
 
     // Start loading the calendar in the background once we have name, email and phone
     if (current.id === 'phone') setCalSrc(buildCalendarSrc(d));
 
     if (isLast) {
+      // Meta: all questions answered
+      trackEvent('CompleteRegistration', {
+        user: userFrom(d),
+        custom: { content_name: FUNNEL_NAME, status: d.revenue },
+      });
+
       // Only reloads the calendar if they went back and changed their contact info
       const fresh = buildCalendarSrc(d);
       setCalSrc((s) => (s === fresh ? s : fresh));

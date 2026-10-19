@@ -10,6 +10,17 @@ const FIELD_IDS = {
   revenue: 'tMSwHtciMmbkUlewQgKN',
 };
 
+// Ad attribution fields, found automatically by their GHL field key
+const ATTR_FIELD_KEYS = {
+  utm_source: 'contact.utm_source',
+  utm_medium: 'contact.utm_medium',
+  utm_campaign: 'contact.utm_campaign',
+  utm_content: 'contact.utm_content',
+  utm_term: 'contact.utm_term',
+  fbclid: 'contact.fbclid',
+  landingPage: 'contact.landing_page',
+};
+
 // Match GHL's exact characters: curly apostrophes and en dashes
 const toGhlOption = (s) =>
   s.replace(/'/g, '\u2019').replace(/(\$\d+K)-(\$\d+K)/g, '$1\u2013$2');
@@ -29,6 +40,25 @@ const ghlHeaders = (token) => ({
   Accept: 'application/json',
 });
 
+// Looks up custom field IDs by key (cached for 10 minutes)
+let keyCache = { map: null, at: 0 };
+async function fieldIdsByKey(headers) {
+  if (keyCache.map && Date.now() - keyCache.at < 10 * 60 * 1000) return keyCache.map;
+  try {
+    const r = await fetch(`${GHL}/locations/${LOCATION_ID}/customFields`, { headers });
+    if (!r.ok) return keyCache.map || {};
+    const d = await r.json();
+    const map = {};
+    (d.customFields || []).forEach((f) => {
+      if (f.fieldKey) map[f.fieldKey] = f.id;
+    });
+    keyCache = { map, at: Date.now() };
+    return map;
+  } catch {
+    return keyCache.map || {};
+  }
+}
+
 // Status check: open /api/ghl-lead in your browser
 export async function onRequestGet({ env }) {
   const status = { deployed: true, tokenSet: Boolean(env.GHL_TOKEN), ghlAcceptsToken: false };
@@ -39,7 +69,15 @@ export async function onRequestGet({ env }) {
       headers: ghlHeaders(env.GHL_TOKEN),
     });
     status.ghlAcceptsToken = r.ok;
-    if (!r.ok) status.ghlStatus = r.status;
+    if (!r.ok) {
+      status.ghlStatus = r.status;
+    } else {
+      const d = await r.json();
+      const keys = new Set((d.customFields || []).map((f) => f.fieldKey));
+      status.attributionFields = Object.fromEntries(
+        Object.values(ATTR_FIELD_KEYS).map((k) => [k, keys.has(k) ? 'found' : 'missing'])
+      );
+    }
   } catch {
     status.ghlStatus = 'unreachable';
   }
@@ -65,6 +103,8 @@ export async function onRequestPost({ request, env }) {
   const phone = /^\+1\d{10}$/.test(b.phone || '') ? b.phone : '';
   if (!email && !phone) return json({ error: 'Email or phone required' }, 400);
 
+  const headers = ghlHeaders(env.GHL_TOKEN);
+
   const values = {
     trade: clean(b.trade),
     companyName: clean(b.companyName, 120),
@@ -81,6 +121,19 @@ export async function onRequestPost({ request, env }) {
     return v ? [{ id, field_value: v }] : [];
   });
 
+  // Ad attribution
+  const attr = b.attribution && typeof b.attribution === 'object' ? b.attribution : {};
+  if (Object.keys(attr).length) {
+    const keyMap = await fieldIdsByKey(headers);
+    Object.entries(ATTR_FIELD_KEYS).forEach(([k, fieldKey]) => {
+      const v = clean(attr[k], 500);
+      const id = keyMap[fieldKey];
+      if (v && id) customFields.push({ id, field_value: v });
+    });
+  }
+  const fromMeta =
+    /^(fb|facebook|ig|instagram|meta)/i.test(clean(attr.utm_source)) || Boolean(clean(attr.fbclid));
+
   const contact = {
     locationId: LOCATION_ID,
     firstName: clean(b.firstName, 60) || undefined,
@@ -91,8 +144,6 @@ export async function onRequestPost({ request, env }) {
     source: 'Growth Pipeline Funnel',
     customFields: customFields.length ? customFields : undefined,
   };
-
-  const headers = ghlHeaders(env.GHL_TOKEN);
 
   try {
     const r = await fetch(`${GHL}/contacts/upsert`, {
@@ -112,6 +163,7 @@ export async function onRequestPost({ request, env }) {
       const tags = [complete ? 'funnel-complete' : 'funnel-partial'];
       if (b.smsTransactional === true) tags.push('sms-consent-transactional');
       if (b.smsMarketing === true) tags.push('sms-consent-marketing');
+      if (fromMeta) tags.push('meta-ads');
 
       const tagRes = await fetch(`${GHL}/contacts/${id}/tags`, {
         method: 'POST',

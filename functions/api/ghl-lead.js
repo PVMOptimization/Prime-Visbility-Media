@@ -17,10 +17,34 @@ const toGhlOption = (s) =>
 const clean = (v, max = 200) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
 const json = (obj, status = 200) =>
-  new Response(JSON.stringify(obj), {
+  new Response(JSON.stringify(obj, null, 2), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });
+
+const ghlHeaders = (token) => ({
+  Authorization: `Bearer ${token}`,
+  Version: '2021-07-28',
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+});
+
+// Status check: open /api/ghl-lead in your browser
+export async function onRequestGet({ env }) {
+  const status = { deployed: true, tokenSet: Boolean(env.GHL_TOKEN), ghlAcceptsToken: false };
+  if (!env.GHL_TOKEN) return json(status);
+
+  try {
+    const r = await fetch(`${GHL}/locations/${LOCATION_ID}/customFields`, {
+      headers: ghlHeaders(env.GHL_TOKEN),
+    });
+    status.ghlAcceptsToken = r.ok;
+    if (!r.ok) status.ghlStatus = r.status;
+  } catch {
+    status.ghlStatus = 'unreachable';
+  }
+  return json(status);
+}
 
 export async function onRequestPost({ request, env }) {
   if (!env.GHL_TOKEN) {
@@ -68,12 +92,7 @@ export async function onRequestPost({ request, env }) {
     customFields: customFields.length ? customFields : undefined,
   };
 
-  const headers = {
-    Authorization: `Bearer ${env.GHL_TOKEN}`,
-    Version: '2021-07-28',
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  };
+  const headers = ghlHeaders(env.GHL_TOKEN);
 
   try {
     const r = await fetch(`${GHL}/contacts/upsert`, {
@@ -84,7 +103,7 @@ export async function onRequestPost({ request, env }) {
     const data = await r.json().catch(() => ({}));
     if (!r.ok) {
       console.error('GHL upsert failed', r.status, JSON.stringify(data));
-      return json({ error: 'Upsert failed' }, 502);
+      return json({ error: 'Upsert failed', ghlStatus: r.status, ghlMessage: data?.message }, 502);
     }
 
     const id = data?.contact?.id;
@@ -94,11 +113,12 @@ export async function onRequestPost({ request, env }) {
       if (b.smsTransactional === true) tags.push('sms-consent-transactional');
       if (b.smsMarketing === true) tags.push('sms-consent-marketing');
 
-      await fetch(`${GHL}/contacts/${id}/tags`, {
+      const tagRes = await fetch(`${GHL}/contacts/${id}/tags`, {
         method: 'POST',
         headers,
         body: JSON.stringify({ tags }),
       });
+      if (!tagRes.ok) console.error('GHL add tags failed', tagRes.status);
 
       if (complete) {
         await fetch(`${GHL}/contacts/${id}/tags`, {

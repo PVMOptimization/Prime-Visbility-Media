@@ -54,6 +54,12 @@ const css = `
 }
 .pv-swap{animation:pv-swap .45s cubic-bezier(.2,.7,.2,1) both}
 
+@keyframes pv-pulse{
+  0%,100%{opacity:.35;transform:scale(1)}
+  50%{opacity:.75;transform:scale(1.05)}
+}
+.pv-sticky-glow{animation:pv-pulse 2.4s ease-in-out infinite}
+
 .pv-range{
   -webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;
   cursor:pointer;outline:none;
@@ -88,6 +94,7 @@ wistia-player[media-id='lzk313rj1u']:not(:defined){
 @media (prefers-reduced-motion:reduce){
   .pv-drop{animation:none;opacity:0}
   .pv-swap{animation:none}
+  .pv-sticky-glow{animation:none}
 }
 `;
 
@@ -221,8 +228,11 @@ const SectionHeader = ({ eyebrow, title, sub }) => (
 );
 
 // Every call to action is a real <Link> (no <button> nested in <a>)
-const CtaButton = ({ children, variant = 'primary', size = 'lg', arrow = true, className = '' }) => {
-  const sizes = size === 'sm' ? 'h-11 px-5 text-sm' : 'h-[58px] px-9 text-lg';
+const CtaButton = ({ children, variant = 'primary', size = 'lg', arrow = true, className = '', tabIndex }) => {
+  const sizes =
+    size === 'sm' ? 'h-11 px-5 text-sm'
+    : size === 'xl' ? 'h-[68px] px-12 text-xl'
+    : 'h-[58px] px-9 text-lg';
   const look =
     variant === 'dark'
       ? {
@@ -236,6 +246,7 @@ const CtaButton = ({ children, variant = 'primary', size = 'lg', arrow = true, c
   return (
     <Link
       to={CTA_PATH}
+      tabIndex={tabIndex}
       style={look}
       className={`group relative inline-flex items-center justify-center gap-3 rounded-[15px] border-2 border-white/40 font-semibold text-white transition-transform duration-200 hover:scale-[1.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 active:scale-[0.98] ${sizes} ${className}`}
     >
@@ -247,9 +258,6 @@ const CtaButton = ({ children, variant = 'primary', size = 'lg', arrow = true, c
 
 /* ------------------------------------------------------------------ */
 /*  Wistia embed loader                                                */
-/*  Injects the Wistia <script> tags once, on mount, and cleans        */
-/*  them up on unmount. <wistia-player> elements themselves are        */
-/*  rendered in JSX further down inside HeroSection.                   */
 /* ------------------------------------------------------------------ */
 
 const useWistiaScripts = () => {
@@ -381,7 +389,7 @@ const HeroSection = () => (
       </p>
 
       {/* Video frame */}
-      <div className="group relative mb-14 w-full max-w-4xl">
+      <div id="pv-first-video" className="group relative mb-14 w-full max-w-4xl">
         <div className="absolute -inset-1 rounded-3xl bg-gradient-to-b from-blue-400/35 to-transparent opacity-60 blur-xl transition-opacity duration-700 group-hover:opacity-90" />
         {['-left-3 -top-3 border-l border-t', '-right-3 -top-3 border-r border-t', '-bottom-3 -left-3 border-b border-l', '-bottom-3 -right-3 border-b border-r'].map((pos) => (
           <span key={pos} aria-hidden="true" className={`absolute z-10 h-6 w-6 border-cyan-300/70 ${pos}`} />
@@ -403,7 +411,7 @@ const HeroSection = () => (
       </div>
 
       <div className="mb-24 flex flex-col items-center">
-        <CtaButton>View The Full System</CtaButton>
+        <CtaButton>Book Your Call</CtaButton>
 
         {/* Vertical (1080x1920) video */}
         <div className="group relative mt-14 w-full max-w-[320px]">
@@ -540,6 +548,9 @@ const CalculatorSection = () => (
         <p className="mx-auto max-w-md text-lg leading-relaxed text-white/60 lg:mx-0">
           Slide your average job value and close rate to see what a booked calendar could mean for your business.
         </p>
+        <div className="mt-9 flex justify-center lg:justify-start">
+          <CtaButton>Book Your Call</CtaButton>
+        </div>
       </div>
       <RoiCalculator />
     </div>
@@ -720,6 +731,10 @@ const SystemSection = () => {
             />
           ))}
         </div>
+
+        <div className="mt-16 flex justify-center pb-10">
+          <CtaButton>Book Your Call</CtaButton>
+        </div>
       </div>
     </section>
   );
@@ -816,6 +831,10 @@ const ResultsSection = () => {
             );
           })}
         </div>
+
+        <div className="mt-14 flex justify-center">
+          <CtaButton>Book Your Call</CtaButton>
+        </div>
       </div>
     </section>
   );
@@ -910,7 +929,7 @@ const FaqSection = () => {
 /* ------------------------------------------------------------------ */
 
 const FinalCTASection = () => (
-  <section className="relative overflow-hidden bg-[#02050A] lg:px-20">
+  <section id="pv-final-cta" className="relative overflow-hidden bg-[#02050A] lg:px-20">
     <div
       className="relative mx-auto flex min-h-[560px] w-full max-w-[1600px] items-center justify-center overflow-hidden"
       style={{ background: 'linear-gradient(135deg,#3b82f6 0%,#38bdf8 55%,#22d3ee 100%)' }}
@@ -963,6 +982,61 @@ const Footer = () => (
 );
 
 /* ------------------------------------------------------------------ */
+/*  8. Sticky "Book Your Call" button                                  */
+/*  Appears after scrolling past the first video, hides at final CTA   */
+/* ------------------------------------------------------------------ */
+
+const StickyCta = () => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const video = document.getElementById('pv-first-video');
+    const finalCta = document.getElementById('pv-final-cta');
+    if (!video) return undefined;
+
+    let pastVideo = false;
+    let finalVisible = false;
+    const sync = () => setShow(pastVideo && !finalVisible);
+
+    const videoObs = new IntersectionObserver(([e]) => {
+      pastVideo = !e.isIntersecting && e.boundingClientRect.top < 0;
+      sync();
+    });
+    videoObs.observe(video);
+
+    let finalObs;
+    if (finalCta) {
+      finalObs = new IntersectionObserver(([e]) => {
+        finalVisible = e.isIntersecting;
+        sync();
+      }, { threshold: 0.2 });
+      finalObs.observe(finalCta);
+    }
+
+    return () => {
+      videoObs.disconnect();
+      if (finalObs) finalObs.disconnect();
+    };
+  }, []);
+
+  return (
+    <div
+      aria-hidden={!show}
+      className={`fixed inset-x-0 bottom-5 z-50 flex justify-center px-4 transition-all duration-500 ease-[cubic-bezier(.2,.7,.2,1)] ${
+        show ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-24 opacity-0'
+      }`}
+    >
+      <div className="relative w-full max-w-md sm:w-auto">
+        <span aria-hidden="true" className="pv-sticky-glow absolute -inset-2 rounded-[22px] bg-cyan-400/30 blur-xl" />
+        <CtaButton size="xl" className="w-full sm:w-auto" tabIndex={show ? 0 : -1}>
+          Book Your Call
+        </CtaButton>
+      </div>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
 /*  Main assembly                                                      */
 /* ------------------------------------------------------------------ */
 
@@ -993,6 +1067,7 @@ export default function LandingPage() {
         <FinalCTASection />
       </main>
       <Footer />
+      <StickyCta />
     </div>
   );
 }

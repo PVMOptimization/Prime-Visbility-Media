@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, Clock, Mail, PhoneCall } from 'lucide-react';
+import { getUser, shouldFireSchedule, trackEvent } from '../lib/tracking';
 
 const inFrame = typeof window !== 'undefined' && window.top !== window.self;
 
@@ -33,6 +34,12 @@ export default function ThankYou() {
       return;
     }
     window.scrollTo(0, 0);
+
+    // Meta: booking confirmed (once per booking, even if the page is refreshed)
+    if (shouldFireSchedule()) {
+      const user = getUser() || {};
+      trackEvent('Schedule', { user, custom: { content_name: 'Strategy Call' } });
+    }
   }, []);
 
   // Don't render anything inside the iframe; the full page is about to load

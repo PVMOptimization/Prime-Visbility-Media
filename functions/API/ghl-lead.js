@@ -90,11 +90,16 @@ export async function onRequestPost({ request, env }) {
     const id = data?.contact?.id;
     if (id) {
       const complete = b.stage === 'complete';
+      const tags = [complete ? 'funnel-complete' : 'funnel-partial'];
+      if (b.smsTransactional === true) tags.push('sms-consent-transactional');
+      if (b.smsMarketing === true) tags.push('sms-consent-marketing');
+
       await fetch(`${GHL}/contacts/${id}/tags`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ tags: [complete ? 'funnel-complete' : 'funnel-partial'] }),
+        body: JSON.stringify({ tags }),
       });
+
       if (complete) {
         await fetch(`${GHL}/contacts/${id}/tags`, {
           method: 'DELETE',

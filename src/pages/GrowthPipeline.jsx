@@ -11,6 +11,9 @@ const CALENDAR_BASE = 'https://api.leadconnectorhq.com/widget/booking/XYCZxuPXEB
 const CALENDAR_IFRAME_ID = 'XYCZxuPXEBa1m4bgduDQ_1792367936138';
 const EMBED_SCRIPT = 'https://link.msgsndr.com/js/form_embed.js';
 const PRECONNECT_HOSTS = ['https://api.leadconnectorhq.com', 'https://link.msgsndr.com'];
+const GHL_ORIGINS = ['leadconnectorhq.com', 'msgsndr.com', 'gohighlevel.com', 'highlevel.com'];
+const DEFAULT_CAL_HEIGHT = 950;
+const MIN_CAL_HEIGHT = 700;
 
 const BUSINESS_NAME = 'Prime Visibility Media';
 const PRIVACY_URL = '/privacy';
@@ -129,6 +132,29 @@ const buildCalendarSrc = (d) => {
   if (phone) params.set('phone', phone);
   const qs = params.toString();
   return qs ? `${CALENDAR_BASE}?${qs}` : CALENDAR_BASE;
+};
+
+// Pulls a height value out of whatever message format GHL's widget sends
+const findHeight = (raw) => {
+  let d = raw;
+  if (typeof d === 'string') {
+    try { d = JSON.parse(d); } catch { return null; }
+  }
+  const pick = (v) => {
+    const n = typeof v === 'string' ? parseFloat(v) : v;
+    return typeof n === 'number' && Number.isFinite(n) && n > 200 && n < 6000 ? n : null;
+  };
+  if (Array.isArray(d)) {
+    for (const item of d) {
+      const h = pick(item) ?? (item && typeof item === 'object' ? pick(item.height) : null);
+      if (h) return h;
+    }
+    return null;
+  }
+  if (d && typeof d === 'object') {
+    return pick(d.height) ?? pick(d.data?.height) ?? pick(d.iframeHeight) ?? pick(d.frameHeight) ?? null;
+  }
+  return null;
 };
 
 const sendLead = (payload) =>
@@ -329,17 +355,40 @@ const OptionButton = ({ letter, label, selected, index, onClick }) => (
   </div>
 );
 
-const CalendarEmbed = ({ src, hidden }) => (
-  <iframe
-    id={CALENDAR_IFRAME_ID}
-    title="Book your call"
-    src={src}
-    allow="payment"
-    scrolling="no"
-    tabIndex={hidden ? -1 : 0}
-    style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: 700 }}
-  />
-);
+// Sizes itself from GHL's height messages; scrolls internally as a fallback
+const CalendarEmbed = ({ src, hidden }) => {
+  const [height, setHeight] = useState(DEFAULT_CAL_HEIGHT);
+
+  useEffect(() => {
+    const onMessage = (e) => {
+      if (!GHL_ORIGINS.some((o) => String(e.origin || '').includes(o))) return;
+      const h = findHeight(e.data);
+      if (h) setHeight(Math.max(MIN_CAL_HEIGHT, Math.ceil(h) + 32));
+    };
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
+
+  return (
+    <iframe
+      id={CALENDAR_IFRAME_ID}
+      title="Book your call"
+      src={src}
+      allow="payment"
+      scrolling="auto"
+      tabIndex={hidden ? -1 : 0}
+      style={{
+        display: 'block',
+        width: '100%',
+        height: `${height}px`,
+        minHeight: `${MIN_CAL_HEIGHT}px`,
+        border: 'none',
+        borderRadius: 16,
+        transition: 'height .3s ease',
+      }}
+    />
+  );
+};
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
@@ -359,6 +408,7 @@ export default function GrowthPipeline() {
   const queue = useRef(Promise.resolve());
   const busy = useRef(false);
   const inputRef = useRef(null);
+  const cardRef = useRef(null);
 
   const current = STEPS[step];
   const isLast = step === STEPS.length - 1;
@@ -389,6 +439,15 @@ export default function GrowthPipeline() {
 
     return () => links.forEach((l) => l.remove());
   }, []);
+
+  // Bring the calendar into view when it's revealed
+  useEffect(() => {
+    if (!calendarVisible) return undefined;
+    const t = setTimeout(() => {
+      cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+    return () => clearTimeout(t);
+  }, [calendarVisible]);
 
   useEffect(() => { busy.current = false; }, [step]);
 
@@ -578,7 +637,7 @@ export default function GrowthPipeline() {
   };
 
   return (
-    <div className="pv-root relative min-h-screen overflow-hidden bg-[#02050A] text-white antialiased selection:bg-blue-500">
+    <div className="pv-root relative min-h-screen overflow-x-hidden bg-[#02050A] text-white antialiased selection:bg-blue-500">
       <style>{css}</style>
 
       {/* Ambient backdrop */}
@@ -605,8 +664,9 @@ export default function GrowthPipeline() {
           style={{ maxWidth: calendarVisible ? 820 : 560 }}
         >
           <div
-            className={`relative rounded-[28px] border border-white/10 bg-white/[0.035] shadow-[inset_0_12px_31px_-2px_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(37,99,235,0.45)] backdrop-blur-xl transition-[padding] duration-500 ${
-              calendarVisible ? 'p-4 sm:p-6' : 'p-6 sm:p-9'
+            ref={cardRef}
+            className={`relative scroll-mt-6 rounded-[28px] border border-white/10 bg-white/[0.035] shadow-[inset_0_12px_31px_-2px_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(37,99,235,0.45)] backdrop-blur-xl transition-[padding] duration-500 ${
+              calendarVisible ? 'p-3 sm:p-6' : 'p-6 sm:p-9'
             }`}
           >
             {/* Progress */}
@@ -718,9 +778,7 @@ export default function GrowthPipeline() {
                     <p className="mt-2 text-sm text-white/55">Spots are limited each week.</p>
                   </div>
                 )}
-                <div className="overflow-hidden rounded-2xl">
-                  <CalendarEmbed src={calSrc} hidden={!calendarVisible} />
-                </div>
+                <CalendarEmbed src={calSrc} hidden={!calendarVisible} />
               </div>
             )}
           </div>

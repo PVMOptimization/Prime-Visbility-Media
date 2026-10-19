@@ -2,19 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-   <link rel="icon" type="image/png" href="Public/favicon.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <title>Prime Visibility Media</title>
 
-<meta property="og:title" content="Prime Visibility Media" />
-<meta property="og:description" content="High-intent scaling & digital growth solutions." />
-<meta property="og:image" content="public/Preview.png" />
+    <!-- If GHL opens the thank-you page inside the calendar iframe, break out before the app loads -->
+    <script>
+      if (window.top !== window.self && location.pathname.toLowerCase().indexOf('/thank-you') === 0) {
+        try { window.top.location.replace(location.href); } catch (e) {}
+      }
+    </script>
+
+    <title>Prime Visibility Media</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <!-- Fonts: connect early so text renders fast -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+    <link href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap" rel="stylesheet" />
+
+    <meta property="og:title" content="Prime Visibility Media" />
+    <meta property="og:description" content="High-intent scaling & digital growth solutions." />
+    <meta property="og:image" content="https://primevisibilitymedia.com/Preview.png" />
     <meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://primevisibilitymedia.com" />
-<meta property="og:type" content="website" />
-
+    <meta property="og:image:height" content="630" />
+    <meta property="og:url" content="https://primevisibilitymedia.com" />
+    <meta property="og:type" content="website" />
   </head>
   <body>
     <div id="root"></div>

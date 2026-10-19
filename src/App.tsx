@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import { captureAttribution, trackPageView } from './lib/tracking';
 
 // Each page downloads only when someone visits it
 const Home = lazy(() => import('./pages/Home'));
@@ -29,6 +30,12 @@ function AppContent(): JSX.Element {
   const location = useLocation();
   const path = location.pathname.toLowerCase();
   const hideNav: boolean = path === '/vsl';
+
+  // Ad tracking: save UTMs / click ID, and send a Meta PageView on every page
+  useEffect(() => {
+    captureAttribution();
+    trackPageView();
+  }, [location.pathname]);
 
   useEffect(() => {
     if (NO_CHAT_ROUTES.includes(path)) return;

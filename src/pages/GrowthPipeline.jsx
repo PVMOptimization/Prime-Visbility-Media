@@ -293,4 +293,439 @@ const ConsentBox = ({ checked, onChange, children }) => (
     />
     <span
       aria-hidden="true"
-      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all duration-200 peer-focus-visible:outline peer-focus-visible:outline-2
+      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all duration-200 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-cyan-300 ${
+        checked ? 'border-cyan-300 bg-cyan-400' : 'border-white/25 group-hover:border-blue-400/60'
+      }`}
+    >
+      {checked && <Check key="on" className="pv-check-pop h-3.5 w-3.5 text-[#02050A]" strokeWidth={3.5} />}
+    </span>
+    <span className="text-[12.5px] leading-relaxed text-white/60">{children}</span>
+  </label>
+);
+
+const OptionButton = ({ letter, label, selected, index, onClick }) => (
+  <div className="pv-opt" style={{ animationDelay: `${index * 60}ms, ${0.45 + index * 0.3}s` }}>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={`group flex w-full items-center gap-4 rounded-2xl border px-4 py-3.5 text-left text-[15px] font-medium transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300 ${
+        selected
+          ? 'pv-pop border-cyan-300/80 bg-cyan-400/10 text-white shadow-[0_0_30px_-8px_rgba(34,211,238,0.7)]'
+          : 'border-white/10 bg-white/[0.03] text-white/80 hover:border-blue-400/50 hover:bg-blue-500/10 hover:text-white hover:shadow-[0_10px_30px_-12px_rgba(59,130,246,0.6)]'
+      }`}
+    >
+      <span
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border text-xs font-bold transition-colors ${
+          selected
+            ? 'border-cyan-300 bg-cyan-400 text-[#02050A]'
+            : 'border-white/15 text-white/50 group-hover:border-blue-400/60 group-hover:text-blue-300'
+        }`}
+      >
+        {selected ? <Check className="h-4 w-4" strokeWidth={3} /> : letter}
+      </span>
+      <span className="flex-1">{label}</span>
+    </button>
+  </div>
+);
+
+const CalendarEmbed = ({ src, hidden }) => (
+  <iframe
+    id={CALENDAR_IFRAME_ID}
+    title="Book your call"
+    src={src}
+    allow="payment"
+    scrolling="no"
+    tabIndex={hidden ? -1 : 0}
+    style={{ width: '100%', border: 'none', overflow: 'hidden', minHeight: 700 }}
+  />
+);
+
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
+
+export default function GrowthPipeline() {
+  const [step, setStep] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [phase, setPhase] = useState('form'); // form | unlocking | calendar
+  const [data, setData] = useState(INITIAL);
+  const [error, setError] = useState('');
+  const [reward, setReward] = useState(null);
+  const [burst, setBurst] = useState({ n: 0, big: false });
+  const [picked, setPicked] = useState(null);
+  const [calSrc, setCalSrc] = useState('');
+
+  const queue = useRef(Promise.resolve());
+  const busy = useRef(false);
+  const inputRef = useRef(null);
+
+  const current = STEPS[step];
+  const isLast = step === STEPS.length - 1;
+  const ready = isValid(current, data);
+  const progress = progressFor(phase, step);
+  const firstName = data.firstName.trim();
+  const calendarVisible = phase === 'calendar';
+
+  // On page load: scroll to top, warm up connections to GHL, load the embed script early
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    const links = PRECONNECT_HOSTS.map((href) => {
+      const l = document.createElement('link');
+      l.rel = 'preconnect';
+      l.href = href;
+      l.crossOrigin = 'anonymous';
+      document.head.appendChild(l);
+      return l;
+    });
+
+    if (!document.querySelector(`script[src="${EMBED_SCRIPT}"]`)) {
+      const s = document.createElement('script');
+      s.src = EMBED_SCRIPT;
+      s.async = true;
+      document.body.appendChild(s);
+    }
+
+    return () => links.forEach((l) => l.remove());
+  }, []);
+
+  useEffect(() => { busy.current = false; }, [step]);
+
+  useEffect(() => {
+    if (phase !== 'form') return undefined;
+    const t = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 320);
+    return () => clearTimeout(t);
+  }, [step, phase]);
+
+  useEffect(() => {
+    if (!reward) return undefined;
+    const t = setTimeout(() => setReward(null), 1100);
+    return () => clearTimeout(t);
+  }, [reward]);
+
+  const set = (key, value) => {
+    setData((d) => ({ ...d, [key]: value }));
+    setError('');
+  };
+
+  // Requests go out one at a time so later answers never land before earlier ones
+  const submit = (d, stage) => {
+    const payload = buildPayload(d, stage);
+    queue.current = queue.current.then(() => sendLead(payload));
+  };
+
+  const celebrate = (big = false) => {
+    setReward({ id: Date.now(), text: REWARDS[Math.floor(Math.random() * REWARDS.length)] });
+    setBurst((b) => ({ n: b.n + 1, big }));
+    if (navigator.vibrate) navigator.vibrate(big ? [20, 40, 20] : 12);
+  };
+
+  const advance = (d = data) => {
+    if (!isValid(current, d)) {
+      setError(ERRORS[current.id]);
+      return;
+    }
+    // From the email step onward, every answer is saved to GHL
+    if (step >= 1) submit(d, isLast ? 'complete' : 'partial');
+    celebrate(isLast);
+
+    // Start loading the calendar in the background once we have name, email and phone
+    if (current.id === 'phone') setCalSrc(buildCalendarSrc(d));
+
+    if (isLast) {
+      // Only reloads the calendar if they went back and changed their contact info
+      const fresh = buildCalendarSrc(d);
+      setCalSrc((s) => (s === fresh ? s : fresh));
+      setPhase('unlocking');
+      setTimeout(() => setPhase('calendar'), 1500);
+      return;
+    }
+    setDir(1);
+    setPicked(null);
+    setStep((s) => s + 1);
+  };
+
+  const back = () => {
+    if (step === 0) return;
+    setDir(-1);
+    setError('');
+    setPicked(null);
+    setStep((s) => s - 1);
+  };
+
+  const choose = (opt) => {
+    if (busy.current) return;
+    busy.current = true;
+    const d = { ...data, [current.id]: opt };
+    setData(d);
+    setPicked(opt);
+    setError('');
+    setTimeout(() => advance(d), 380);
+  };
+
+  const toggle = (opt) => {
+    const arr = data[current.id];
+    set(current.id, arr.includes(opt) ? arr.filter((o) => o !== opt) : [...arr, opt]);
+    if (navigator.vibrate) navigator.vibrate(8);
+  };
+
+  // Keyboard shortcuts for choice questions: A, B, C... and Enter
+  useEffect(() => {
+    if (phase !== 'form') return undefined;
+    const onKey = (e) => {
+      if (e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey || e.altKey) return;
+      const s = STEPS[step];
+      if (s.kind !== 'single' && s.kind !== 'multi') return;
+      const i = e.key.length === 1 ? e.key.toUpperCase().charCodeAt(0) - 65 : -1;
+      if (i >= 0 && i < s.options.length) {
+        e.preventDefault();
+        if (s.kind === 'single') choose(s.options[i]);
+        else toggle(s.options[i]);
+      } else if (e.key === 'Enter' && s.kind === 'multi') {
+        e.preventDefault();
+        advance();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
+  const renderBody = () => {
+    switch (current.kind) {
+      case 'name':
+        return (
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Field
+              ref={inputRef} label="First name" placeholder="First name" autoComplete="given-name"
+              enterKeyHint="next" value={data.firstName} valid={data.firstName.trim().length > 0}
+              onChange={(v) => set('firstName', v)}
+            />
+            <Field
+              label="Last name" placeholder="Last name" autoComplete="family-name"
+              enterKeyHint="next" value={data.lastName} valid={data.lastName.trim().length > 0}
+              onChange={(v) => set('lastName', v)}
+            />
+          </div>
+        );
+      case 'phone':
+        return (
+          <div className="grid gap-3">
+            <Field
+              ref={inputRef}
+              label="Phone number"
+              prefix="+1"
+              type="tel"
+              inputMode="tel"
+              autoComplete={current.autoComplete}
+              placeholder={current.placeholder}
+              enterKeyHint="next"
+              value={data.phone}
+              valid={ready}
+              onChange={(v) => set('phone', formatPhone(v))}
+            />
+            <div className="mt-2 grid gap-2.5">
+              <ConsentBox checked={data.smsTransactional} onChange={(v) => set('smsTransactional', v)}>
+                I consent to receive non-marketing text messages from {BUSINESS_NAME} about my appointment and account. Message frequency varies. Message &amp; data rates may apply. Reply HELP for help or STOP to opt out.
+              </ConsentBox>
+              <ConsentBox checked={data.smsMarketing} onChange={(v) => set('smsMarketing', v)}>
+                I consent to receive marketing text messages from {BUSINESS_NAME}, including offers and updates. Message frequency varies. Message &amp; data rates may apply. Reply HELP for help or STOP to opt out.
+              </ConsentBox>
+              <p className="px-1 text-[11.5px] text-white/40">
+                Consent is not a condition of booking. See our{' '}
+                <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-white/70">Privacy Policy</a>
+                {' '}and{' '}
+                <a href={TERMS_URL} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-white/70">Terms</a>.
+              </p>
+            </div>
+          </div>
+        );
+      case 'input':
+        return (
+          <Field
+            ref={inputRef}
+            label={current.title(data)}
+            type={current.type}
+            inputMode={current.inputMode}
+            autoComplete={current.autoComplete}
+            placeholder={current.placeholder}
+            enterKeyHint="next"
+            value={data[current.id]}
+            valid={ready}
+            onChange={(v) => set(current.id, v)}
+          />
+        );
+      default:
+        return (
+          <div className="grid gap-3">
+            {current.options.map((opt, i) => (
+              <OptionButton
+                key={opt}
+                index={i}
+                letter={String.fromCharCode(65 + i)}
+                label={opt}
+                selected={
+                  current.kind === 'single'
+                    ? picked === opt || data[current.id] === opt
+                    : data[current.id].includes(opt)
+                }
+                onClick={() => (current.kind === 'single' ? choose(opt) : toggle(opt))}
+              />
+            ))}
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="pv-root relative min-h-screen overflow-hidden bg-[#02050A] text-white antialiased selection:bg-blue-500">
+      <style>{css}</style>
+
+      {/* Ambient backdrop */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="pv-orb absolute -left-32 top-[-10%] h-[420px] w-[420px] rounded-full bg-blue-600/20 blur-[120px]" />
+        <div className="pv-orb absolute -right-24 bottom-[-10%] h-[380px] w-[380px] rounded-full bg-cyan-400/15 blur-[120px]" style={{ animationDelay: '-7s' }} />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#02050A_85%)]" />
+      </div>
+
+      <header className="relative z-10 mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+        <Link to="/" className="flex items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 font-bold shadow-lg shadow-blue-500/30">P</div>
+          <span className="hidden text-base font-bold tracking-tight text-white/90 sm:inline">Prime Visibility Media</span>
+        </Link>
+        <span className="flex items-center gap-2 text-xs font-medium text-white/55">
+          <ShieldCheck className="h-4 w-4 text-cyan-300" />
+          15 leads in 30 days or a full refund
+        </span>
+      </header>
+
+      <main className="relative z-10 flex flex-col items-center px-4 pb-16 pt-4 sm:pt-10">
+        <div
+          className="w-full transition-[max-width] duration-700 ease-[cubic-bezier(.2,.7,.2,1)]"
+          style={{ maxWidth: calendarVisible ? 820 : 560 }}
+        >
+          <div
+            className={`relative rounded-[28px] border border-white/10 bg-white/[0.035] shadow-[inset_0_12px_31px_-2px_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(37,99,235,0.45)] backdrop-blur-xl transition-[padding] duration-500 ${
+              calendarVisible ? 'p-4 sm:p-6' : 'p-6 sm:p-9'
+            }`}
+          >
+            {/* Progress */}
+            <div className="mb-8">
+              <div className="mb-2 flex items-center justify-between text-xs font-medium">
+                <span className="text-white/50">{labelFor(phase, step)}</span>
+                <span className="tabular-nums text-cyan-300">{progress}%</span>
+              </div>
+              <div
+                className="h-2 overflow-hidden rounded-full bg-white/[0.06]"
+                role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}
+              >
+                <div className="pv-bar relative h-full overflow-hidden rounded-full" style={{ width: `${progress}%` }} />
+              </div>
+            </div>
+
+            <ConfettiBurst key={burst.n} seed={burst.n} big={burst.big} />
+
+            {reward && (
+              <div className="pointer-events-none absolute inset-x-0 top-3 z-30 flex justify-center">
+                <span key={reward.id} className="pv-reward inline-flex items-center gap-1.5 rounded-full border border-cyan-300/40 bg-[#02050A]/80 px-3 py-1 text-xs font-bold text-cyan-200 shadow-[0_0_24px_-6px_#22d3ee]">
+                  <Sparkles className="h-3.5 w-3.5" /> +1 {reward.text}
+                </span>
+              </div>
+            )}
+
+            {phase === 'form' && (
+              <form onSubmit={(e) => { e.preventDefault(); advance(); }} noValidate>
+                {/* Honeypot for bots: hidden from people */}
+                <input
+                  type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden="true"
+                  className="absolute left-[-9999px] h-px w-px opacity-0"
+                  value={data.hp} onChange={(e) => set('hp', e.target.value)}
+                />
+
+                <div key={step} className={dir > 0 ? 'pv-step' : 'pv-step-back'}>
+                  <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
+                    Question {step + 1} of {STEPS.length}
+                  </p>
+                  <h1 className="text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-[28px]" style={{ textWrap: 'balance' }}>
+                    {current.title(data)}
+                  </h1>
+                  {current.sub && <p className="mt-2 text-sm text-white/50">{current.sub}</p>}
+
+                  <div className="mt-7">{renderBody()}</div>
+
+                  {error && <p key={error + step} role="alert" className="pv-shake mt-3 text-sm text-rose-300">{error}</p>}
+
+                  <div className="mt-8 flex items-center justify-between gap-3">
+                    {step > 0 ? (
+                      <button
+                        type="button" onClick={back}
+                        className="inline-flex items-center gap-1.5 rounded-lg px-2 py-2 text-sm font-medium text-white/45 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300"
+                      >
+                        <ArrowLeft className="h-4 w-4" /> Back
+                      </button>
+                    ) : <span />}
+
+                    {current.kind !== 'single' && (
+                      <div className="flex items-center gap-3">
+                        <span className="hidden items-center gap-1 text-xs text-white/35 sm:inline-flex">
+                          press Enter <CornerDownLeft className="h-3.5 w-3.5" />
+                        </span>
+                        <button
+                          type="submit"
+                          style={ready ? { background: 'linear-gradient(135deg,#2563eb 0%,#4f46e5 45%,#0891b2 100%)' } : undefined}
+                          className={`group inline-flex h-12 items-center gap-2 rounded-xl border px-6 font-semibold transition-all duration-200 active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300 ${
+                            ready ? 'pv-ready border-white/40 text-white hover:scale-[1.03]' : 'border-white/10 bg-white/5 text-white/50'
+                          }`}
+                        >
+                          Continue
+                          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </form>
+            )}
+
+            {phase === 'unlocking' && (
+              <div className="pv-step flex flex-col items-center py-12 text-center">
+                <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-cyan-300/50 bg-cyan-400/10 shadow-[0_0_50px_-10px_#22d3ee]">
+                  <Lock className="pv-lock h-9 w-9 text-cyan-300" />
+                </div>
+                <h2 className="text-2xl font-semibold tracking-tight">You're in{firstName ? `, ${firstName}` : ''}!</h2>
+                <p className="mt-2 text-white/55">Unlocking your calendar...</p>
+              </div>
+            )}
+
+            {/* Calendar: loads in the background after the phone step, revealed at the end */}
+            {calSrc && (
+              <div
+                aria-hidden={!calendarVisible}
+                className={
+                  calendarVisible
+                    ? 'pv-step'
+                    : 'pointer-events-none absolute inset-x-0 top-0 h-px overflow-hidden opacity-0'
+                }
+              >
+                {calendarVisible && (
+                  <div className="mb-5 text-center">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-400/10 px-4 py-1.5 text-xs font-semibold text-cyan-200">
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} /> Calendar unlocked
+                    </span>
+                    <h2 className="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
+                      Pick a time that works{firstName ? `, ${firstName}` : ''}.
+                    </h2>
+                    <p className="mt-2 text-sm text-white/55">Spots are limited each week.</p>
+                  </div>
+                )}
+                <div className="overflow-hidden rounded-2xl">
+                  <CalendarEmbed src={calSrc} hidden={!calendarVisible} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

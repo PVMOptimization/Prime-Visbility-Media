@@ -1,5 +1,4 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, Check, CornerDownLeft, Lock, ShieldCheck, Sparkles } from 'lucide-react';
 import { getAttribution, saveUser, trackEvent } from '../lib/tracking';
 
@@ -18,6 +17,7 @@ const MIN_CAL_HEIGHT = 700;
 
 const BUSINESS_NAME = 'Prime Visibility Media';
 const FUNNEL_NAME = 'Growth Pipeline Funnel';
+const GUARANTEE_TEXT = '15 qualified appointments in 30 days or a full refund';
 const PRIVACY_URL = '/privacy-policy';
 const TERMS_URL = '/terms';
 
@@ -674,18 +674,14 @@ export default function GrowthPipeline() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#02050A_85%)]" />
       </div>
 
-      <header className="relative z-10 mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
-        <Link to="/" className="flex items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 font-bold shadow-lg shadow-blue-500/30">P</div>
-          <span className="hidden text-base font-bold tracking-tight text-white/90 sm:inline">Prime Visibility Media</span>
-        </Link>
-        <span className="flex items-center gap-2 text-xs font-medium text-white/55">
-          <ShieldCheck className="h-4 w-4 text-cyan-300" />
-          15 leads in 30 days or a full refund
-        </span>
-      </header>
 
-      <main className="relative z-10 flex flex-col items-center px-4 pb-16 pt-4 sm:pt-10">
+      {/* No header here: the site-wide nav (logo, menu, Call / Free Audit bar) is fixed on top of this page.
+          pt-24 / pb-28 keep the content clear of that top nav and the bottom call bar on phones. */}
+      <main className="relative z-10 flex flex-col items-center px-4 pb-28 pt-24 sm:pb-16 sm:pt-28">
+        <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-400/[0.06] px-3.5 py-1.5 text-center text-xs font-medium text-white/70">
+          <ShieldCheck className="h-4 w-4 shrink-0 text-cyan-300" />
+          {GUARANTEE_TEXT}
+        </p>
         <div
           className="w-full transition-[max-width] duration-700 ease-[cubic-bezier(.2,.7,.2,1)]"
           style={{ maxWidth: calendarVisible ? 820 : 560 }}

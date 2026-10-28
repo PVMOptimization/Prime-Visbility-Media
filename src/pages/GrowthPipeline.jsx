@@ -19,7 +19,6 @@ const BUSINESS_NAME = 'Prime Visibility Media';
 const FUNNEL_NAME = 'Growth Pipeline Funnel';
 const GUARANTEE_TEXT = '15 qualified appointments in 30 days or a full refund';
 const PRIVACY_URL = '/privacy-policy';
-const TERMS_URL = '/terms';
 
 const OWNER_OPTIONS = ["Yes, I'm the owner", "I'm a partner / co-owner", 'No, I manage marketing or sales'];
 const LEAD_OPTIONS = [
@@ -31,6 +30,7 @@ const LEAD_OPTIONS = [
   'Another marketing agency',
   'Other',
 ];
+const TRADE_OPTIONS = ['Roofing', 'HVAC', 'Plumbing', 'Remodeling / Construction', 'Electrical', 'Landscaping / Pools', 'Other'];
 const REVENUE_OPTIONS = ['Under $25K', '$25K-$50K', '$50K-$100K', '$100K-$250K', '$250K+'];
 
 const STEPS = [
@@ -46,7 +46,7 @@ const STEPS = [
     title: () => "What's the best number to reach you?",
     sub: "We'll text you a confirmation and reminder.",
   },
-  { id: 'trade', kind: 'input', type: 'text', placeholder: 'e.g. Roofing, HVAC, Remodeling', title: () => 'What trade are you in?' },
+  { id: 'trade', kind: 'single', options: TRADE_OPTIONS, title: () => 'What trade are you in?' },
   {
     id: 'companyName', kind: 'input', type: 'text', autoComplete: 'organization', placeholder: 'Company name',
     title: (d) => `What's your company name${d.firstName.trim() ? `, ${d.firstName.trim()}` : ''}?`,
@@ -60,7 +60,7 @@ const ERRORS = {
   name: 'Add your first and last name.',
   email: "That email doesn't look right.",
   phone: 'Enter a 10-digit phone number.',
-  trade: 'Tell us your trade.',
+  trade: 'Pick one.',
   companyName: 'Add your company name.',
   owner: 'Pick one.',
   leadSources: 'Pick at least one.',
@@ -619,9 +619,7 @@ export default function GrowthPipeline() {
               </ConsentBox>
               <p className="px-1 text-[11.5px] text-white/40">
                 Consent is not a condition of booking. See our{' '}
-                <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-white/70">Privacy Policy</a>
-                {' '}and{' '}
-                <a href={TERMS_URL} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-white/70">Terms</a>.
+                <a href={PRIVACY_URL} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-white/70">Privacy Policy</a>.
               </p>
             </div>
           </div>
@@ -669,15 +667,20 @@ export default function GrowthPipeline() {
 
       {/* Ambient backdrop */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="pv-orb absolute -left-32 top-[-10%] h-[420px] w-[420px] rounded-full bg-blue-600/20 blur-[120px]" />
-        <div className="pv-orb absolute -right-24 bottom-[-10%] h-[380px] w-[380px] rounded-full bg-cyan-400/15 blur-[120px]" style={{ animationDelay: '-7s' }} />
+        <div className="pv-orb absolute -left-32 top-[-10%] hidden h-[420px] w-[420px] rounded-full bg-blue-600/20 blur-[120px] md:block" />
+        <div className="pv-orb absolute -right-24 bottom-[-10%] hidden h-[380px] w-[380px] rounded-full bg-cyan-400/15 blur-[120px] md:block" style={{ animationDelay: '-7s' }} />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(37,99,235,0.18),transparent_55%),radial-gradient(ellipse_at_90%_100%,rgba(34,211,238,0.12),transparent_55%)] md:hidden" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#02050A_85%)]" />
       </div>
 
 
-      {/* No header here: the site-wide nav (logo, menu, Call / Free Audit bar) is fixed on top of this page.
-          pt-24 / pb-28 keep the content clear of that top nav and the bottom call bar on phones. */}
-      <main className="relative z-10 flex flex-col items-center px-4 pb-28 pt-24 sm:pb-16 sm:pt-28">
+      {/* Funnel page: the site-wide nav is hidden here (App.tsx) so the only thing to do is finish the form.
+          A plain, non-clickable logo keeps the brand visible without giving visitors a way out. */}
+      <main className="relative z-10 flex flex-col items-center px-4 pb-12 pt-6 sm:pb-16 sm:pt-10">
+        <div className="mb-6 font-display text-lg font-bold tracking-wide sm:mb-8 sm:text-xl" aria-label={BUSINESS_NAME}>
+          <span className="text-cyan-400">PRIME</span>
+          <span className="ml-2 text-white">VISIBILITY</span>
+        </div>
         <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-400/[0.06] px-3.5 py-1.5 text-center text-xs font-medium text-white/70">
           <ShieldCheck className="h-4 w-4 shrink-0 text-cyan-300" />
           {GUARANTEE_TEXT}
@@ -688,7 +691,7 @@ export default function GrowthPipeline() {
         >
           <div
             ref={cardRef}
-            className={`relative scroll-mt-6 rounded-[28px] border border-white/10 bg-white/[0.035] shadow-[inset_0_12px_31px_-2px_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(37,99,235,0.45)] backdrop-blur-xl transition-[padding] duration-500 ${
+            className={`relative scroll-mt-6 rounded-[28px] border border-white/10 bg-white/[0.035] shadow-[inset_0_12px_31px_-2px_rgba(255,255,255,0.06),0_30px_80px_-30px_rgba(37,99,235,0.45)] sm:backdrop-blur-xl transition-[padding] duration-500 ${
               calendarVisible ? 'p-3 sm:p-6' : 'p-6 sm:p-9'
             }`}
           >
@@ -805,6 +808,13 @@ export default function GrowthPipeline() {
               </div>
             )}
           </div>
+
+          {phase === 'form' && (
+            <p className="mt-5 text-center text-xs leading-relaxed text-white/45">
+              $13M+ generated for contractors in the last 4 years.
+              <br className="sm:hidden" /> Your info stays private. No spam.
+            </p>
+          )}
         </div>
       </main>
     </div>

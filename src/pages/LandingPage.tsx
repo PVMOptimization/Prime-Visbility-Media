@@ -7,10 +7,11 @@ import {
 import { Link } from 'react-router-dom';
 
 // Import assets
-import roofingImg from '../assets/SanAntonioRoofer-Results.jpg';
-import dashboardImg from '../assets/DashboardB_ACOMP.png';
-import reviewsImg from '../assets/REVIEWS_ARE_CRUCIAL__3_.png';
-import leadSystemImg from '../assets/Automated-Lead-Retention-System-Google-Slides-02-28-2026_10_34_AM.png';
+// WebP versions: same images, about 80% smaller downloads
+import roofingImg from '../assets/san-antonio-roofer-results.webp';
+import dashboardImg from '../assets/dashboard.webp';
+import reviewsImg from '../assets/reviews-engine.webp';
+import leadSystemImg from '../assets/lead-retention-system.webp';
 
 const CTA_PATH = '/growth-pipeline';
 
@@ -37,8 +38,6 @@ const DROPS = [
 ];
 
 const css = `
-@import url('https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap');
-
 .pv-root{font-family:'Switzer',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
 
 @keyframes pv-drop{
@@ -78,10 +77,11 @@ const css = `
 .pv-range::-moz-range-track{background:transparent}
 .pv-range:focus-visible{outline:2px solid #67e8f9;outline-offset:8px}
 
-wistia-player[media-id='pvt6x4gsuiy']:not(:defined){
-  background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/pvt6x4gsui/swatch');
+wistia-player[media-id='p1a7xtt5ze']:not(:defined){
+  background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/p1a7xtt5ze/swatch');
   display:block;
   filter:blur(5px);
+  padding-top:56.25%;
 }
 
 wistia-player[media-id='lzk313rj1u']:not(:defined){
@@ -134,7 +134,7 @@ const GridBackdrop = ({ drops = false }) => (
       DROPS.map(([col, dur, delay, h]) => (
         <div
           key={col}
-          className="pv-drop absolute top-0 w-px"
+          className="pv-drop absolute top-0 hidden w-px md:block"
           style={{
             left: `${col * 100}px`,
             height: `${h}px`,
@@ -187,7 +187,7 @@ const Rails = ({ bottom = true }) => (
 const Beam = ({ side }) => (
   <div
     aria-hidden="true"
-    className={`pointer-events-none absolute -top-20 h-[500px] w-[150px] ${side === 'left' ? '-left-10' : '-right-10'}`}
+    className={`pointer-events-none absolute -top-20 hidden h-[500px] w-[150px] md:block ${side === 'left' ? '-left-10' : '-right-10'}`}
     style={{
       background: 'linear-gradient(180deg,#22d3ee 0%,rgba(59,130,246,0.4) 50%,transparent 100%)',
       filter: 'blur(80px)',
@@ -260,27 +260,55 @@ const CtaButton = ({ children, variant = 'primary', size = 'lg', arrow = true, c
 /*  Wistia embed loader                                                */
 /* ------------------------------------------------------------------ */
 
+const VSL_MEDIA_ID = 'p1a7xtt5ze';
+const VERTICAL_MEDIA_ID = 'lzk313rj1u';
+
+// Player look. Keeps the player clean and on-brand; the Wistia logo itself is
+// switched off in the Wistia dashboard (Customize > Appearance & brand).
+const WISTIA_OPTIONS = {
+  autoPlay: false,
+  copyLinkAndThumbnailEnabled: false,
+  playbackRateControl: false,
+  qualityControl: false,
+  settingsControl: false,
+};
+
+const addScript = (src, type) => {
+  if (document.querySelector(`script[src="${src}"]`)) return;
+  const el = document.createElement('script');
+  el.src = src;
+  el.async = true;
+  if (type) el.type = type;
+  document.body.appendChild(el);
+};
+
 const useWistiaScripts = () => {
   useEffect(() => {
-    const scripts = [
-      { src: 'https://fast.wistia.com/player.js', type: undefined },
-      { src: 'https://fast.wistia.com/embed/pvt6x4gsui.js', type: 'module' },
-      { src: 'https://fast.wistia.com/embed/lzk313rj1u.js', type: 'module' },
-    ];
+    // Must be set before the player scripts run
+    const w = window as any;
+    w.wistiaOptions = w.wistiaOptions || {};
+    w.wistiaOptions[VSL_MEDIA_ID] = { ...WISTIA_OPTIONS, ...(w.wistiaOptions[VSL_MEDIA_ID] || {}) };
+    w.wistiaOptions[VERTICAL_MEDIA_ID] = { ...WISTIA_OPTIONS, ...(w.wistiaOptions[VERTICAL_MEDIA_ID] || {}) };
 
-    const added = scripts.map(({ src, type }) => {
-      if (document.querySelector(`script[src="${src}"]`)) return null;
-      const el = document.createElement('script');
-      el.src = src;
-      el.async = true;
-      if (type) el.type = type;
-      document.body.appendChild(el);
-      return el;
-    });
+    // The main VSL is near the top, so its player loads right away (after first paint)
+    addScript('https://fast.wistia.com/player.js');
+    addScript(`https://fast.wistia.com/embed/${VSL_MEDIA_ID}.js`, 'module');
 
-    return () => {
-      added.forEach((el) => el && document.body.removeChild(el));
-    };
+    // The vertical video is further down: only fetch it when the visitor gets close
+    const vertical = document.getElementById('pv-vertical-video');
+    const loadVertical = () => addScript(`https://fast.wistia.com/embed/${VERTICAL_MEDIA_ID}.js`, 'module');
+    if (!vertical || !('IntersectionObserver' in window)) {
+      loadVertical();
+      return undefined;
+    }
+    const obs = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        loadVertical();
+        obs.disconnect();
+      }
+    }, { rootMargin: '600px 0px' });
+    obs.observe(vertical);
+    return () => obs.disconnect();
   }, []);
 };
 
@@ -319,7 +347,10 @@ const HeaderNav = () => (
         ))}
       </nav>
 
-      <CtaButton size="sm" arrow={false}>Get System</CtaButton>
+      <CtaButton size="sm" arrow={false} className="shrink-0 whitespace-nowrap">
+        <span className="sm:hidden">Book a Call</span>
+        <span className="hidden sm:inline">Book Your Call</span>
+      </CtaButton>
     </div>
   </header>
 );
@@ -331,7 +362,7 @@ const HeaderNav = () => (
 const STATS = [
   { icon: Users, value: '15', label: 'Appointments in 30 days' },
   { icon: ShieldCheck, value: '100%', label: 'Money-back guarantee', featured: true },
-  { icon: Zap, value: '7', label: 'Days to go live' },
+  { icon: Zap, value: '$13M+', label: 'Generated for contractors' },
 ];
 
 const StatPlate = ({ icon: Icon, value, label, featured }) => (
@@ -364,7 +395,7 @@ const HeroSection = () => (
     <Rails />
 
     <div className="relative z-30 flex w-full max-w-[1200px] flex-col items-center text-center">
-      <Pill icon={<Sparkles className="h-4 w-4 text-cyan-300" />}>Prime Visibility Media Guarantee</Pill>
+      <Pill icon={<Sparkles className="h-4 w-4 text-cyan-300" />}>For Contractors Doing $50K+ a Month</Pill>
 
       <h1
         className="mb-8 mt-10 max-w-5xl text-[2.6rem] font-semibold leading-[1.06] tracking-[-0.035em] text-white sm:text-6xl lg:text-[5rem]"
@@ -385,7 +416,7 @@ const HeroSection = () => (
       </p>
 
       <p className="mb-14 max-w-2xl text-base font-normal leading-relaxed text-white/60 md:text-lg">
-        Built specifically for contractors doing $200k–$1M/year who want predictable pipeline growth without wasting time chasing cold leads.
+        Every appointment is budget, timeline and decision-maker verified before it hits your calendar. No shared leads. No tire-kickers. Watch how it works below.
       </p>
 
       {/* Video frame */}
@@ -402,7 +433,7 @@ const HeroSection = () => (
           </div>
           <div className="relative aspect-video w-full">
             <wistia-player
-              media-id="pvt6x4gsui"
+              media-id="p1a7xtt5ze"
               aspect="1.7777777777777777"
               className="h-full w-full"
             ></wistia-player>
@@ -412,9 +443,12 @@ const HeroSection = () => (
 
       <div className="mb-24 flex flex-col items-center">
         <CtaButton>Book Your Call</CtaButton>
+        <p className="mt-4 text-sm text-white/50">
+          Takes 60 seconds · $13M+ generated for contractors in the last 4 years
+        </p>
 
         {/* Vertical (1080x1920) video */}
-        <div className="group relative mt-14 w-full max-w-[320px]">
+        <div id="pv-vertical-video" className="group relative mt-14 w-full max-w-[320px]">
           <div className="absolute -inset-1 rounded-3xl bg-gradient-to-b from-blue-400/35 to-transparent opacity-60 blur-xl transition-opacity duration-700 group-hover:opacity-90" />
           <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#090D16] shadow-2xl">
             <div className="flex items-center gap-1.5 border-b border-white/10 px-4 py-2.5" aria-hidden="true">
@@ -762,7 +796,7 @@ const ResultsSection = () => {
     <section id="results" className="relative scroll-mt-20 overflow-hidden border-t border-white/10 bg-[#02050A] px-6 py-28">
       <GridBackdrop />
       <div className="relative z-10 mx-auto max-w-6xl">
-        <SectionHeader eyebrow="Proven proof" title="Real Contractor Outcomes" />
+        <SectionHeader eyebrow="Results" title="Real Contractor Outcomes" />
 
         <div className="mt-16" style={{ filter: 'drop-shadow(0 30px 60px rgba(37,99,235,0.16))' }}>
           <Chamfer c={36} borderClassName="bg-gradient-to-br from-white/25 via-white/10 to-blue-400/40" innerClassName="bg-[#070b14]">
@@ -774,7 +808,7 @@ const ResultsSection = () => {
                   <span className="h-2 w-2 rounded-full bg-white/20" />
                 </div>
                 <div className="flex aspect-[4/3] items-center justify-center bg-[#070a12]">
-                  <img src={current.image} alt={current.title} decoding="async" className="h-full w-full object-contain" />
+                  <img src={current.image} alt={current.title} loading="lazy" decoding="async" className="h-full w-full object-contain" />
                 </div>
               </div>
 
@@ -957,9 +991,9 @@ const FinalCTASection = () => (
           Ready To Scale With Prime Visibility Media?
         </h2>
         <p className="mb-12 max-w-xl text-lg font-medium leading-relaxed text-[#02050A]/90 md:text-[22px]">
-          15 booked appointments in 30 days or you don't pay a single cent.
+          15 qualified appointments in 30 days, or we refund every dollar.
         </p>
-        <CtaButton variant="dark">Book Your Strategy Call</CtaButton>
+        <CtaButton variant="dark">Book Your Call</CtaButton>
       </div>
     </div>
   </section>

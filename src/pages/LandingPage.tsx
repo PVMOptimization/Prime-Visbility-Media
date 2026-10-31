@@ -5,6 +5,7 @@ import {
   ShieldCheck, CheckCircle2, ChevronDown, Calculator, Sparkles,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getTrade } from '../lib/trades';
 
 // Import assets
 // WebP versions: same images, about 80% smaller downloads
@@ -360,7 +361,7 @@ const HeaderNav = () => (
 /* ------------------------------------------------------------------ */
 
 const STATS = [
-  { icon: Users, value: '15', label: 'Appointments in 30 days' },
+  { icon: Users, value: '15', label: 'Price-approved estimates' },
   { icon: ShieldCheck, value: '100%', label: 'Money-back guarantee', featured: true },
   { icon: Zap, value: '$13M+', label: 'Generated for contractors' },
 ];
@@ -387,7 +388,7 @@ const StatPlate = ({ icon: Icon, value, label, featured }) => (
   </div>
 );
 
-const HeroSection = () => (
+const HeroSection = ({ trade }) => (
   <section id="top" className="relative flex min-h-screen flex-col items-center overflow-hidden bg-[#02050A] px-6 pb-32 pt-36 lg:px-[8.5rem]">
     <GridBackdrop drops />
     <Beam side="left" />
@@ -395,13 +396,13 @@ const HeroSection = () => (
     <Rails />
 
     <div className="relative z-30 flex w-full max-w-[1200px] flex-col items-center text-center">
-      <Pill icon={<Sparkles className="h-4 w-4 text-cyan-300" />}>For Contractors Doing $50K+ a Month</Pill>
+      <Pill icon={<Sparkles className="h-4 w-4 text-cyan-300" />}>{trade ? trade.pill : 'For Contractors Doing $50K+ a Month'}</Pill>
 
       <h1
         className="mb-8 mt-10 max-w-5xl text-[2.6rem] font-semibold leading-[1.06] tracking-[-0.035em] text-white sm:text-6xl lg:text-[5rem]"
         style={{ textWrap: 'balance' }}
       >
-        Your Calendar. Booked With 15 Qualified Appointments{' '}
+        15 Price‑Approved {trade ? `${trade.estimate} ` : ''}Estimates on Your Calendar{' '}
         <span className="relative mx-1 inline-block whitespace-nowrap px-1 align-baseline">
           <span
             aria-hidden="true"
@@ -416,7 +417,7 @@ const HeroSection = () => (
       </p>
 
       <p className="mb-14 max-w-2xl text-base font-normal leading-relaxed text-white/60 md:text-lg">
-        Every appointment is budget, timeline and decision-maker verified before it hits your calendar. No shared leads. No tire-kickers. Watch how it works below.
+        Every homeowner has already seen your price range and said yes before they book. Only estimates that actually show up count toward the 15. Built for {trade ? trade.who : 'roofers, remodelers, epoxy floor companies and court builders'} doing $50K+ a month. Watch how it works below.
       </p>
 
       {/* Video frame */}
@@ -881,7 +882,7 @@ const ResultsSection = () => {
 const objections = [
   {
     q: "I've been burned by marketing companies before.",
-    a: 'Most agencies sell shared lead lists and leave you to do all the work. Prime Visibility Media manages everything—from initial ad click to final calendar booking and payment collection. Plus, we guarantee 15 qualified appointments in 30 days or refund 100% of your fee.',
+    a: 'Most agencies sell shared lead lists and leave you to do all the work. Prime Visibility Media manages everything—from initial ad click to final calendar booking and payment collection. Plus, we guarantee 15 price-approved estimates in 30 days (only the ones that show up count) or refund 100% of your fee.',
   },
   {
     q: "What if I can't close the appointments?",
@@ -991,7 +992,7 @@ const FinalCTASection = () => (
           Ready To Scale With Prime Visibility Media?
         </h2>
         <p className="mb-12 max-w-xl text-lg font-medium leading-relaxed text-[#02050A]/90 md:text-[22px]">
-          15 qualified appointments in 30 days, or we refund every dollar.
+          15 price-approved estimates in 30 days, or we refund every dollar.
         </p>
         <CtaButton variant="dark">Book Your Call</CtaButton>
       </div>
@@ -1075,6 +1076,9 @@ const StickyCta = () => {
 /* ------------------------------------------------------------------ */
 
 export default function LandingPage() {
+  // ?trade=roofing etc. swaps the headline to that trade
+  const [trade] = useState(getTrade);
+
   // Load the Wistia player scripts once
   useWistiaScripts();
 
@@ -1093,7 +1097,7 @@ export default function LandingPage() {
       <GlobalAssets />
       <HeaderNav />
       <main>
-        <HeroSection />
+        <HeroSection trade={trade} />
         <CalculatorSection />
         <SystemSection />
         <ResultsSection />

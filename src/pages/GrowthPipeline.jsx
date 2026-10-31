@@ -1,6 +1,7 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, CornerDownLeft, Lock, ShieldCheck, Sparkles } from 'lucide-react';
-import { getAttribution, saveUser, trackEvent } from '../lib/tracking';
+import { ArrowLeft, ArrowRight, Check, CornerDownLeft, Lock, PhoneCall, ShieldCheck, Sparkles } from 'lucide-react';
+import { getAttribution, saveUser, trackEvent, trackStep } from '../lib/tracking';
+import { getTrade } from '../lib/trades';
 
 /* ------------------------------------------------------------------ */
 /*  Config                                                             */
@@ -17,7 +18,7 @@ const MIN_CAL_HEIGHT = 700;
 
 const BUSINESS_NAME = 'Prime Visibility Media';
 const FUNNEL_NAME = 'Growth Pipeline Funnel';
-const GUARANTEE_TEXT = '15 qualified appointments in 30 days or a full refund';
+const GUARANTEE_TEXT = '15 price-approved estimates in 30 days or every dollar back';
 const PRIVACY_URL = '/privacy-policy';
 
 const OWNER_OPTIONS = ["Yes, I'm the owner", "I'm a partner / co-owner", 'No, I manage marketing or sales'];
@@ -30,11 +31,42 @@ const LEAD_OPTIONS = [
   'Another marketing agency',
   'Other',
 ];
-const TRADE_OPTIONS = ['Roofing', 'HVAC', 'Plumbing', 'Remodeling / Construction', 'Electrical', 'Landscaping / Pools', 'Other'];
+const TRADE_OPTIONS = [
+  'Roofing',
+  'Remodeling / Construction',
+  'Epoxy / floor coatings',
+  'Sport courts (pickleball / tennis)',
+  'HVAC',
+  'Plumbing',
+  'Electrical',
+  'Landscaping / Pools',
+  'Other',
+];
+
+// Applicant grade, 1 (weak) to 4 (perfect fit). Sent to GHL as a grade-N tag.
+// Grades listed in SETTER_GRADES skip the calendar and get a call from you first.
+// To send everyone to the calendar again, change it to [].
+const SETTER_GRADES = [1, 2];
+const gradeOf = (d) => {
+  const decider = d.owner && !/^No/.test(d.owner);
+  if (d.revenue === 'Under $25K') return 1;
+  if (d.revenue === '$25K-$50K' || !decider) return 2;
+  if (d.revenue === '$50K-$100K') return 3;
+  return 4; // $100K+ and owner/partner
+};
 const REVENUE_OPTIONS = ['Under $25K', '$25K-$50K', '$50K-$100K', '$100K-$250K', '$250K+'];
 
 const STEPS = [
-  { id: 'name', kind: 'name', title: () => "First things first. What's your name?", sub: 'Takes about 60 seconds.' },
+  // Easy tap questions first, contact details last (the "breadcrumb" order)
+  { id: 'trade', kind: 'single', options: TRADE_OPTIONS, title: () => 'What trade are you in?', sub: 'Takes about 60 seconds. Contact info comes last.' },
+  {
+    id: 'revenue', kind: 'single', options: REVENUE_OPTIONS,
+    title: () => 'How much revenue is your company doing per month?',
+    sub: 'Pick the closest range.',
+  },
+  { id: 'owner', kind: 'single', options: OWNER_OPTIONS, title: () => 'Are you the owner or decision maker?' },
+  { id: 'leadSources', kind: 'multi', options: LEAD_OPTIONS, title: () => 'How are you getting jobs right now?', sub: 'Select all that apply.' },
+  { id: 'name', kind: 'name', title: () => "Almost done. What's your name?" },
   {
     id: 'email', kind: 'input', type: 'email', inputMode: 'email', autoComplete: 'email',
     placeholder: 'you@company.com',
@@ -46,14 +78,10 @@ const STEPS = [
     title: () => "What's the best number to reach you?",
     sub: "We'll text you a confirmation and reminder.",
   },
-  { id: 'trade', kind: 'single', options: TRADE_OPTIONS, title: () => 'What trade are you in?' },
   {
     id: 'companyName', kind: 'input', type: 'text', autoComplete: 'organization', placeholder: 'Company name',
-    title: (d) => `What's your company name${d.firstName.trim() ? `, ${d.firstName.trim()}` : ''}?`,
+    title: (d) => `Last one: what's your company name${d.firstName.trim() ? `, ${d.firstName.trim()}` : ''}?`,
   },
-  { id: 'owner', kind: 'single', options: OWNER_OPTIONS, title: () => 'Are you the owner or decision maker?' },
-  { id: 'leadSources', kind: 'multi', options: LEAD_OPTIONS, title: () => 'How are you getting leads right now?', sub: 'Select all that apply.' },
-  { id: 'revenue', kind: 'single', options: REVENUE_OPTIONS, title: () => 'How much revenue is your company doing per month?', sub: 'Last one!' },
 ];
 
 const ERRORS = {
@@ -116,8 +144,9 @@ const userFrom = (d) => ({
   lastName: d.lastName.trim(),
 });
 
-const buildPayload = (d, stage) => ({
+const buildPayload = (d, stage, grade) => ({
   stage,
+  grade: grade || undefined,
   hp: d.hp,
   firstName: d.firstName.trim(),
   lastName: d.lastName.trim(),
@@ -175,17 +204,19 @@ const sendLead = (payload) =>
     keepalive: true,
   }).catch(() => {});
 
-const progressFor = (phase, step) => {
+const progressFor = (phase, step, total) => {
+  if (phase === 'setter') return 100;
   if (phase === 'calendar') return 94;
   if (phase === 'unlocking') return 90;
-  return Math.round(12 + (step / (STEPS.length - 1)) * 72);
+  return Math.round(12 + (step / (total - 1)) * 72);
 };
 
-const labelFor = (phase, step) => {
+const labelFor = (phase, step, total) => {
+  if (phase === 'setter') return 'All done';
   if (phase === 'calendar') return 'Final step: pick your time';
   if (phase === 'unlocking') return 'Unlocking your calendar';
   if (step === 0) return "Let's go";
-  if (step >= STEPS.length - 2) return 'Almost there';
+  if (step >= total - 2) return 'Almost there';
   return 'Checking your fit';
 };
 
@@ -404,10 +435,22 @@ const CalendarEmbed = ({ src, hidden }) => {
 /* ------------------------------------------------------------------ */
 
 export default function GrowthPipeline() {
+  // Visitors from a trade-specific ad (?trade=roofing) skip the trade question
+  const [trade] = useState(getTrade);
+  const steps = useMemo(
+    () =>
+      trade
+        ? STEPS.filter((s) => s.id !== 'trade').map((s) =>
+            s.id === 'revenue' ? { ...s, sub: 'Takes about 60 seconds. Contact info comes last.' } : s
+          )
+        : STEPS,
+    [trade]
+  );
+
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
-  const [phase, setPhase] = useState('form'); // form | unlocking | calendar
-  const [data, setData] = useState(INITIAL);
+  const [phase, setPhase] = useState('form'); // form | unlocking | calendar | setter
+  const [data, setData] = useState(() => ({ ...INITIAL, trade: trade ? trade.formOption : '' }));
   const [error, setError] = useState('');
   const [reward, setReward] = useState(null);
   const [burst, setBurst] = useState({ n: 0, big: false });
@@ -420,10 +463,11 @@ export default function GrowthPipeline() {
   const inputRef = useRef(null);
   const cardRef = useRef(null);
 
-  const current = STEPS[step];
-  const isLast = step === STEPS.length - 1;
+  const current = steps[step];
+  const emailStep = steps.findIndex((s) => s.id === 'email');
+  const isLast = step === steps.length - 1;
   const ready = isValid(current, data);
-  const progress = progressFor(phase, step);
+  const progress = progressFor(phase, step, steps.length);
   const firstName = data.firstName.trim();
   const calendarVisible = phase === 'calendar';
 
@@ -473,14 +517,22 @@ export default function GrowthPipeline() {
     return () => clearTimeout(t);
   }, [reward]);
 
+  const started = useRef(false);
   const set = (key, value) => {
     setData((d) => ({ ...d, [key]: value }));
     setError('');
   };
 
+  // Drop-off analytics: the first time someone interacts with the form
+  const markStart = () => {
+    if (started.current) return;
+    started.current = true;
+    trackStep('FormStart', { first_step: steps[0].id });
+  };
+
   // Requests go out one at a time so later answers never land before earlier ones
-  const submit = (d, stage) => {
-    const payload = buildPayload(d, stage);
+  const submit = (d, stage, grade) => {
+    const payload = buildPayload(d, stage, grade);
     queue.current = queue.current.then(() => sendLead(payload));
   };
 
@@ -497,16 +549,20 @@ export default function GrowthPipeline() {
     }
 
     // From the email step onward, every answer is saved to GHL
-    if (step >= 1) {
-      submit(d, isLast ? 'complete' : 'partial');
+    const grade = isLast ? gradeOf(d) : undefined;
+    if (step >= emailStep) {
+      submit(d, isLast ? 'complete' : 'partial', grade);
       saveUser(userFrom(d));
     }
 
     // Meta: Lead fires once, as soon as we have their email
-    if (step === 1 && !leadFired.current) {
+    if (step === emailStep && !leadFired.current) {
       leadFired.current = true;
       trackEvent('Lead', { user: userFrom(d), custom: { content_name: FUNNEL_NAME } });
     }
+
+    // Drop-off analytics: one event per answered question (Events Manager > FormStep)
+    trackStep('FormStep', { step: current.id, step_number: step + 1, of: steps.length });
 
     celebrate(isLast);
 
@@ -517,8 +573,14 @@ export default function GrowthPipeline() {
       // Meta: all questions answered
       trackEvent('CompleteRegistration', {
         user: userFrom(d),
-        custom: { content_name: FUNNEL_NAME, status: d.revenue },
+        custom: { content_name: FUNNEL_NAME, status: d.revenue, grade },
       });
+
+      // Weak fits get a call from you instead of a calendar slot
+      if (SETTER_GRADES.includes(grade)) {
+        setPhase('setter');
+        return;
+      }
 
       // Only reloads the calendar if they went back and changed their contact info
       const fresh = buildCalendarSrc(d);
@@ -561,7 +623,7 @@ export default function GrowthPipeline() {
     if (phase !== 'form') return undefined;
     const onKey = (e) => {
       if (e.target.tagName === 'INPUT' || e.metaKey || e.ctrlKey || e.altKey) return;
-      const s = STEPS[step];
+      const s = steps[step];
       if (s.kind !== 'single' && s.kind !== 'multi') return;
       const i = e.key.length === 1 ? e.key.toUpperCase().charCodeAt(0) - 65 : -1;
       if (i >= 0 && i < s.options.length) {
@@ -662,7 +724,11 @@ export default function GrowthPipeline() {
   };
 
   return (
-    <div className="pv-root relative min-h-screen overflow-x-hidden bg-[#02050A] text-white antialiased selection:bg-blue-500">
+    <div
+      className="pv-root relative min-h-screen overflow-x-hidden bg-[#02050A] text-white antialiased selection:bg-blue-500"
+      onPointerDown={markStart}
+      onKeyDown={markStart}
+    >
       <style>{css}</style>
 
       {/* Ambient backdrop */}
@@ -698,7 +764,7 @@ export default function GrowthPipeline() {
             {/* Progress */}
             <div className="mb-8">
               <div className="mb-2 flex items-center justify-between text-xs font-medium">
-                <span className="text-white/50">{labelFor(phase, step)}</span>
+                <span className="text-white/50">{labelFor(phase, step, steps.length)}</span>
                 <span className="tabular-nums text-cyan-300">{progress}%</span>
               </div>
               <div
@@ -730,7 +796,7 @@ export default function GrowthPipeline() {
 
                 <div key={step} className={dir > 0 ? 'pv-step' : 'pv-step-back'}>
                   <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
-                    Question {step + 1} of {STEPS.length}
+                    Question {step + 1} of {steps.length}
                   </p>
                   <h1 className="text-2xl font-semibold leading-tight tracking-[-0.02em] sm:text-[28px]" style={{ textWrap: 'balance' }}>
                     {current.title(data)}
@@ -771,6 +837,19 @@ export default function GrowthPipeline() {
                   </div>
                 </div>
               </form>
+            )}
+
+            {phase === 'setter' && (
+              <div className="pv-step flex flex-col items-center py-10 text-center">
+                <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border border-cyan-300/50 bg-cyan-400/10 shadow-[0_0_50px_-10px_#22d3ee]">
+                  <PhoneCall className="h-9 w-9 text-cyan-300" />
+                </div>
+                <h2 className="text-2xl font-semibold tracking-tight">Got it{firstName ? `, ${firstName}` : ''}. Watch your phone.</h2>
+                <p className="mt-3 max-w-sm text-white/60">
+                  Someone from our team will call you at {data.phone || 'the number you gave us'} within a few minutes
+                  (during business hours) to see if we're the right fit before booking a full call.
+                </p>
+              </div>
             )}
 
             {phase === 'unlocking' && (

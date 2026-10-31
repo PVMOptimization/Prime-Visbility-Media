@@ -165,6 +165,13 @@ export async function onRequestPost({ request, env }) {
       if (b.smsMarketing === true) tags.push('sms-consent-marketing');
       if (fromMeta) tags.push('meta-ads');
 
+      // Applicant grade 1-4 (sent on the last step). 1-2 = call them before they get a calendar slot.
+      const grade = Number(b.grade);
+      if (complete && [1, 2, 3, 4].includes(grade)) {
+        tags.push(`grade-${grade}`);
+        if (grade <= 2) tags.push('setter-call');
+      }
+
       const tagRes = await fetch(`${GHL}/contacts/${id}/tags`, {
         method: 'POST',
         headers,

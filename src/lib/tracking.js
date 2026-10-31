@@ -140,3 +140,14 @@ export function shouldFireSchedule() {
   write(SCHEDULE_KEY, Date.now());
   return true;
 }
+
+// Browser-only custom event for funnel steps (shows in Events Manager as FormStart / FormStep).
+// No server copy: these are for spotting where people drop off, not for ad optimization.
+export function trackStep(name, params = {}) {
+  if (typeof window === 'undefined' || typeof window.fbq !== 'function') return;
+  try {
+    window.fbq('trackCustom', name, params);
+  } catch {
+    /* ignore */
+  }
+}

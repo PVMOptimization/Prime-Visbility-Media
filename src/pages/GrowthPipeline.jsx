@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, CornerDownLeft, Lock, PhoneCall, ShieldCheck, Sparkles } from 'lucide-react';
-import { getAttribution, saveUser, trackEvent } from '../lib/tracking';
+import { getAttribution, saveUser, trackEvent, trackStep } from '../lib/tracking';
 import { getTrade } from '../lib/trades';
 
 /* ------------------------------------------------------------------ */
@@ -57,7 +57,16 @@ const gradeOf = (d) => {
 const REVENUE_OPTIONS = ['Under $25K', '$25K-$50K', '$50K-$100K', '$100K-$250K', '$250K+'];
 
 const STEPS = [
-  { id: 'name', kind: 'name', title: () => "First things first. What's your name?", sub: 'Takes about 60 seconds.' },
+  // Easy tap questions first, contact details last (the "breadcrumb" order)
+  { id: 'trade', kind: 'single', options: TRADE_OPTIONS, title: () => 'What trade are you in?', sub: 'Takes about 60 seconds. Contact info comes last.' },
+  {
+    id: 'revenue', kind: 'single', options: REVENUE_OPTIONS,
+    title: () => 'How much revenue is your company doing per month?',
+    sub: 'Pick the closest range.',
+  },
+  { id: 'owner', kind: 'single', options: OWNER_OPTIONS, title: () => 'Are you the owner or decision maker?' },
+  { id: 'leadSources', kind: 'multi', options: LEAD_OPTIONS, title: () => 'How are you getting jobs right now?', sub: 'Select all that apply.' },
+  { id: 'name', kind: 'name', title: () => "Almost done. What's your name?" },
   {
     id: 'email', kind: 'input', type: 'email', inputMode: 'email', autoComplete: 'email',
     placeholder: 'you@company.com',
@@ -69,14 +78,10 @@ const STEPS = [
     title: () => "What's the best number to reach you?",
     sub: "We'll text you a confirmation and reminder.",
   },
-  { id: 'trade', kind: 'single', options: TRADE_OPTIONS, title: () => 'What trade are you in?' },
   {
     id: 'companyName', kind: 'input', type: 'text', autoComplete: 'organization', placeholder: 'Company name',
-    title: (d) => `What's your company name${d.firstName.trim() ? `, ${d.firstName.trim()}` : ''}?`,
+    title: (d) => `Last one: what's your company name${d.firstName.trim() ? `, ${d.firstName.trim()}` : ''}?`,
   },
-  { id: 'owner', kind: 'single', options: OWNER_OPTIONS, title: () => 'Are you the owner or decision maker?' },
-  { id: 'leadSources', kind: 'multi', options: LEAD_OPTIONS, title: () => 'How are you getting leads right now?', sub: 'Select all that apply.' },
-  { id: 'revenue', kind: 'single', options: REVENUE_OPTIONS, title: () => 'How much revenue is your company doing per month?', sub: 'Last one!' },
 ];
 
 const ERRORS = {
@@ -432,7 +437,15 @@ const CalendarEmbed = ({ src, hidden }) => {
 export default function GrowthPipeline() {
   // Visitors from a trade-specific ad (?trade=roofing) skip the trade question
   const [trade] = useState(getTrade);
-  const steps = useMemo(() => (trade ? STEPS.filter((s) => s.id !== 'trade') : STEPS), [trade]);
+  const steps = useMemo(
+    () =>
+      trade
+        ? STEPS.filter((s) => s.id !== 'trade').map((s) =>
+            s.id === 'revenue' ? { ...s, sub: 'Takes about 60 seconds. Contact info comes last.' } : s
+          )
+        : STEPS,
+    [trade]
+  );
 
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
@@ -451,6 +464,7 @@ export default function GrowthPipeline() {
   const cardRef = useRef(null);
 
   const current = steps[step];
+  const emailStep = steps.findIndex((s) => s.id === 'email');
   const isLast = step === steps.length - 1;
   const ready = isValid(current, data);
   const progress = progressFor(phase, step, steps.length);
@@ -503,9 +517,17 @@ export default function GrowthPipeline() {
     return () => clearTimeout(t);
   }, [reward]);
 
+  const started = useRef(false);
   const set = (key, value) => {
     setData((d) => ({ ...d, [key]: value }));
     setError('');
+  };
+
+  // Drop-off analytics: the first time someone interacts with the form
+  const markStart = () => {
+    if (started.current) return;
+    started.current = true;
+    trackStep('FormStart', { first_step: steps[0].id });
   };
 
   // Requests go out one at a time so later answers never land before earlier ones
@@ -528,16 +550,19 @@ export default function GrowthPipeline() {
 
     // From the email step onward, every answer is saved to GHL
     const grade = isLast ? gradeOf(d) : undefined;
-    if (step >= 1) {
+    if (step >= emailStep) {
       submit(d, isLast ? 'complete' : 'partial', grade);
       saveUser(userFrom(d));
     }
 
     // Meta: Lead fires once, as soon as we have their email
-    if (step === 1 && !leadFired.current) {
+    if (step === emailStep && !leadFired.current) {
       leadFired.current = true;
       trackEvent('Lead', { user: userFrom(d), custom: { content_name: FUNNEL_NAME } });
     }
+
+    // Drop-off analytics: one event per answered question (Events Manager > FormStep)
+    trackStep('FormStep', { step: current.id, step_number: step + 1, of: steps.length });
 
     celebrate(isLast);
 
@@ -699,7 +724,11 @@ export default function GrowthPipeline() {
   };
 
   return (
-    <div className="pv-root relative min-h-screen overflow-x-hidden bg-[#02050A] text-white antialiased selection:bg-blue-500">
+    <div
+      className="pv-root relative min-h-screen overflow-x-hidden bg-[#02050A] text-white antialiased selection:bg-blue-500"
+      onPointerDown={markStart}
+      onKeyDown={markStart}
+    >
       <style>{css}</style>
 
       {/* Ambient backdrop */}

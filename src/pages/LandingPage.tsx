@@ -417,7 +417,7 @@ const HeroSection = ({ trade }) => (
       </p>
 
       <p className="mb-14 max-w-2xl text-base font-normal leading-relaxed text-white/60 md:text-lg">
-        Every homeowner has already seen your price range and said yes before they book. Only estimates that actually show up count toward the 15. Built for {trade ? trade.who : 'contractors'} doing $50K+ a month. Watch how it works below.
+        Every homeowner has already seen your price range and said yes before they book. Only estimates that actually show up count toward the 15. Built for {trade ? trade.who : 'roofers, remodelers, epoxy floor companies and court builders'} doing $50K+ a month. Watch how it works below.
       </p>
 
       {/* Video frame */}

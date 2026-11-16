@@ -30,6 +30,20 @@ export const TRADES = {
     estimate: 'Court',
     formOption: 'Sport courts (pickleball / tennis)',
   },
+  generators: {
+    slug: 'generators',
+    pill: 'For Standby Generator Installers',
+    who: 'standby generator installers',
+    estimate: 'Generator',
+    formOption: 'Standby generators',
+  },
+  windows: {
+    slug: 'windows',
+    pill: 'For Window Replacement Companies',
+    who: 'window replacement companies',
+    estimate: 'Window',
+    formOption: 'Windows / doors',
+  },
 };
 
 const ALIASES = {
@@ -37,6 +51,8 @@ const ALIASES = {
   remodel: 'remodeling', remodeler: 'remodeling', remodelers: 'remodeling',
   coatings: 'epoxy', flooring: 'epoxy', floors: 'epoxy',
   court: 'courts', pickleball: 'courts', tennis: 'courts',
+  generator: 'generators', standby: 'generators', 'standby-generators': 'generators',
+  window: 'windows', 'window-replacement': 'windows', 'windows-doors': 'windows',
 };
 
 const KEY = 'pv_trade';

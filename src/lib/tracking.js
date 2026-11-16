@@ -141,6 +141,16 @@ export function shouldFireSchedule() {
   return true;
 }
 
+// Microsoft Clarity: tag the session and log events so recordings can be filtered
+// by ad, trade, furthest step and outcome. Safe if Clarity is blocked.
+export function clarity(...args) {
+  try {
+    if (typeof window !== 'undefined' && typeof window.clarity === 'function') window.clarity(...args);
+  } catch {
+    /* ignore */
+  }
+}
+
 // Browser-only custom event for funnel steps (shows in Events Manager as FormStart / FormStep).
 // No server copy: these are for spotting where people drop off, not for ad optimization.
 export function trackStep(name, params = {}) {

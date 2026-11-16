@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, CornerDownLeft, Lock, PhoneCall, ShieldCheck, Sparkles } from 'lucide-react';
-import { getAttribution, saveUser, trackEvent, trackStep } from '../lib/tracking';
+import { clarity, getAttribution, saveUser, trackEvent, trackStep } from '../lib/tracking';
 import { getTrade } from '../lib/trades';
 
 /* ------------------------------------------------------------------ */
@@ -36,6 +36,8 @@ const TRADE_OPTIONS = [
   'Remodeling / Construction',
   'Epoxy / floor coatings',
   'Sport courts (pickleball / tennis)',
+  'Standby generators',
+  'Windows / doors',
   'HVAC',
   'Plumbing',
   'Electrical',
@@ -523,11 +525,29 @@ export default function GrowthPipeline() {
     setError('');
   };
 
-  // Drop-off analytics: the first time someone interacts with the form
+  // Clarity: tag the session with the ad and trade so recordings can be filtered by ad
+  useEffect(() => {
+    const a = getAttribution();
+    clarity('set', 'funnel', 'growth-pipeline');
+    clarity('set', 'trade', trade ? trade.slug : 'none');
+    if (a.utm_content) clarity('set', 'ad', a.utm_content);
+    if (a.utm_campaign) clarity('set', 'campaign', a.utm_campaign);
+  }, [trade]);
+
+  // Clarity: furthest question reached, for drop-off filtering
+  useEffect(() => {
+    if (phase === 'form') clarity('set', 'furthest_step', `${step + 1}-${steps[step].id}`);
+    else clarity('set', 'furthest_step', phase);
+  }, [step, phase, steps]);
+
+  // First tap on the form: drop-off analytics, plus a standard Contact event (browser + server,
+  // same event ID) so Meta has a frequent intent signal to learn from before Leads build up
   const markStart = () => {
     if (started.current) return;
     started.current = true;
     trackStep('FormStart', { first_step: steps[0].id });
+    trackEvent('Contact', { custom: { content_name: FUNNEL_NAME, trade: trade ? trade.slug : '' } });
+    clarity('event', 'form_started');
   };
 
   // Requests go out one at a time so later answers never land before earlier ones
@@ -559,6 +579,7 @@ export default function GrowthPipeline() {
     if (step === emailStep && !leadFired.current) {
       leadFired.current = true;
       trackEvent('Lead', { user: userFrom(d), custom: { content_name: FUNNEL_NAME } });
+      clarity('event', 'lead');
     }
 
     // Drop-off analytics: one event per answered question (Events Manager > FormStep)
@@ -575,6 +596,8 @@ export default function GrowthPipeline() {
         user: userFrom(d),
         custom: { content_name: FUNNEL_NAME, status: d.revenue, grade },
       });
+      clarity('set', 'grade', String(grade));
+      clarity('event', SETTER_GRADES.includes(grade) ? 'complete_setter' : 'complete_calendar');
 
       // Weak fits get a call from you instead of a calendar slot
       if (SETTER_GRADES.includes(grade)) {
@@ -747,6 +770,12 @@ export default function GrowthPipeline() {
           <span className="text-cyan-400">PRIME</span>
           <span className="ml-2 text-white">VISIBILITY</span>
         </div>
+        {/* Ad-matched badge: visitors from a trade ad (?trade=windows) see their trade named first */}
+        {trade && phase === 'form' && (
+          <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300">
+            {trade.pill}
+          </p>
+        )}
         <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-400/[0.06] px-3.5 py-1.5 text-center text-xs font-medium text-white/70">
           <ShieldCheck className="h-4 w-4 shrink-0 text-cyan-300" />
           {GUARANTEE_TEXT}
